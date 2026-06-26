@@ -1,15 +1,477 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clodoaldo Fernandes - Corretor de Imóveis</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clodoaldo Fernandes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: #222;
+      background: #fff;
+      scroll-behavior: smooth;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1a56db;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      text-decoration: none;
+      color: #444;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: #1a56db; }
+
+    /* HERO */
+    #inicio {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background: linear-gradient(135deg, #f0f4ff 0%, #fff 100%);
+    }
+
+    .hero-avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #1a56db;
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    #inicio h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    #inicio h1 span { color: #1a56db; }
+
+    #inicio p {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    .badges {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .badge {
+      background: #e8f0fe;
+      color: #1a56db;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      background: #1a56db;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: #1340a8; }
+
+    /* SEÇÕES */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+
+    .section-line {
+      width: 50px;
+      height: 4px;
+      background: #1a56db;
+      border-radius: 2px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* SERVIÇOS */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: default;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(26,86,219,0.1);
+      transform: translateY(-4px);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* PORTFÓLIO */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .proj-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .proj-card:hover {
+      box-shadow: 0 8px 24px rgba(26,86,219,0.1);
+      transform: translateY(-4px);
+    }
+
+    .proj-header {
+      background: #1a56db;
+      padding: 1.5rem;
+      color: #fff;
+    }
+
+    .proj-header span {
+      font-size: 1.8rem;
+    }
+
+    .proj-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+
+    .proj-body {
+      padding: 1rem 1.5rem;
+    }
+
+    .proj-body p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #444;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* CONTATO */
+    #contato {
+      background: #f8faff;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #1a56db;
+    }
+
+    .form-group textarea { height: 130px; resize: vertical; }
+
+    .btn-enviar {
+      background: #1a56db;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-enviar:hover { background: #1340a8; }
+
+    .msg-sucesso {
+      display: none;
+      background: #d1fae5;
+      color: #065f46;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #111;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+
+    footer span { color: #1a56db; }
+
+    /* SCROLL ATIVO */
+    .ativo { color: #1a56db !important; }
+  </style>
 </head>
 <body>
 
-    <h1>Olá, sou Clodoaldo Fernandes</h1>
-    <p>Corretor de Imóveis | CRECI 14.464-F</p>
-    <p>Estudante de Análise e Desenvolvimento de Sistemas</p>
+  <nav>
+    <div class="logo">CF</div>
+    <ul>
+      <li><a href="#inicio">Início</a></li>
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#portfolio">Portfólio</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- INÍCIO -->
+  <section id="inicio">
+    <div>
+      <div class="hero-avatar">CF</div>
+      <h1>Olá, sou <span>Clodoaldo Fernandes</span></h1>
+      <p>Corretor de Imóveis · CRECI 14.464-F · João Pessoa/PB</p>
+      <p>Estudante de Análise e Desenvolvimento de Sistemas</p>
+      <div class="badges">
+        <span class="badge">🏠 Avaliador Judicial</span>
+        <span class="badge">💻 Desenvolvedor em formação</span>
+        <span class="badge">📍 Paraíba</span>
+      </div>
+      <a href="#servicos" class="btn">Conheça meu trabalho</a>
+    </div>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section id="servicos">
+    <h2 class="section-title">Serviços</h2>
+    <div class="section-line"></div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🏡</div>
+        <h3>Compra e Venda</h3>
+        <p>Intermediação profissional na compra e venda de imóveis residenciais e comerciais em João Pessoa e região.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔑</div>
+        <h3>Locação</h3>
+        <p>Gestão completa de locações, análise de inquilinos, contratos e acompanhamento durante toda a vigência.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Avaliação Judicial</h3>
+        <p>Perito avaliador de imóveis para processos judiciais, laudos técnicos e pareceres de valor de mercado.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Consultoria</h3>
+        <p>Orientação em investimentos imobiliários, análise de documentação e due diligence de imóveis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFÓLIO -->
+  <section id="portfolio">
+    <h2 class="section-title">Portfólio</h2>
+    <div class="section-line"></div>
+    <div class="portfolio-grid">
+      <div class="proj-card">
+        <div class="proj-header">
+          <span>🌐</span>
+          <h3>Site Pessoal</h3>
+        </div>
+        <div class="proj-body">
+          <p>Este site! Desenvolvido com HTML, CSS e JavaScript puro como projeto de aprendizado.</p>
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-header">
+          <span>🧮</span>
+          <h3>Calculadora de Imóveis</h3>
+        </div>
+        <div class="proj-body">
+          <p>Ferramenta para calcular financiamentos, rentabilidade e comparar imóveis. Em desenvolvimento.</p>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Em breve</span>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-header">
+          <span>📱</span>
+          <h3>Templates Imobiliários</h3>
+        </div>
+        <div class="proj-body">
+          <p>Templates editáveis para Instagram voltados a corretores de imóveis. Disponível na PropTechTemplates.</p>
+          <span class="tag">Canva</span>
+          <span class="tag">Design</span>
+          <span class="tag">Etsy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section>
+    <div id="contato">
+      <h2 class="section-title">Contato</h2>
+      <div class="section-line"></div>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="nome" placeholder="Seu nome completo">
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Mensagem</label>
+        <textarea id="mensagem" placeholder="Como posso te ajudar?"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarFormulario()">Enviar mensagem</button>
+      <div class="msg-sucesso" id="msgSucesso">
+        ✅ Mensagem enviada com sucesso! Entrarei em contato em breve.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
+  </footer>
+
+  <script>
+    function enviarFormulario() {
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mensagem = document.getElementById('mensagem').value.trim();
+
+      if (!nome || !email || !mensagem) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      document.getElementById('msgSucesso').style.display = 'block';
+      document.getElementById('nome').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('mensagem').value = '';
+    }
+
+    const links = document.querySelectorAll('nav ul a');
+    window.addEventListener('scroll', () => {
+      const secoes = ['inicio', 'servicos', 'portfolio', 'contato'];
+      let atual = '';
+      secoes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 100) atual = id;
+      });
+      links.forEach(link => {
+        link.classList.remove('ativo');
+        if (link.getAttribute('href') === '#' + atual) link.classList.add('ativo');
+      });
+    });
+  </script>
 
 </body>
 </html>
