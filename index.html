@@ -14,7 +14,6 @@
       scroll-behavior: smooth;
     }
 
-    /* NAVBAR */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -27,17 +26,9 @@
       z-index: 1000;
     }
 
-    .logo {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #1a56db;
-    }
+    .logo { font-size: 1.2rem; font-weight: 700; color: #1a56db; }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-    }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
 
     nav ul a {
       text-decoration: none;
@@ -49,7 +40,6 @@
 
     nav ul a:hover { color: #1a56db; }
 
-    /* HERO */
     #inicio {
       min-height: 100vh;
       display: flex;
@@ -61,8 +51,7 @@
     }
 
     .hero-avatar {
-      width: 110px;
-      height: 110px;
+      width: 110px; height: 110px;
       border-radius: 50%;
       background: #1a56db;
       color: #fff;
@@ -74,74 +63,46 @@
       margin: 0 auto 1.5rem;
     }
 
-    #inicio h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
+    #inicio h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
     #inicio h1 span { color: #1a56db; }
-
-    #inicio p {
-      font-size: 1.1rem;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
+    #inicio p { font-size: 1.1rem; color: #555; margin-bottom: 0.5rem; }
 
     .badges {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: flex; gap: 0.75rem;
+      justify-content: center; flex-wrap: wrap;
       margin-top: 1.5rem;
     }
 
     .badge {
-      background: #e8f0fe;
-      color: #1a56db;
-      padding: 0.4rem 1rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      background: #e8f0fe; color: #1a56db;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 600;
     }
 
     .btn {
-      display: inline-block;
-      margin-top: 2rem;
-      padding: 0.8rem 2rem;
-      background: #1a56db;
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
+      display: inline-block; margin-top: 2rem;
+      padding: 0.8rem 2rem; background: #1a56db;
+      color: #fff; border-radius: 8px;
+      text-decoration: none; font-weight: 600;
       transition: background 0.2s;
     }
 
     .btn:hover { background: #1340a8; }
 
-    /* SEÇÕES */
     section {
       padding: 5rem 2rem;
       max-width: 1000px;
       margin: 0 auto;
     }
 
-    .section-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: #111;
-    }
+    .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: #111; }
 
     .section-line {
-      width: 50px;
-      height: 4px;
-      background: #1a56db;
-      border-radius: 2px;
+      width: 50px; height: 4px;
+      background: #1a56db; border-radius: 2px;
       margin-bottom: 2.5rem;
     }
 
-    /* SERVIÇOS */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -149,8 +110,7 @@
     }
 
     .card {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
+      border: 1px solid #e5e7eb; border-radius: 12px;
       padding: 1.5rem;
       transition: box-shadow 0.2s, transform 0.2s;
       cursor: default;
@@ -161,25 +121,10 @@
       transform: translateY(-4px);
     }
 
-    .card-icon {
-      font-size: 2rem;
-      margin-bottom: 0.75rem;
-    }
+    .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #111; }
+    .card p { font-size: 0.9rem; color: #666; line-height: 1.6; }
 
-    .card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: #111;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: #666;
-      line-height: 1.6;
-    }
-
-    /* PORTFÓLIO */
     .portfolio-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -187,8 +132,7 @@
     }
 
     .proj-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
+      border: 1px solid #e5e7eb; border-radius: 12px;
       overflow: hidden;
       transition: box-shadow 0.2s, transform 0.2s;
     }
@@ -198,119 +142,55 @@
       transform: translateY(-4px);
     }
 
-    .proj-header {
-      background: #1a56db;
-      padding: 1.5rem;
-      color: #fff;
-    }
-
-    .proj-header span {
-      font-size: 1.8rem;
-    }
-
-    .proj-header h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-top: 0.5rem;
-    }
-
-    .proj-body {
-      padding: 1rem 1.5rem;
-    }
-
-    .proj-body p {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
+    .proj-header { background: #1a56db; padding: 1.5rem; color: #fff; }
+    .proj-header span { font-size: 1.8rem; }
+    .proj-header h3 { font-size: 1rem; font-weight: 700; margin-top: 0.5rem; }
+    .proj-body { padding: 1rem 1.5rem; }
+    .proj-body p { font-size: 0.9rem; color: #666; margin-bottom: 1rem; line-height: 1.6; }
 
     .tag {
-      display: inline-block;
-      background: #f3f4f6;
-      color: #444;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-right: 0.4rem;
-      margin-bottom: 0.4rem;
+      display: inline-block; background: #f3f4f6; color: #444;
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      font-size: 0.75rem; font-weight: 600;
+      margin-right: 0.4rem; margin-bottom: 0.4rem;
     }
 
-    /* CONTATO */
-    #contato {
-      background: #f8faff;
-      border-radius: 16px;
-      padding: 3rem 2rem;
-    }
+    #contato { background: #f8faff; border-radius: 16px; padding: 3rem 2rem; }
 
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
+    .form-group { margin-bottom: 1.25rem; }
 
     .form-group label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      color: #333;
+      display: block; font-size: 0.9rem;
+      font-weight: 600; margin-bottom: 0.4rem; color: #333;
     }
 
     .form-group input,
     .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
-      outline: none;
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db; border-radius: 8px;
+      font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s; outline: none;
     }
 
     .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #1a56db;
-    }
-
+    .form-group textarea:focus { border-color: #1a56db; }
     .form-group textarea { height: 130px; resize: vertical; }
 
     .btn-enviar {
-      background: #1a56db;
-      color: #fff;
-      border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
+      background: #1a56db; color: #fff; border: none;
+      padding: 0.8rem 2rem; border-radius: 8px;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
     }
 
     .btn-enviar:hover { background: #1340a8; }
 
-    .msg-sucesso {
-      display: none;
-      background: #d1fae5;
-      color: #065f46;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-      font-weight: 600;
-    }
-
-    /* FOOTER */
     footer {
-      text-align: center;
-      padding: 2rem;
-      background: #111;
-      color: #aaa;
-      font-size: 0.85rem;
+      text-align: center; padding: 2rem;
+      background: #111; color: #aaa; font-size: 0.85rem;
     }
 
     footer span { color: #1a56db; }
-
-    /* SCROLL ATIVO */
     .ativo { color: #1a56db !important; }
   </style>
 </head>
@@ -320,13 +200,13 @@
     <div class="logo">CF</div>
     <ul>
       <li><a href="#inicio">Início</a></li>
+      <li><a href="#sobre">Sobre</a></li>
       <li><a href="#servicos">Serviços</a></li>
       <li><a href="#portfolio">Portfólio</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
   </nav>
 
-  <!-- INÍCIO -->
   <section id="inicio">
     <div>
       <div class="hero-avatar">CF</div>
@@ -338,11 +218,58 @@
         <span class="badge">💻 Desenvolvedor em formação</span>
         <span class="badge">📍 Paraíba</span>
       </div>
-      <a href="#servicos" class="btn">Conheça meu trabalho</a>
+      <a href="#sobre" class="btn">Conheça meu trabalho</a>
     </div>
   </section>
 
-  <!-- SERVIÇOS -->
+  <section id="sobre">
+    <h2 class="section-title">Sobre mim</h2>
+    <div class="section-line"></div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:2rem;">
+
+      <div>
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:#1a56db;">🏠 Corretor & Perito</h3>
+        <p style="color:#555; line-height:1.8; margin-bottom:1rem;">
+          Com o CRECI 14.464-F, atuo como corretor de imóveis e avaliador judicial em João Pessoa/PB.
+          Tenho experiência em compra, venda, locação e laudos técnicos para processos judiciais.
+        </p>
+        <p style="color:#555; line-height:1.8; margin-bottom:1rem;">
+          Sou especialista em <strong>documentação imobiliária</strong> — análise de escrituras,
+          matrículas, certidões, inventários, usucapião e regularização de imóveis,
+          garantindo segurança jurídica em todas as transações.
+        </p>
+        <p style="color:#555; line-height:1.8;">
+          Também sou empreendedor digital à frente da <strong>PropTechTemplates</strong>,
+          loja na Etsy com templates de marketing imobiliário para corretores americanos.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:#1a56db;">💻 Formação em Tecnologia</h3>
+        <div style="border-left:3px solid #1a56db; padding-left:1rem; margin-bottom:1rem;">
+          <p style="font-weight:700; color:#111; margin-bottom:0.25rem;">Análise e Desenvolvimento de Sistemas</p>
+          <p style="color:#555; font-size:0.9rem; margin-bottom:0.5rem;">Faculdade SECTRAS · 4º Semestre</p>
+          <p style="color:#555; line-height:1.7; font-size:0.9rem;">
+            Cursando ADS com foco em desenvolvimento web, orientação a objetos,
+            banco de dados e sistemas aplicados ao mercado imobiliário.
+          </p>
+        </div>
+        <div style="border-left:3px solid #e5e7eb; padding-left:1rem;">
+          <p style="font-weight:700; color:#111; margin-bottom:0.5rem;">Habilidades Técnicas</p>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Java</span>
+            <span class="tag">Python</span>
+            <span class="tag">SQL</span>
+            <span class="tag">Git/GitHub</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <section id="servicos">
     <h2 class="section-title">Serviços</h2>
     <div class="section-line"></div>
@@ -363,14 +290,18 @@
         <p>Perito avaliador de imóveis para processos judiciais, laudos técnicos e pareceres de valor de mercado.</p>
       </div>
       <div class="card">
+        <div class="card-icon">📄</div>
+        <h3>Documentação</h3>
+        <p>Análise de escrituras, matrículas, certidões, inventários, usucapião e regularização de imóveis com segurança jurídica.</p>
+      </div>
+      <div class="card">
         <div class="card-icon">📋</div>
         <h3>Consultoria</h3>
-        <p>Orientação em investimentos imobiliários, análise de documentação e due diligence de imóveis.</p>
+        <p>Orientação em investimentos imobiliários, due diligence e acompanhamento completo em todas as etapas da negociação.</p>
       </div>
     </div>
   </section>
 
-  <!-- PORTFÓLIO -->
   <section id="portfolio">
     <h2 class="section-title">Portfólio</h2>
     <div class="section-line"></div>
@@ -413,27 +344,30 @@
     </div>
   </section>
 
-  <!-- CONTATO -->
-  <section>
-    <div id="contato">
+  <section id="contato">
+    <div>
       <h2 class="section-title">Contato</h2>
       <div class="section-line"></div>
-      <div class="form-group">
-        <label>Nome</label>
-        <input type="text" id="nome" placeholder="Seu nome completo">
-      </div>
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="email" placeholder="seu@email.com">
-      </div>
-      <div class="form-group">
-        <label>Mensagem</label>
-        <textarea id="mensagem" placeholder="Como posso te ajudar?"></textarea>
-      </div>
-      <button class="btn-enviar" onclick="enviarFormulario()">Enviar mensagem</button>
-      <div class="msg-sucesso" id="msgSucesso">
-        ✅ Mensagem enviada com sucesso! Entrarei em contato em breve.
-      </div>
+      
+      <form action="https://formsubmit.co/clodoaldo.fernandes@gmail.com" method="POST">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" name="Nome" id="nome" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" name="Email" id="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="mensagem">Mensagem</label>
+          <textarea name="Mensagem" id="mensagem" placeholder="Como posso te ajudar?" required></textarea>
+        </div>
+        <button type="submit" class="btn-enviar">Enviar mensagem</button>
+      </form>
+
     </div>
   </section>
 
@@ -442,25 +376,9 @@
   </footer>
 
   <script>
-    function enviarFormulario() {
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const mensagem = document.getElementById('mensagem').value.trim();
-
-      if (!nome || !email || !mensagem) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-      }
-
-      document.getElementById('msgSucesso').style.display = 'block';
-      document.getElementById('nome').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('mensagem').value = '';
-    }
-
     const links = document.querySelectorAll('nav ul a');
     window.addEventListener('scroll', () => {
-      const secoes = ['inicio', 'servicos', 'portfolio', 'contato'];
+      const secoes = ['inicio', 'sobre', 'servicos', 'portfolio', 'contato'];
       let atual = '';
       secoes.forEach(id => {
         const el = document.getElementById(id);
