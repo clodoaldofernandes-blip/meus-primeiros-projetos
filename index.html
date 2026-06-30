@@ -139,6 +139,38 @@
     .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #111; }
     .card p { font-size: 0.9rem; color: #666; line-height: 1.6; }
 
+    .imovel-destaque {
+      margin-top: 2.5rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .imovel-destaque img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .imovel-destaque-texto {
+      padding: 1.25rem 1.5rem;
+      background: #f8faff;
+    }
+
+    .imovel-destaque-texto h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 0.4rem;
+    }
+
+    .imovel-destaque-texto p {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
     .portfolio-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -167,6 +199,25 @@
       padding: 0.2rem 0.6rem; border-radius: 4px;
       font-size: 0.75rem; font-weight: 600;
       margin-right: 0.4rem; margin-bottom: 0.4rem;
+    }
+
+    .proj-card.destaque {
+      border: 2px solid #1a56db;
+    }
+
+    .proj-card.destaque .proj-header {
+      background: #111;
+    }
+
+    .selo {
+      display: inline-block;
+      background: #fde68a;
+      color: #92400e;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
     }
 
     #contato { background: #f8faff; border-radius: 16px; padding: 3rem 2rem; }
@@ -262,10 +313,11 @@
       <img src="foto-perfil.jpeg" alt="Foto de Clodoaldo Fernandes" class="hero-avatar-img">
       <h1>Olá, sou <span>Clodoaldo Fernandes</span></h1>
       <p>Corretor de Imóveis · CRECI 14.464-F · João Pessoa/PB</p>
-      <p>Estudante de Análise e Desenvolvimento de Sistemas</p>
+      <p>Analista e Desenvolvedor de Sistemas</p>
       <div class="badges">
         <span class="badge">🏠 Avaliador Judicial</span>
-        <span class="badge">💻 Desenvolvedor em formação</span>
+        <span class="badge">🖥️ Analista de Sistemas</span>
+        <span class="badge">💻 Desenvolvedor</span>
         <span class="badge">📍 Paraíba</span>
       </div>
       <div class="hero-buttons">
@@ -301,13 +353,14 @@
       </div>
 
       <div>
-        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:#1a56db;">💻 Formação em Tecnologia</h3>
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:#1a56db;">💻 Analista e Desenvolvedor de Sistemas</h3>
         <div style="border-left:3px solid #1a56db; padding-left:1rem; margin-bottom:1rem;">
           <p style="font-weight:700; color:#111; margin-bottom:0.25rem;">Análise e Desenvolvimento de Sistemas</p>
           <p style="color:#555; font-size:0.9rem; margin-bottom:0.5rem;">Faculdade SECTRAS · 4º Semestre</p>
           <p style="color:#555; line-height:1.7; font-size:0.9rem;">
-            Cursando ADS com foco em desenvolvimento web, orientação a objetos,
-            banco de dados e sistemas aplicados ao mercado imobiliário.
+            Desenvolvo sites, sistemas web e soluções de presença digital para
+            negócios de qualquer setor, unindo conhecimento técnico em programação
+            com visão estratégica de mercado.
           </p>
         </div>
         <div style="border-left:3px solid #e5e7eb; padding-left:1rem;">
@@ -352,9 +405,22 @@
         <p>Análise de escrituras, matrículas, certidões, inventários, usucapião e regularização de imóveis com segurança jurídica.</p>
       </div>
       <div class="card">
+        <div class="card-icon">💻</div>
+        <h3>Presença Digital</h3>
+        <p>Criação de sites, landing pages, sistemas web e estratégias de presença digital para negócios de qualquer setor.</p>
+      </div>
+      <div class="card">
         <div class="card-icon">📋</div>
         <h3>Consultoria</h3>
         <p>Orientação em investimentos imobiliários, due diligence e acompanhamento completo em todas as etapas da negociação.</p>
+      </div>
+    </div>
+
+    <div class="imovel-destaque">
+      <img src="imovel-destaque.jpeg" alt="Imóvel em destaque">
+      <div class="imovel-destaque-texto">
+        <h3>Imóvel em destaque</h3>
+        <p>Conheça as oportunidades disponíveis com acompanhamento completo do corretor até a entrega das chaves.</p>
       </div>
     </div>
   </section>
@@ -364,6 +430,21 @@
     <h2 class="section-title">Portfólio</h2>
     <div class="section-line"></div>
     <div class="portfolio-grid">
+
+      <div class="proj-card destaque">
+        <div class="proj-header">
+          <span class="selo">Novo serviço</span>
+          <h3>💻 Desenvolvimento & Presença Digital</h3>
+        </div>
+        <div class="proj-body">
+          <p>Desenvolvo sites, sistemas web e soluções digitais como este para negócios, profissionais autônomos e marcas pessoais de qualquer setor — com identidade visual própria, formulário de contato funcional e estratégia de presença online.</p>
+          <span class="tag">Sites institucionais</span>
+          <span class="tag">Landing pages</span>
+          <span class="tag">Redes sociais</span>
+          <span class="tag">Sistemas web</span>
+        </div>
+      </div>
+
       <div class="proj-card">
         <div class="proj-header">
           <span>🌐</span>
