@@ -50,17 +50,13 @@
       background: linear-gradient(135deg, #f0f4ff 0%, #fff 100%);
     }
 
-    .hero-avatar {
+    .hero-avatar-img {
       width: 110px; height: 110px;
       border-radius: 50%;
-      background: #1a56db;
-      color: #fff;
-      font-size: 2.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      object-fit: cover;
+      border: 3px solid #1a56db;
       margin: 0 auto 1.5rem;
+      display: block;
     }
 
     #inicio h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -80,7 +76,7 @@
     }
 
     .btn {
-      display: inline-block; margin-top: 2rem;
+      display: inline-block;
       padding: 0.8rem 2rem; background: #1a56db;
       color: #fff; border-radius: 8px;
       text-decoration: none; font-weight: 600;
@@ -88,6 +84,24 @@
     }
 
     .btn:hover { background: #1340a8; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      background: #fff; color: #1a56db;
+      border: 2px solid #1a56db;
+      border-radius: 8px;
+      text-decoration: none; font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover { background: #1a56db; color: #fff; }
+
+    .hero-buttons {
+      display: flex; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+      margin-top: 2rem;
+    }
 
     section {
       padding: 5rem 2rem;
@@ -184,6 +198,19 @@
     }
 
     .btn-enviar:hover { background: #1340a8; }
+    .btn-enviar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .msg-sucesso {
+      display: none; background: #d1fae5; color: #065f46;
+      padding: 1rem; border-radius: 8px;
+      margin-top: 1rem; font-weight: 600;
+    }
+
+    .msg-erro {
+      display: none; background: #fee2e2; color: #991b1b;
+      padding: 1rem; border-radius: 8px;
+      margin-top: 1rem; font-weight: 600;
+    }
 
     footer {
       text-align: center; padding: 2rem;
@@ -191,6 +218,28 @@
     }
 
     footer span { color: #1a56db; }
+
+    .social-links {
+      display: flex; justify-content: center; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .social-links a {
+      color: #fff; background: #1a56db;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      font-size: 1.3rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .social-links a:hover {
+      background: #1340a8;
+      transform: scale(1.15);
+      cursor: pointer;
+    }
+
     .ativo { color: #1a56db !important; }
   </style>
 </head>
@@ -207,9 +256,10 @@
     </ul>
   </nav>
 
+  <!-- INÍCIO -->
   <section id="inicio">
     <div>
-      <div class="hero-avatar">CF</div>
+      <img src="foto-perfil.jpeg" alt="Foto de Clodoaldo Fernandes" class="hero-avatar-img">
       <h1>Olá, sou <span>Clodoaldo Fernandes</span></h1>
       <p>Corretor de Imóveis · CRECI 14.464-F · João Pessoa/PB</p>
       <p>Estudante de Análise e Desenvolvimento de Sistemas</p>
@@ -218,10 +268,16 @@
         <span class="badge">💻 Desenvolvedor em formação</span>
         <span class="badge">📍 Paraíba</span>
       </div>
-      <a href="#sobre" class="btn">Conheça meu trabalho</a>
+      <div class="hero-buttons">
+        <a href="#sobre" class="btn">Conheça meu trabalho</a>
+        <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" class="btn-outline">
+          📷 Siga no Instagram
+        </a>
+      </div>
     </div>
   </section>
 
+  <!-- SOBRE -->
   <section id="sobre">
     <h2 class="section-title">Sobre mim</h2>
     <div class="section-line"></div>
@@ -270,6 +326,7 @@
     </div>
   </section>
 
+  <!-- SERVIÇOS -->
   <section id="servicos">
     <h2 class="section-title">Serviços</h2>
     <div class="section-line"></div>
@@ -302,6 +359,7 @@
     </div>
   </section>
 
+  <!-- PORTFÓLIO -->
   <section id="portfolio">
     <h2 class="section-title">Portfólio</h2>
     <div class="section-line"></div>
@@ -344,38 +402,77 @@
     </div>
   </section>
 
-  <section id="contato">
-    <div>
+  <!-- CONTATO -->
+  <section>
+    <div id="contato">
       <h2 class="section-title">Contato</h2>
       <div class="section-line"></div>
-      
-      <form action="https://formsubmit.co/clodoaldo.fernandes@gmail.com" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        
+      <form id="formContato">
         <div class="form-group">
-          <label for="nome">Nome</label>
-          <input type="text" name="Nome" id="nome" placeholder="Seu nome completo" required>
+          <label>Nome</label>
+          <input type="text" name="nome" id="nome" placeholder="Seu nome completo" required>
         </div>
         <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="email" name="Email" id="email" placeholder="seu@email.com" required>
+          <label>E-mail</label>
+          <input type="email" name="email" id="email" placeholder="seu@email.com" required>
         </div>
         <div class="form-group">
-          <label for="mensagem">Mensagem</label>
-          <textarea name="Mensagem" id="mensagem" placeholder="Como posso te ajudar?" required></textarea>
+          <label>Mensagem</label>
+          <textarea name="mensagem" id="mensagem" placeholder="Como posso te ajudar?" required></textarea>
         </div>
-        <button type="submit" class="btn-enviar">Enviar mensagem</button>
+        <button type="submit" class="btn-enviar" id="btnEnviar">Enviar mensagem</button>
+        <div class="msg-sucesso" id="msgSucesso">
+          ✅ Mensagem enviada com sucesso! Entrarei em contato em breve.
+        </div>
+        <div class="msg-erro" id="msgErro">
+          ⚠️ Algo deu errado. Tente novamente ou me chame no Instagram.
+        </div>
       </form>
-
     </div>
   </section>
 
   <footer>
-    <p>© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
+    <div class="social-links">
+      <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+    </div>
+    <p>@clodoaldofernandesimóveis</p>
+    <p style="margin-top:0.5rem;">© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
   </footer>
 
   <script>
+    const form = document.getElementById('formContato');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const msgSucesso = document.getElementById('msgSucesso');
+    const msgErro = document.getElementById('msgErro');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      msgSucesso.style.display = 'none';
+      msgErro.style.display = 'none';
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      try {
+        const response = await fetch('https://formspree.io/f/xrewalpk', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+
+        if (response.ok) {
+          msgSucesso.style.display = 'block';
+          form.reset();
+        } else {
+          msgErro.style.display = 'block';
+        }
+      } catch (error) {
+        msgErro.style.display = 'block';
+      }
+
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar mensagem';
+    });
+
     const links = document.querySelectorAll('nav ul a');
     window.addEventListener('scroll', () => {
       const secoes = ['inicio', 'sobre', 'servicos', 'portfolio', 'contato'];
