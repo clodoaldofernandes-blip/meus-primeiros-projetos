@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clodoaldo Fernandes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -201,22 +202,14 @@
       margin-right: 0.4rem; margin-bottom: 0.4rem;
     }
 
-    .proj-card.destaque {
-      border: 2px solid #1a56db;
-    }
-
-    .proj-card.destaque .proj-header {
-      background: #111;
-    }
+    .proj-card.destaque { border: 2px solid #1a56db; }
+    .proj-card.destaque .proj-header { background: #111; }
 
     .selo {
       display: inline-block;
-      background: #fde68a;
-      color: #92400e;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
+      background: #fde68a; color: #92400e;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 0.2rem 0.6rem; border-radius: 999px;
       margin-bottom: 0.5rem;
     }
 
@@ -276,18 +269,19 @@
     }
 
     .social-links a {
-      color: #fff; background: #1a56db;
+      color: #fff;
       width: 44px; height: 44px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       text-decoration: none;
       font-size: 1.3rem;
-      transition: background 0.2s, transform 0.2s;
+      transition: transform 0.2s, opacity 0.2s;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     }
 
     .social-links a:hover {
-      background: #1340a8;
       transform: scale(1.15);
+      opacity: 0.9;
       cursor: pointer;
     }
 
@@ -323,7 +317,7 @@
       <div class="hero-buttons">
         <a href="#sobre" class="btn">Conheça meu trabalho</a>
         <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" class="btn-outline">
-          📷 Siga no Instagram
+          <i class="fa-brands fa-instagram"></i> Siga no Instagram
         </a>
       </div>
     </div>
@@ -514,7 +508,9 @@
 
   <footer>
     <div class="social-links">
-      <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+      <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
     </div>
     <p>@clodoaldofernandesimóveis</p>
     <p style="margin-top:0.5rem;">© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
