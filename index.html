@@ -22,7 +22,6 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -32,7 +31,6 @@
       line-height: 1.6;
     }
 
-    /* ── NAVBAR ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -83,7 +81,6 @@
     nav ul a.ativo { color: var(--azul); }
     nav ul a.ativo::after { width: 100%; }
 
-    /* ── HERO ── */
     #inicio {
       min-height: 100vh;
       display: flex;
@@ -195,7 +192,6 @@
       transform: translateY(-2px);
     }
 
-    /* ── SEÇÕES ── */
     .section-wrap {
       padding: 5rem 2rem;
       max-width: 1000px;
@@ -217,7 +213,6 @@
       margin-bottom: 2.5rem;
     }
 
-    /* ── REVEAL ANIMATION ── */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -229,7 +224,6 @@
       transform: translateY(0);
     }
 
-    /* ── SOBRE ── */
     #sobre { background: var(--branco); }
 
     .sobre-grid {
@@ -268,7 +262,6 @@
       margin-bottom: 0.25rem;
     }
 
-    /* ── TAGS ── */
     .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
 
     .tag {
@@ -281,10 +274,7 @@
       font-weight: 600;
     }
 
-    /* ── SERVIÇOS ── */
     #servicos { background: var(--cinza-fundo); }
-
-    #servicos .section-wrap { max-width: 1000px; }
 
     .cards-grid {
       display: grid;
@@ -338,7 +328,6 @@
       font-size: 0.88rem; color: #666; line-height: 1.6;
     }
 
-    /* ── PORTFÓLIO ── */
     #portfolio { background: var(--branco); }
 
     .portfolio-grid {
@@ -396,7 +385,24 @@
       letter-spacing: 0.3px;
     }
 
-    /* ── CONTATO ── */
+    .proj-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.25rem;
+      background: var(--azul);
+      color: var(--branco);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .proj-link:hover {
+      background: var(--azul-escuro);
+      transform: translateY(-1px);
+    }
+
     #contato { background: var(--cinza-fundo); }
 
     .contato-inner {
@@ -496,7 +502,6 @@
       border-left: 4px solid #e53e3e;
     }
 
-    /* ── FOOTER ── */
     footer {
       text-align: center;
       padding: 2.5rem 2rem;
@@ -521,16 +526,9 @@
       transition: transform var(--transition), opacity var(--transition);
     }
 
-    .social-links a.insta-link {
-      background: var(--instagram);
-    }
+    .social-links a.insta-link { background: var(--instagram); }
+    .social-links a:hover { transform: scale(1.15); opacity: 0.9; }
 
-    .social-links a:hover {
-      transform: scale(1.15);
-      opacity: 0.9;
-    }
-
-    /* ── ANIMAÇÕES ── */
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -716,11 +714,13 @@
             <h3>Calculadora de Imóveis</h3>
           </div>
           <div class="proj-body">
-            <p>Ferramenta para calcular financiamentos, rentabilidade e comparar imóveis. Em desenvolvimento.</p>
+            <p>Simule financiamentos pelo sistema SAC ou PRICE com tabela completa de amortização.</p>
             <div class="tags">
               <span class="tag">JavaScript</span>
-              <span class="tag">Em breve</span>
+              <span class="tag">SAC</span>
+              <span class="tag">PRICE</span>
             </div>
+            <a href="calculadora.html" class="proj-link">Acessar calculadora →</a>
           </div>
         </div>
 
@@ -796,13 +796,11 @@
   </footer>
 
   <script>
-    // Navbar sombra ao rolar
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 20);
     });
 
-    // Link ativo no menu
     const navLinks = document.querySelectorAll('nav ul a');
     window.addEventListener('scroll', () => {
       const secoes = ['inicio','sobre','servicos','portfolio','contato'];
@@ -816,7 +814,6 @@
       });
     });
 
-    // Animação de entrada ao rolar (Intersection Observer)
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
@@ -829,7 +826,6 @@
 
     reveals.forEach(el => observer.observe(el));
 
-    // Formulário com validação
     const form = document.getElementById('formContato');
     const btnEnviar = document.getElementById('btnEnviar');
     const msgSucesso = document.getElementById('msgSucesso');

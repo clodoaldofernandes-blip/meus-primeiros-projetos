@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Financiamento — Clodoaldo Fernandes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #1a56db;
+      --azul-escuro: #1340a8;
+      --azul-claro: #e8f0fe;
+      --cinza-borda: #e5e7eb;
+      --cinza-texto: #555;
+      --cinza-fundo: #f8faff;
+      --preto: #111;
+      --branco: #fff;
+      --radius: 14px;
+      --sombra: 0 8px 32px rgba(26,86,219,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #eef3ff 0%, #fff 60%);
+      min-height: 100vh;
+      color: #222;
+    }
+
+    header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--cinza-borda);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--azul);
+    }
+
+    header a {
+      color: var(--azul);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: opacity 0.2s;
+    }
+
+    header a:hover { opacity: 0.7; }
+
+    .container {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .page-title h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-title h1 span { color: var(--azul); }
+
+    .page-title p {
+      color: var(--cinza-texto);
+      font-size: 0.95rem;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .calc-grid { grid-template-columns: 1fr; }
+      .page-title h1 { font-size: 1.5rem; }
+    }
+
+    .card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--preto);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group label span {
+      color: var(--cinza-texto);
+      font-weight: 400;
+    }
+
+    .input-prefix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .prefix {
+      position: absolute;
+      left: 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--cinza-texto);
+      pointer-events: none;
+    }
+
+    .form-group input[type="number"],
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 9px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      background: #fafafa;
+      appearance: none;
+    }
+
+    .form-group input[type="number"]:focus,
+    .form-group select:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+      background: var(--branco);
+    }
+
+    .form-group input.sem-prefixo {
+      padding-left: 1rem;
+    }
+
+    .range-wrap {
+      margin-top: 0.5rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--azul);
+      cursor: pointer;
+      height: 4px;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--cinza-texto);
+      margin-top: 0.25rem;
+    }
+
+    .btn-calcular {
+      width: 100%;
+      background: var(--azul);
+      color: var(--branco);
+      border: none;
+      padding: 0.9rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+      font-family: inherit;
+    }
+
+    .btn-calcular:hover {
+      background: var(--azul-escuro);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,86,219,0.4);
+    }
+
+    .btn-limpar {
+      width: 100%;
+      background: transparent;
+      color: var(--cinza-texto);
+      border: 1.5px solid var(--cinza-borda);
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      transition: border-color 0.2s, color 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-limpar:hover {
+      border-color: var(--azul);
+      color: var(--azul);
+    }
+
+    /* RESULTADO */
+    .resultado-card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .resultado-card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--preto);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resultado-vazio {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #aaa;
+      padding: 2rem 0;
+    }
+
+    .resultado-vazio .icone { font-size: 3rem; margin-bottom: 0.75rem; }
+    .resultado-vazio p { font-size: 0.9rem; line-height: 1.6; }
+
+    .resultado-valores { display: none; }
+
+    .resultado-principal {
+      background: var(--azul);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--branco);
+    }
+
+    .resultado-principal .label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      opacity: 0.85;
+      margin-bottom: 0.4rem;
+    }
+
+    .resultado-principal .valor {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .resultado-principal .sub {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 0.3rem;
+    }
+
+    .resultado-linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--cinza-borda);
+      font-size: 0.9rem;
+    }
+
+    .resultado-linha:last-child { border-bottom: none; }
+
+    .resultado-linha .nome { color: var(--cinza-texto); }
+
+    .resultado-linha .numero {
+      font-weight: 700;
+      color: var(--preto);
+    }
+
+    .resultado-linha .numero.destaque { color: var(--azul); }
+    .resultado-linha .numero.alerta { color: #e53e3e; }
+
+    .aviso {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: #92400e;
+      line-height: 1.5;
+    }
+
+    /* TABELA */
+    .tabela-wrap {
+      margin-top: 1.5rem;
+      background: var(--branco);
+      border-radius: var(--radius);
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+      overflow: hidden;
+      display: none;
+    }
+
+    .tabela-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--cinza-borda);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tabela-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .tabela-header span {
+      font-size: 0.82rem;
+      color: var(--cinza-texto);
+    }
+
+    .tabela-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: var(--cinza-fundo);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: #333;
+      border-bottom: 1px solid var(--cinza-borda);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #f3f4f6;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fafb; }
+
+    td.parcela-num { color: var(--cinza-texto); font-size: 0.8rem; }
+    td.juros-col { color: #e53e3e; }
+    td.amort-col { color: #059669; }
+    td.saldo-col { color: var(--azul); font-weight: 600; }
+
+    .rodape-calc {
+      text-align: center;
+      margin-top: 2rem;
+      padding-bottom: 3rem;
+    }
+
+    .rodape-calc a {
+      color: var(--azul);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .rodape-calc a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">CF</div>
+    <a href="index.html">← Voltar ao site</a>
+  </header>
+
+  <div class="container">
+
+    <div class="page-title">
+      <h1>🏠 Calculadora de <span>Financiamento</span></h1>
+      <p>Simule seu financiamento imobiliário pelo sistema SAC ou PRICE</p>
+    </div>
+
+    <div class="calc-grid">
+
+      <!-- FORMULÁRIO -->
+      <div class="card">
+        <h2>📋 Dados do financiamento</h2>
+
+        <div class="form-group">
+          <label>Valor do imóvel <span>(R$)</span></label>
+          <div class="input-prefix">
+            <span class="prefix">R$</span>
+            <input type="number" id="valorImovel" placeholder="300.000" min="10000" step="1000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Entrada <span>(R$)</span></label>
+          <div class="input-prefix">
+            <span class="prefix">R$</span>
+            <input type="number" id="entrada" placeholder="60.000" min="0" step="1000">
+          </div>
+          <div class="range-wrap">
+            <input type="range" id="entradaRange" min="0" max="90" value="20" step="5">
+            <div class="range-labels">
+              <span>0%</span>
+              <span id="entradaPct">20%</span>
+              <span>90%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Prazo <span>(meses)</span></label>
+          <div class="input-prefix">
+            <span class="prefix" style="font-size:0.75rem;">mês</span>
+            <input type="number" id="prazo" placeholder="360" min="12" max="420" step="12" class="sem-prefixo" style="padding-left:3rem;">
+          </div>
+          <div class="range-wrap">
+            <input type="range" id="prazoRange" min="12" max="420" value="360" step="12">
+            <div class="range-labels">
+              <span>1 ano</span>
+              <span id="prazoAnos">30 anos</span>
+              <span>35 anos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Taxa de juros <span>(% ao mês)</span></label>
+          <div class="input-prefix">
+            <span class="prefix">%</span>
+            <input type="number" id="taxa" placeholder="0.65" min="0.1" max="5" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Sistema de amortização</label>
+          <div class="input-prefix">
+            <select id="sistema" class="sem-prefixo" style="padding-left:1rem;">
+              <option value="sac">SAC — parcelas decrescentes</option>
+              <option value="price">PRICE — parcelas fixas</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-calcular" onclick="calcular()">Calcular financiamento</button>
+        <button class="btn-limpar" onclick="limpar()">Limpar</button>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="resultado-card" id="resultadoCard">
+        <h2>📊 Resultado</h2>
+
+        <div class="resultado-vazio" id="resultadoVazio">
+          <div class="icone">🏡</div>
+          <p>Preencha os dados ao lado e clique em <strong>Calcular</strong> para ver a simulação.</p>
+        </div>
+
+        <div class="resultado-valores" id="resultadoValores">
+
+          <div class="resultado-principal" id="parcelaPrincipal">
+            <div class="label">1ª parcela</div>
+            <div class="valor" id="valorParcela">R$ 0,00</div>
+            <div class="sub" id="subParcela"></div>
+          </div>
+
+          <div class="resultado-linha">
+            <span class="nome">Valor do imóvel</span>
+            <span class="numero" id="resImovel">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Entrada</span>
+            <span class="numero" id="resEntrada">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Valor financiado</span>
+            <span class="numero destaque" id="resFinanciado">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Total de juros</span>
+            <span class="numero alerta" id="resJuros">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Total a pagar</span>
+            <span class="numero" id="resTotal">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Prazo</span>
+            <span class="numero" id="resPrazo">—</span>
+          </div>
+          <div class="resultado-linha">
+            <span class="nome">Sistema</span>
+            <span class="numero" id="resSistema">—</span>
+          </div>
+
+          <div class="aviso">
+            ⚠️ Simulação com fins educativos. Consulte seu corretor ou banco para valores exatos com seguros e taxas administrativas.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABELA DE AMORTIZAÇÃO -->
+    <div class="tabela-wrap" id="tabelaWrap">
+      <div class="tabela-header">
+        <h2>📅 Tabela de amortização</h2>
+        <span id="tabelaInfo"></span>
+      </div>
+      <div class="tabela-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Parcela</th>
+              <th>Valor (R$)</th>
+              <th>Juros (R$)</th>
+              <th>Amortização (R$)</th>
+              <th>Saldo devedor (R$)</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rodape-calc">
+      <a href="index.html">← Voltar ao site de Clodoaldo Fernandes</a>
+    </div>
+
+  </div>
+
+  <script>
+    const fmt = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Sincroniza range de entrada com valor do imóvel
+    document.getElementById('entradaRange').addEventListener('input', function() {
+      const pct = +this.value;
+      document.getElementById('entradaPct').textContent = pct + '%';
+      const imovel = +document.getElementById('valorImovel').value || 0;
+      if (imovel > 0) {
+        document.getElementById('entrada').value = (imovel * pct / 100).toFixed(0);
+      }
+    });
+
+    document.getElementById('valorImovel').addEventListener('input', function() {
+      const pct = +document.getElementById('entradaRange').value;
+      const imovel = +this.value || 0;
+      if (imovel > 0) {
+        document.getElementById('entrada').value = (imovel * pct / 100).toFixed(0);
+      }
+    });
+
+    // Sincroniza range de prazo
+    document.getElementById('prazoRange').addEventListener('input', function() {
+      const meses = +this.value;
+      document.getElementById('prazo').value = meses;
+      document.getElementById('prazoAnos').textContent = (meses / 12).toFixed(0) + ' anos';
+    });
+
+    document.getElementById('prazo').addEventListener('input', function() {
+      const meses = +this.value || 360;
+      document.getElementById('prazoRange').value = meses;
+      document.getElementById('prazoAnos').textContent = (meses / 12).toFixed(0) + ' anos';
+    });
+
+    function calcular() {
+      const imovel = +document.getElementById('valorImovel').value;
+      const entrada = +document.getElementById('entrada').value || 0;
+      const prazo = +document.getElementById('prazo').value;
+      const taxa = +document.getElementById('taxa').value / 100;
+      const sistema = document.getElementById('sistema').value;
+
+      if (!imovel || imovel <= 0) { alert('Informe o valor do imóvel.'); return; }
+      if (!prazo || prazo < 12) { alert('Informe o prazo (mínimo 12 meses).'); return; }
+      if (!taxa || taxa <= 0) { alert('Informe a taxa de juros.'); return; }
+      if (entrada >= imovel) { alert('A entrada não pode ser maior ou igual ao valor do imóvel.'); return; }
+
+      const financiado = imovel - entrada;
+      let parcelas = [];
+      let totalJuros = 0;
+
+      if (sistema === 'sac') {
+        const amort = financiado / prazo;
+        let saldo = financiado;
+        for (let i = 1; i <= prazo; i++) {
+          const juros = saldo * taxa;
+          const parcela = amort + juros;
+          totalJuros += juros;
+          saldo -= amort;
+          parcelas.push({ n: i, parcela, juros, amort, saldo: Math.max(saldo, 0) });
+        }
+      } else {
+        // PRICE
+        const parcela = financiado * (taxa * Math.pow(1 + taxa, prazo)) / (Math.pow(1 + taxa, prazo) - 1);
+        let saldo = financiado;
+        for (let i = 1; i <= prazo; i++) {
+          const juros = saldo * taxa;
+          const amort = parcela - juros;
+          totalJuros += juros;
+          saldo -= amort;
+          parcelas.push({ n: i, parcela, juros, amort, saldo: Math.max(saldo, 0) });
+        }
+      }
+
+      const totalPagar = financiado + totalJuros;
+      const primeiraParcela = parcelas[0].parcela;
+
+      // Exibe resultado
+      document.getElementById('resultadoVazio').style.display = 'none';
+      document.getElementById('resultadoValores').style.display = 'block';
+
+      document.getElementById('valorParcela').textContent = 'R$ ' + fmt(primeiraParcela);
+      document.getElementById('subParcela').textContent = sistema === 'sac'
+        ? 'Última parcela: R$ ' + fmt(parcelas[parcelas.length - 1].parcela)
+        : 'Parcela fixa durante todo o período';
+
+      document.getElementById('resImovel').textContent = 'R$ ' + fmt(imovel);
+      document.getElementById('resEntrada').textContent = 'R$ ' + fmt(entrada) + ' (' + ((entrada/imovel)*100).toFixed(0) + '%)';
+      document.getElementById('resFinanciado').textContent = 'R$ ' + fmt(financiado);
+      document.getElementById('resJuros').textContent = 'R$ ' + fmt(totalJuros);
+      document.getElementById('resTotal').textContent = 'R$ ' + fmt(totalPagar);
+      document.getElementById('resPrazo').textContent = prazo + ' meses (' + (prazo/12).toFixed(0) + ' anos)';
+      document.getElementById('resSistema').textContent = sistema === 'sac' ? 'SAC' : 'PRICE (Tabela Price)';
+
+      // Tabela de amortização
+      const tbody = document.getElementById('tabelaBody');
+      tbody.innerHTML = '';
+      parcelas.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="parcela-num">${p.n}º</td>
+          <td><strong>R$ ${fmt(p.parcela)}</strong></td>
+          <td class="juros-col">R$ ${fmt(p.juros)}</td>
+          <td class="amort-col">R$ ${fmt(p.amort)}</td>
+          <td class="saldo-col">R$ ${fmt(p.saldo)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('tabelaInfo').textContent = prazo + ' parcelas';
+      document.getElementById('tabelaWrap').style.display = 'block';
+
+      document.getElementById('tabelaWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function limpar() {
+      document.getElementById('valorImovel').value = '';
+      document.getElementById('entrada').value = '';
+      document.getElementById('prazo').value = '';
+      document.getElementById('taxa').value = '';
+      document.getElementById('sistema').value = 'sac';
+      document.getElementById('entradaRange').value = 20;
+      document.getElementById('entradaPct').textContent = '20%';
+      document.getElementById('prazoRange').value = 360;
+      document.getElementById('prazoAnos').textContent = '30 anos';
+      document.getElementById('resultadoVazio').style.display = 'flex';
+      document.getElementById('resultadoValores').style.display = 'none';
+      document.getElementById('tabelaWrap').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
