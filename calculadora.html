@@ -17,6 +17,8 @@
       --branco: #fff;
       --radius: 14px;
       --sombra: 0 8px 32px rgba(26,86,219,0.12);
+      --verde: #059669;
+      --vermelho: #e53e3e;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,29 +40,22 @@
       align-items: center;
     }
 
-    .logo {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--azul);
-    }
+    .logo { font-size: 1.2rem; font-weight: 800; color: var(--azul); }
 
     header a {
       color: var(--azul);
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
       transition: opacity 0.2s;
     }
 
     header a:hover { opacity: 0.7; }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 3rem auto;
-      padding: 0 1.5rem;
+      padding: 0 1.5rem 3rem;
     }
 
     .page-title {
@@ -76,11 +71,7 @@
     }
 
     .page-title h1 span { color: var(--azul); }
-
-    .page-title p {
-      color: var(--cinza-texto);
-      font-size: 0.95rem;
-    }
+    .page-title p { color: var(--cinza-texto); font-size: 0.95rem; }
 
     .calc-grid {
       display: grid;
@@ -88,9 +79,11 @@
       gap: 1.5rem;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 660px) {
       .calc-grid { grid-template-columns: 1fr; }
+      .tabelas-grid { grid-template-columns: 1fr !important; }
       .page-title h1 { font-size: 1.5rem; }
+      .parcelas-grid { grid-template-columns: 1fr !important; }
     }
 
     .card {
@@ -102,25 +95,35 @@
     }
 
     .card h2 {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       margin-bottom: 1.5rem;
       color: var(--preto);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
-    .form-group {
-      margin-bottom: 1.25rem;
+    .separador {
+      border: none;
+      border-top: 1px dashed var(--cinza-borda);
+      margin: 1.25rem 0;
     }
+
+    .subsecao {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--azul);
+      margin-bottom: 1rem;
+    }
+
+    .form-group { margin-bottom: 1.1rem; }
 
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       font-weight: 600;
       color: #333;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .form-group label span {
@@ -128,7 +131,7 @@
       font-weight: 400;
     }
 
-    .input-prefix {
+    .input-wrap {
       position: relative;
       display: flex;
       align-items: center;
@@ -137,19 +140,21 @@
     .prefix {
       position: absolute;
       left: 0.85rem;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--cinza-texto);
       pointer-events: none;
+      z-index: 1;
     }
 
+    .form-group input[type="text"],
     .form-group input[type="number"],
     .form-group select {
       width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      padding: 0.72rem 1rem 0.72rem 2.4rem;
       border: 1.5px solid var(--cinza-borda);
       border-radius: 9px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;
       outline: none;
@@ -157,20 +162,50 @@
       appearance: none;
     }
 
-    .form-group input[type="number"]:focus,
+    .form-group input.sem-prefix,
+    .form-group select.sem-prefix {
+      padding-left: 1rem;
+    }
+
+    .form-group input:focus,
     .form-group select:focus {
       border-color: var(--azul);
       box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
       background: var(--branco);
     }
 
-    .form-group input.sem-prefixo {
-      padding-left: 1rem;
+    .radio-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
     }
 
-    .range-wrap {
-      margin-top: 0.5rem;
+    .radio-option {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cinza-texto);
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      user-select: none;
     }
+
+    .radio-option input { display: none; }
+
+    .radio-option.selecionado {
+      border-color: var(--azul);
+      color: var(--azul);
+      background: var(--azul-claro);
+    }
+
+    .range-wrap { margin-top: 0.4rem; }
 
     input[type="range"] {
       width: 100%;
@@ -182,9 +217,9 @@
     .range-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--cinza-texto);
-      margin-top: 0.25rem;
+      margin-top: 0.2rem;
     }
 
     .btn-calcular {
@@ -197,7 +232,7 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
       transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 4px 14px rgba(26,86,219,0.3);
       font-family: inherit;
@@ -209,27 +244,44 @@
       box-shadow: 0 6px 20px rgba(26,86,219,0.4);
     }
 
+    .btn-imprimir {
+      width: 100%;
+      background: #0f172a;
+      color: var(--branco);
+      border: none;
+      padding: 0.9rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.6rem;
+      transition: background 0.2s, transform 0.2s;
+      font-family: inherit;
+      display: none;
+    }
+
+    .btn-imprimir:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+    }
+
     .btn-limpar {
       width: 100%;
       background: transparent;
       color: var(--cinza-texto);
       border: 1.5px solid var(--cinza-borda);
-      padding: 0.75rem;
+      padding: 0.72rem;
       border-radius: 10px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 0.75rem;
+      margin-top: 0.6rem;
       transition: border-color 0.2s, color 0.2s;
       font-family: inherit;
     }
 
-    .btn-limpar:hover {
-      border-color: var(--azul);
-      color: var(--azul);
-    }
+    .btn-limpar:hover { border-color: var(--azul); color: var(--azul); }
 
-    /* RESULTADO */
     .resultado-card {
       background: var(--branco);
       border-radius: var(--radius);
@@ -238,16 +290,13 @@
       border: 1px solid var(--cinza-borda);
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .resultado-card h2 {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--preto);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     .resultado-vazio {
@@ -257,122 +306,156 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: #aaa;
+      color: #bbb;
       padding: 2rem 0;
     }
 
-    .resultado-vazio .icone { font-size: 3rem; margin-bottom: 0.75rem; }
-    .resultado-vazio p { font-size: 0.9rem; line-height: 1.6; }
+    .resultado-vazio .icone { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .resultado-vazio p { font-size: 0.88rem; line-height: 1.6; }
 
-    .resultado-valores { display: none; }
+    .resultado-valores { display: none; flex-direction: column; gap: 0.75rem; }
 
-    .resultado-principal {
-      background: var(--azul);
+    .parcelas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .parcela-box {
       border-radius: 10px;
-      padding: 1.5rem;
+      padding: 1rem;
       text-align: center;
       color: var(--branco);
     }
 
-    .resultado-principal .label {
-      font-size: 0.82rem;
-      font-weight: 500;
-      opacity: 0.85;
-      margin-bottom: 0.4rem;
+    .parcela-box.sac { background: var(--azul); }
+    .parcela-box.price { background: #0f172a; }
+
+    .parcela-box .sistema-nome {
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.8;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .resultado-principal .valor {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+    .parcela-box .label { font-size: 0.72rem; opacity: 0.75; margin-bottom: 0.2rem; }
+    .parcela-box .valor { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+    .parcela-box .sub { font-size: 0.68rem; opacity: 0.75; margin-top: 0.2rem; }
+
+    .subsidio-box {
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
     }
 
-    .resultado-principal .sub {
-      font-size: 0.8rem;
-      opacity: 0.75;
-      margin-top: 0.3rem;
-    }
+    .subsidio-box .titulo { font-size: 0.78rem; font-weight: 700; color: #065f46; margin-bottom: 0.4rem; }
+    .subsidio-box .valor { font-size: 1.5rem; font-weight: 800; color: #059669; }
+    .subsidio-box .obs { font-size: 0.72rem; color: #065f46; margin-top: 0.3rem; }
 
     .resultado-linha {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--cinza-borda);
-      font-size: 0.9rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.87rem;
     }
 
     .resultado-linha:last-child { border-bottom: none; }
-
     .resultado-linha .nome { color: var(--cinza-texto); }
+    .resultado-linha .numero { font-weight: 700; color: var(--preto); }
+    .resultado-linha .numero.destaque { color: var(--azul); }
+    .resultado-linha .numero.verde { color: var(--verde); }
+    .resultado-linha .numero.alerta { color: var(--vermelho); }
 
-    .resultado-linha .numero {
-      font-weight: 700;
-      color: var(--preto);
+    .comparativo {
+      background: var(--cinza-fundo);
+      border-radius: 10px;
+      padding: 1rem;
+      border: 1px solid var(--cinza-borda);
     }
 
-    .resultado-linha .numero.destaque { color: var(--azul); }
-    .resultado-linha .numero.alerta { color: #e53e3e; }
+    .comparativo .titulo { font-size: 0.78rem; font-weight: 700; color: #333; margin-bottom: 0.75rem; }
+
+    .comp-linha {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .comp-linha .item { text-align: center; }
+    .comp-linha .item.label-col { text-align: left; color: var(--cinza-texto); }
+    .comp-linha .item.sac-col { color: var(--azul); font-weight: 700; }
+    .comp-linha .item.price-col { color: #0f172a; font-weight: 700; }
+    .comp-linha.header .item { font-weight: 700; color: #333; border-bottom: 1px solid var(--cinza-borda); padding-bottom: 0.3rem; margin-bottom: 0.3rem; }
 
     .aviso {
       background: #fffbeb;
       border: 1px solid #fde68a;
       border-radius: 8px;
       padding: 0.75rem 1rem;
-      font-size: 0.8rem;
+      font-size: 0.77rem;
       color: #92400e;
       line-height: 1.5;
     }
 
-    /* TABELA */
-    .tabela-wrap {
+    .tabelas-secao {
       margin-top: 1.5rem;
+      display: none;
+    }
+
+    .tabelas-titulo { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--preto); }
+
+    .tabelas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .tabela-wrap {
       background: var(--branco);
       border-radius: var(--radius);
       box-shadow: var(--sombra);
       border: 1px solid var(--cinza-borda);
       overflow: hidden;
-      display: none;
     }
 
     .tabela-header {
-      padding: 1.25rem 1.5rem;
+      padding: 0.9rem 1.25rem;
       border-bottom: 1px solid var(--cinza-borda);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .tabela-header h2 {
-      font-size: 1rem;
-      font-weight: 700;
-    }
+    .tabela-header h3 { font-size: 0.88rem; font-weight: 700; }
+    .tabela-header.sac h3 { color: var(--azul); }
+    .tabela-header.price h3 { color: #0f172a; }
+    .tabela-header span { font-size: 0.75rem; color: var(--cinza-texto); }
 
-    .tabela-header span {
-      font-size: 0.82rem;
-      color: var(--cinza-texto);
-    }
+    .tabela-scroll { overflow-x: auto; max-height: 400px; overflow-y: auto; }
 
-    .tabela-scroll { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
 
     th {
       background: var(--cinza-fundo);
-      padding: 0.75rem 1rem;
+      padding: 0.6rem 0.75rem;
       text-align: left;
       font-weight: 700;
       color: #333;
       border-bottom: 1px solid var(--cinza-borda);
       white-space: nowrap;
+      position: sticky;
+      top: 0;
     }
 
     td {
-      padding: 0.65rem 1rem;
+      padding: 0.5rem 0.75rem;
       border-bottom: 1px solid #f3f4f6;
       color: #444;
       white-space: nowrap;
@@ -381,25 +464,83 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #f9fafb; }
 
-    td.parcela-num { color: var(--cinza-texto); font-size: 0.8rem; }
-    td.juros-col { color: #e53e3e; }
-    td.amort-col { color: #059669; }
+    td.parcela-num { color: var(--cinza-texto); font-size: 0.75rem; }
+    td.juros-col { color: var(--vermelho); }
+    td.amort-col { color: var(--verde); }
     td.saldo-col { color: var(--azul); font-weight: 600; }
 
-    .rodape-calc {
-      text-align: center;
-      margin-top: 2rem;
-      padding-bottom: 3rem;
-    }
-
-    .rodape-calc a {
-      color: var(--azul);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
+    .rodape-calc { text-align: center; margin-top: 2rem; }
+    .rodape-calc a { color: var(--azul); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
     .rodape-calc a:hover { text-decoration: underline; }
+
+    /* ── CSS DE IMPRESSÃO ── */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { background: white !important; font-size: 11px; }
+
+      header, .card, .btn-calcular, .btn-limpar, .btn-imprimir, .rodape-calc { display: none !important; }
+
+      .container { margin: 0; padding: 0; max-width: 100%; }
+
+      .print-cabecalho { display: block !important; }
+
+      .calc-grid { display: none !important; }
+
+      .resultado-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem;
+        page-break-inside: avoid;
+      }
+
+      .resultado-valores { display: flex !important; }
+
+      .resultado-vazio { display: none !important; }
+
+      .parcelas-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+
+      .parcela-box.sac { background: #1a56db !important; color: white !important; }
+      .parcela-box.price { background: #0f172a !important; color: white !important; }
+
+      .subsidio-box { background: #d1fae5 !important; border: 1px solid #6ee7b7 !important; }
+
+      .tabelas-secao { display: block !important; margin-top: 1rem; }
+
+      .tabelas-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
+
+      .tabela-wrap {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+        page-break-inside: avoid;
+      }
+
+      .tabela-scroll { max-height: none !important; overflow: visible !important; }
+
+      .tabela-header.sac h3 { color: #1a56db !important; }
+      .tabela-header.price h3 { color: #0f172a !important; }
+
+      th { background: #f8faff !important; }
+
+      td.juros-col { color: #e53e3e !important; }
+      td.amort-col { color: #059669 !important; }
+      td.saldo-col { color: #1a56db !important; }
+
+      .comparativo { background: #f8faff !important; border: 1px solid #e5e7eb !important; }
+
+      .aviso { background: #fffbeb !important; border: 1px solid #fde68a !important; }
+
+      .comp-linha .item.sac-col { color: #1a56db !important; }
+      .comp-linha .item.price-col { color: #0f172a !important; }
+
+      .page-title { margin-bottom: 1rem; }
+      .page-title h1 { font-size: 1.4rem; }
+    }
   </style>
 </head>
 <body>
@@ -409,11 +550,28 @@
     <a href="index.html">← Voltar ao site</a>
   </header>
 
+  <!-- CABEÇALHO SÓ APARECE NA IMPRESSÃO -->
+  <div class="print-cabecalho" style="display:none; padding:1rem 0 0.5rem; border-bottom:2px solid #1a56db; margin-bottom:1rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:1.1rem; font-weight:800; color:#1a56db;">Clodoaldo Fernandes</div>
+        <div style="font-size:0.78rem; color:#555;">Corretor de Imóveis · CRECI 14.464-F · João Pessoa/PB</div>
+      </div>
+      <div style="text-align:right; font-size:0.75rem; color:#555;">
+        <div>Simulação de Financiamento Imobiliário</div>
+        <div id="dataImpressao"></div>
+      </div>
+    </div>
+    <div style="font-size:0.7rem; color:#aaa; margin-top:0.5rem;">
+      ⚠️ Simulação com fins educativos. Valores reais sujeitos à análise de crédito e aprovação da Caixa Econômica Federal.
+    </div>
+  </div>
+
   <div class="container">
 
     <div class="page-title">
       <h1>🏠 Calculadora de <span>Financiamento</span></h1>
-      <p>Simule seu financiamento imobiliário pelo sistema SAC ou PRICE</p>
+      <p>Simule pelo sistema SAC e PRICE com subsídio da Caixa Econômica Federal</p>
     </div>
 
     <div class="calc-grid">
@@ -422,19 +580,21 @@
       <div class="card">
         <h2>📋 Dados do financiamento</h2>
 
+        <p class="subsecao">Imóvel e entrada</p>
+
         <div class="form-group">
           <label>Valor do imóvel <span>(R$)</span></label>
-          <div class="input-prefix">
+          <div class="input-wrap">
             <span class="prefix">R$</span>
-            <input type="number" id="valorImovel" placeholder="300.000" min="10000" step="1000">
+            <input type="text" id="valorImovel" placeholder="300.000,00">
           </div>
         </div>
 
         <div class="form-group">
           <label>Entrada <span>(R$)</span></label>
-          <div class="input-prefix">
+          <div class="input-wrap">
             <span class="prefix">R$</span>
-            <input type="number" id="entrada" placeholder="60.000" min="0" step="1000">
+            <input type="text" id="entrada" placeholder="60.000,00">
           </div>
           <div class="range-wrap">
             <input type="range" id="entradaRange" min="0" max="90" value="20" step="5">
@@ -448,9 +608,8 @@
 
         <div class="form-group">
           <label>Prazo <span>(meses)</span></label>
-          <div class="input-prefix">
-            <span class="prefix" style="font-size:0.75rem;">mês</span>
-            <input type="number" id="prazo" placeholder="360" min="12" max="420" step="12" class="sem-prefixo" style="padding-left:3rem;">
+          <div class="input-wrap">
+            <input type="number" id="prazo" placeholder="360" min="12" max="420" step="12" class="sem-prefix">
           </div>
           <div class="range-wrap">
             <input type="range" id="prazoRange" min="12" max="420" value="360" step="12">
@@ -464,41 +623,82 @@
 
         <div class="form-group">
           <label>Taxa de juros <span>(% ao mês)</span></label>
-          <div class="input-prefix">
+          <div class="input-wrap">
             <span class="prefix">%</span>
-            <input type="number" id="taxa" placeholder="0.65" min="0.1" max="5" step="0.01">
+            <input type="text" id="taxa" placeholder="0,65">
+          </div>
+        </div>
+
+        <hr class="separador">
+        <p class="subsecao">🏦 Subsídio Caixa (opcional)</p>
+
+        <div class="form-group">
+          <label>Renda familiar bruta <span>(R$/mês)</span></label>
+          <div class="input-wrap">
+            <span class="prefix">R$</span>
+            <input type="text" id="renda" placeholder="3.000,00">
           </div>
         </div>
 
         <div class="form-group">
-          <label>Sistema de amortização</label>
-          <div class="input-prefix">
-            <select id="sistema" class="sem-prefixo" style="padding-left:1rem;">
-              <option value="sac">SAC — parcelas decrescentes</option>
-              <option value="price">PRICE — parcelas fixas</option>
-            </select>
+          <label>Possui dependentes?</label>
+          <div class="radio-group">
+            <label class="radio-option selecionado" id="labelDepSim">
+              <input type="radio" name="dependentes" value="sim" checked onchange="selecionarRadio('dep','Sim')"> ✓ Sim
+            </label>
+            <label class="radio-option" id="labelDepNao">
+              <input type="radio" name="dependentes" value="nao" onchange="selecionarRadio('dep','Nao')"> ✗ Não
+            </label>
           </div>
         </div>
 
-        <button class="btn-calcular" onclick="calcular()">Calcular financiamento</button>
-        <button class="btn-limpar" onclick="limpar()">Limpar</button>
+        <div class="form-group">
+          <label>FGTS com +3 anos de carteira assinada?</label>
+          <div class="radio-group">
+            <label class="radio-option selecionado" id="labelFgtsSim">
+              <input type="radio" name="fgts" value="sim" checked onchange="selecionarRadio('fgts','Sim')"> ✓ Sim
+            </label>
+            <label class="radio-option" id="labelFgtsNao">
+              <input type="radio" name="fgts" value="nao" onchange="selecionarRadio('fgts','Nao')"> ✗ Não
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-calcular" onclick="calcular()">Calcular SAC e PRICE</button>
+        <button class="btn-imprimir" id="btnImprimir" onclick="imprimir()">🖨️ Imprimir / Salvar PDF</button>
+        <button class="btn-limpar" onclick="limpar()">Limpar campos</button>
       </div>
 
       <!-- RESULTADO -->
-      <div class="resultado-card" id="resultadoCard">
+      <div class="resultado-card">
         <h2>📊 Resultado</h2>
 
         <div class="resultado-vazio" id="resultadoVazio">
           <div class="icone">🏡</div>
-          <p>Preencha os dados ao lado e clique em <strong>Calcular</strong> para ver a simulação.</p>
+          <p>Preencha os dados ao lado e clique em <strong>Calcular</strong> para ver a simulação com SAC e PRICE.</p>
         </div>
 
         <div class="resultado-valores" id="resultadoValores">
 
-          <div class="resultado-principal" id="parcelaPrincipal">
-            <div class="label">1ª parcela</div>
-            <div class="valor" id="valorParcela">R$ 0,00</div>
-            <div class="sub" id="subParcela"></div>
+          <div class="parcelas-grid">
+            <div class="parcela-box sac">
+              <div class="sistema-nome">SAC</div>
+              <div class="label">1ª parcela</div>
+              <div class="valor" id="parcelaSac">R$ 0,00</div>
+              <div class="sub" id="subSac"></div>
+            </div>
+            <div class="parcela-box price">
+              <div class="sistema-nome">PRICE</div>
+              <div class="label">Parcela fixa</div>
+              <div class="valor" id="parcelaPrice">R$ 0,00</div>
+              <div class="sub">Fixa durante todo período</div>
+            </div>
+          </div>
+
+          <div class="subsidio-box" id="subsidioBox" style="display:none;">
+            <div class="titulo">🎉 Subsídio estimado — Minha Casa Minha Vida</div>
+            <div class="valor" id="subsidioValor">R$ 0,00</div>
+            <div class="obs" id="subsidioObs"></div>
           </div>
 
           <div class="resultado-linha">
@@ -509,29 +709,45 @@
             <span class="nome">Entrada</span>
             <span class="numero" id="resEntrada">—</span>
           </div>
+          <div class="resultado-linha" id="linhaSubsidio" style="display:none;">
+            <span class="nome">Subsídio Caixa</span>
+            <span class="numero verde" id="resSubsidio">—</span>
+          </div>
           <div class="resultado-linha">
             <span class="nome">Valor financiado</span>
             <span class="numero destaque" id="resFinanciado">—</span>
           </div>
           <div class="resultado-linha">
-            <span class="nome">Total de juros</span>
-            <span class="numero alerta" id="resJuros">—</span>
-          </div>
-          <div class="resultado-linha">
-            <span class="nome">Total a pagar</span>
-            <span class="numero" id="resTotal">—</span>
-          </div>
-          <div class="resultado-linha">
             <span class="nome">Prazo</span>
             <span class="numero" id="resPrazo">—</span>
           </div>
-          <div class="resultado-linha">
-            <span class="nome">Sistema</span>
-            <span class="numero" id="resSistema">—</span>
+
+          <div class="comparativo">
+            <div class="titulo">📊 Comparativo SAC × PRICE</div>
+            <div class="comp-linha header">
+              <div class="item label-col"></div>
+              <div class="item">SAC</div>
+              <div class="item">PRICE</div>
+            </div>
+            <div class="comp-linha">
+              <div class="item label-col">Total juros</div>
+              <div class="item sac-col" id="compJurosSac">—</div>
+              <div class="item price-col" id="compJurosPrice">—</div>
+            </div>
+            <div class="comp-linha">
+              <div class="item label-col">Total a pagar</div>
+              <div class="item sac-col" id="compTotalSac">—</div>
+              <div class="item price-col" id="compTotalPrice">—</div>
+            </div>
+            <div class="comp-linha">
+              <div class="item label-col">Última parcela</div>
+              <div class="item sac-col" id="compUltSac">—</div>
+              <div class="item price-col" id="compUltPrice">—</div>
+            </div>
           </div>
 
           <div class="aviso">
-            ⚠️ Simulação com fins educativos. Consulte seu corretor ou banco para valores exatos com seguros e taxas administrativas.
+            ⚠️ Simulação educativa. O subsídio real depende de aprovação da Caixa. Consulte seu corretor para valores exatos.
           </div>
 
         </div>
@@ -539,25 +755,53 @@
 
     </div>
 
-    <!-- TABELA DE AMORTIZAÇÃO -->
-    <div class="tabela-wrap" id="tabelaWrap">
-      <div class="tabela-header">
-        <h2>📅 Tabela de amortização</h2>
-        <span id="tabelaInfo"></span>
-      </div>
-      <div class="tabela-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Parcela</th>
-              <th>Valor (R$)</th>
-              <th>Juros (R$)</th>
-              <th>Amortização (R$)</th>
-              <th>Saldo devedor (R$)</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaBody"></tbody>
-        </table>
+    <!-- TABELAS -->
+    <div class="tabelas-secao" id="tabelasSecao">
+      <p class="tabelas-titulo">📅 Tabelas de amortização — SAC e PRICE</p>
+      <div class="tabelas-grid">
+
+        <div class="tabela-wrap">
+          <div class="tabela-header sac">
+            <h3>Sistema SAC — Parcelas decrescentes</h3>
+            <span id="infoSac"></span>
+          </div>
+          <div class="tabela-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Parcela</th>
+                  <th>Juros</th>
+                  <th>Amort.</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaSacBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tabela-wrap">
+          <div class="tabela-header price">
+            <h3>PRICE — Parcelas fixas</h3>
+            <span id="infoPrice"></span>
+          </div>
+          <div class="tabela-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Parcela</th>
+                  <th>Juros</th>
+                  <th>Amort.</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaPriceBody"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -570,50 +814,52 @@
   <script>
     const fmt = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    // Sincroniza range de entrada com valor do imóvel
-    document.getElementById('entradaRange').addEventListener('input', function() {
-      const pct = +this.value;
-      document.getElementById('entradaPct').textContent = pct + '%';
-      const imovel = +document.getElementById('valorImovel').value || 0;
-      if (imovel > 0) {
-        document.getElementById('entrada').value = (imovel * pct / 100).toFixed(0);
+    function parseBR(str) {
+      if (!str) return 0;
+      const limpo = str.toString().replace(/\./g, '').replace(',', '.');
+      return parseFloat(limpo) || 0;
+    }
+
+    function selecionarRadio(grupo, valor) {
+      if (grupo === 'dep') {
+        document.getElementById('labelDepSim').classList.toggle('selecionado', valor === 'Sim');
+        document.getElementById('labelDepNao').classList.toggle('selecionado', valor === 'Nao');
+      } else {
+        document.getElementById('labelFgtsSim').classList.toggle('selecionado', valor === 'Sim');
+        document.getElementById('labelFgtsNao').classList.toggle('selecionado', valor === 'Nao');
       }
-    });
+    }
 
-    document.getElementById('valorImovel').addEventListener('input', function() {
-      const pct = +document.getElementById('entradaRange').value;
-      const imovel = +this.value || 0;
-      if (imovel > 0) {
-        document.getElementById('entrada').value = (imovel * pct / 100).toFixed(0);
+    function calcularSubsidio(renda, temDependente, temFgts, valorImovel) {
+      if (!renda || renda <= 0) return { valor: 0, obs: '' };
+      let subsidio = 0;
+      let obs = '';
+
+      if (renda <= 2000) {
+        subsidio = temDependente ? 55000 : 47500;
+        obs = 'Faixa 1 — renda até R$ 2.000';
+      } else if (renda <= 2640) {
+        subsidio = temDependente ? 52000 : 44000;
+        obs = 'Faixa 1,5 — renda até R$ 2.640';
+      } else if (renda <= 4400) {
+        subsidio = temDependente ? 47500 : 37500;
+        obs = 'Faixa 2 — renda até R$ 4.400';
+      } else if (renda <= 8000) {
+        return { valor: 0, obs: 'Faixa 3 — renda acima de R$ 4.400 (sem subsídio direto)' };
+      } else {
+        return { valor: 0, obs: 'Renda acima do limite do programa.' };
       }
-    });
 
-    // Sincroniza range de prazo
-    document.getElementById('prazoRange').addEventListener('input', function() {
-      const meses = +this.value;
-      document.getElementById('prazo').value = meses;
-      document.getElementById('prazoAnos').textContent = (meses / 12).toFixed(0) + ' anos';
-    });
+      if (temFgts && subsidio > 0) {
+        subsidio += subsidio * 0.08;
+        obs += ' + bônus FGTS com +3 anos (~8%)';
+      }
 
-    document.getElementById('prazo').addEventListener('input', function() {
-      const meses = +this.value || 360;
-      document.getElementById('prazoRange').value = meses;
-      document.getElementById('prazoAnos').textContent = (meses / 12).toFixed(0) + ' anos';
-    });
+      if (subsidio > valorImovel * 0.5) subsidio = valorImovel * 0.5;
+      return { valor: Math.round(subsidio), obs };
+    }
 
-    function calcular() {
-      const imovel = +document.getElementById('valorImovel').value;
-      const entrada = +document.getElementById('entrada').value || 0;
-      const prazo = +document.getElementById('prazo').value;
-      const taxa = +document.getElementById('taxa').value / 100;
-      const sistema = document.getElementById('sistema').value;
-
-      if (!imovel || imovel <= 0) { alert('Informe o valor do imóvel.'); return; }
-      if (!prazo || prazo < 12) { alert('Informe o prazo (mínimo 12 meses).'); return; }
-      if (!taxa || taxa <= 0) { alert('Informe a taxa de juros.'); return; }
-      if (entrada >= imovel) { alert('A entrada não pode ser maior ou igual ao valor do imóvel.'); return; }
-
-      const financiado = imovel - entrada;
+    function gerarParcelas(financiado, taxa, prazo, sistema) {
       let parcelas = [];
       let totalJuros = 0;
 
@@ -628,7 +874,6 @@
           parcelas.push({ n: i, parcela, juros, amort, saldo: Math.max(saldo, 0) });
         }
       } else {
-        // PRICE
         const parcela = financiado * (taxa * Math.pow(1 + taxa, prazo)) / (Math.pow(1 + taxa, prazo) - 1);
         let saldo = financiado;
         for (let i = 1; i <= prazo; i++) {
@@ -640,28 +885,11 @@
         }
       }
 
-      const totalPagar = financiado + totalJuros;
-      const primeiraParcela = parcelas[0].parcela;
+      return { parcelas, totalJuros };
+    }
 
-      // Exibe resultado
-      document.getElementById('resultadoVazio').style.display = 'none';
-      document.getElementById('resultadoValores').style.display = 'block';
-
-      document.getElementById('valorParcela').textContent = 'R$ ' + fmt(primeiraParcela);
-      document.getElementById('subParcela').textContent = sistema === 'sac'
-        ? 'Última parcela: R$ ' + fmt(parcelas[parcelas.length - 1].parcela)
-        : 'Parcela fixa durante todo o período';
-
-      document.getElementById('resImovel').textContent = 'R$ ' + fmt(imovel);
-      document.getElementById('resEntrada').textContent = 'R$ ' + fmt(entrada) + ' (' + ((entrada/imovel)*100).toFixed(0) + '%)';
-      document.getElementById('resFinanciado').textContent = 'R$ ' + fmt(financiado);
-      document.getElementById('resJuros').textContent = 'R$ ' + fmt(totalJuros);
-      document.getElementById('resTotal').textContent = 'R$ ' + fmt(totalPagar);
-      document.getElementById('resPrazo').textContent = prazo + ' meses (' + (prazo/12).toFixed(0) + ' anos)';
-      document.getElementById('resSistema').textContent = sistema === 'sac' ? 'SAC' : 'PRICE (Tabela Price)';
-
-      // Tabela de amortização
-      const tbody = document.getElementById('tabelaBody');
+    function preencherTabela(tbodyId, parcelas) {
+      const tbody = document.getElementById(tbodyId);
       tbody.innerHTML = '';
       parcelas.forEach(p => {
         const tr = document.createElement('tr');
@@ -674,26 +902,123 @@
         `;
         tbody.appendChild(tr);
       });
+    }
 
-      document.getElementById('tabelaInfo').textContent = prazo + ' parcelas';
-      document.getElementById('tabelaWrap').style.display = 'block';
+    document.getElementById('entradaRange').addEventListener('input', function() {
+      const pct = +this.value;
+      document.getElementById('entradaPct').textContent = pct + '%';
+      const imovel = parseBR(document.getElementById('valorImovel').value);
+      if (imovel > 0) {
+        document.getElementById('entrada').value = (imovel * pct / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    });
 
-      document.getElementById('tabelaWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('valorImovel').addEventListener('input', function() {
+      const pct = +document.getElementById('entradaRange').value;
+      const imovel = parseBR(this.value);
+      if (imovel > 0) {
+        document.getElementById('entrada').value = (imovel * pct / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    });
+
+    document.getElementById('prazoRange').addEventListener('input', function() {
+      const meses = +this.value;
+      document.getElementById('prazo').value = meses;
+      document.getElementById('prazoAnos').textContent = Math.round(meses / 12) + ' anos';
+    });
+
+    document.getElementById('prazo').addEventListener('input', function() {
+      const meses = +this.value || 360;
+      document.getElementById('prazoRange').value = meses;
+      document.getElementById('prazoAnos').textContent = Math.round(meses / 12) + ' anos';
+    });
+
+    function calcular() {
+      const imovel = parseBR(document.getElementById('valorImovel').value);
+      const entrada = parseBR(document.getElementById('entrada').value);
+      const prazo = +document.getElementById('prazo').value;
+      const taxa = parseBR(document.getElementById('taxa').value) / 100;
+      const renda = parseBR(document.getElementById('renda').value);
+      const temDependente = document.querySelector('input[name="dependentes"]:checked').value === 'sim';
+      const temFgts = document.querySelector('input[name="fgts"]:checked').value === 'sim';
+
+      if (!imovel || imovel <= 0) { alert('Informe o valor do imóvel.\nEx: 300.000,00'); return; }
+      if (!prazo || prazo < 12) { alert('Informe o prazo (mínimo 12 meses).'); return; }
+      if (!taxa || taxa <= 0) { alert('Informe a taxa de juros.\nEx: 0,65'); return; }
+      if (entrada >= imovel) { alert('A entrada não pode ser maior ou igual ao valor do imóvel.'); return; }
+
+      const subsidio = calcularSubsidio(renda, temDependente, temFgts, imovel);
+      const financiado = imovel - entrada - subsidio.valor;
+
+      if (financiado <= 0) { alert('Entrada + subsídio já cobrem o valor total!'); return; }
+
+      const sac = gerarParcelas(financiado, taxa, prazo, 'sac');
+      const price = gerarParcelas(financiado, taxa, prazo, 'price');
+
+      document.getElementById('resultadoVazio').style.display = 'none';
+      document.getElementById('resultadoValores').style.display = 'flex';
+
+      document.getElementById('parcelaSac').textContent = 'R$ ' + fmt(sac.parcelas[0].parcela);
+      document.getElementById('subSac').textContent = 'Última: R$ ' + fmt(sac.parcelas[prazo - 1].parcela);
+      document.getElementById('parcelaPrice').textContent = 'R$ ' + fmt(price.parcelas[0].parcela);
+
+      if (subsidio.valor > 0) {
+        document.getElementById('subsidioBox').style.display = 'block';
+        document.getElementById('subsidioValor').textContent = 'R$ ' + fmt(subsidio.valor);
+        document.getElementById('subsidioObs').textContent = subsidio.obs;
+        document.getElementById('resSubsidio').textContent = '- R$ ' + fmt(subsidio.valor);
+        document.getElementById('linhaSubsidio').style.display = 'flex';
+      } else {
+        document.getElementById('subsidioBox').style.display = 'none';
+        document.getElementById('linhaSubsidio').style.display = renda > 0 ? 'flex' : 'none';
+        document.getElementById('resSubsidio').textContent = renda > 0 ? subsidio.obs : '—';
+      }
+
+      document.getElementById('resImovel').textContent = 'R$ ' + fmt(imovel);
+      document.getElementById('resEntrada').textContent = 'R$ ' + fmt(entrada) + ' (' + ((entrada / imovel) * 100).toFixed(0) + '%)';
+      document.getElementById('resFinanciado').textContent = 'R$ ' + fmt(financiado);
+      document.getElementById('resPrazo').textContent = prazo + ' meses (' + Math.round(prazo / 12) + ' anos)';
+
+      document.getElementById('compJurosSac').textContent = 'R$ ' + fmt(sac.totalJuros);
+      document.getElementById('compJurosPrice').textContent = 'R$ ' + fmt(price.totalJuros);
+      document.getElementById('compTotalSac').textContent = 'R$ ' + fmt(financiado + sac.totalJuros);
+      document.getElementById('compTotalPrice').textContent = 'R$ ' + fmt(financiado + price.totalJuros);
+      document.getElementById('compUltSac').textContent = 'R$ ' + fmt(sac.parcelas[prazo - 1].parcela);
+      document.getElementById('compUltPrice').textContent = 'R$ ' + fmt(price.parcelas[prazo - 1].parcela);
+
+      preencherTabela('tabelaSacBody', sac.parcelas);
+      preencherTabela('tabelaPriceBody', price.parcelas);
+      document.getElementById('infoSac').textContent = prazo + ' parcelas';
+      document.getElementById('infoPrice').textContent = prazo + ' parcelas';
+      document.getElementById('tabelasSecao').style.display = 'block';
+      document.getElementById('btnImprimir').style.display = 'block';
+      document.getElementById('tabelasSecao').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function imprimir() {
+      const agora = new Date();
+      document.getElementById('dataImpressao').textContent =
+        'Data: ' + agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      window.print();
     }
 
     function limpar() {
-      document.getElementById('valorImovel').value = '';
-      document.getElementById('entrada').value = '';
-      document.getElementById('prazo').value = '';
-      document.getElementById('taxa').value = '';
-      document.getElementById('sistema').value = 'sac';
+      ['valorImovel','entrada','prazo','taxa','renda'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
       document.getElementById('entradaRange').value = 20;
       document.getElementById('entradaPct').textContent = '20%';
       document.getElementById('prazoRange').value = 360;
       document.getElementById('prazoAnos').textContent = '30 anos';
+      document.querySelector('input[name="dependentes"][value="sim"]').checked = true;
+      document.querySelector('input[name="fgts"][value="sim"]').checked = true;
+      selecionarRadio('dep','Sim');
+      selecionarRadio('fgts','Sim');
       document.getElementById('resultadoVazio').style.display = 'flex';
       document.getElementById('resultadoValores').style.display = 'none';
-      document.getElementById('tabelaWrap').style.display = 'none';
+      document.getElementById('subsidioBox').style.display = 'none';
+      document.getElementById('tabelasSecao').style.display = 'none';
+      document.getElementById('btnImprimir').style.display = 'none';
     }
   </script>
 
