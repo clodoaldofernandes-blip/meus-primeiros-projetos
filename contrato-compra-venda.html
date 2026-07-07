@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Contrato de Compra e Venda — Clodoaldo Fernandes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #1a56db;
+      --azul-escuro: #1340a8;
+      --azul-claro: #e8f0fe;
+      --cinza-borda: #e5e7eb;
+      --cinza-texto: #555;
+      --cinza-fundo: #f8faff;
+      --preto: #111;
+      --branco: #fff;
+      --radius: 14px;
+      --sombra: 0 8px 32px rgba(26,86,219,0.12);
+      --verde: #059669;
+      --vermelho: #e53e3e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #eef3ff 0%, #fff 60%);
+      min-height: 100vh;
+      color: #222;
+    }
+
+    header {
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--cinza-borda);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .logo { font-size: 1.2rem; font-weight: 800; color: var(--azul); }
+
+    header a {
+      color: var(--azul);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border: 1.5px solid var(--azul);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    header a:hover {
+      background: var(--azul);
+      color: white;
+    }
+
+    .container { max-width: 860px; margin: 2.5rem auto; padding: 0 1.5rem 4rem; }
+
+    /* BANNER TOPO */
+    .banner-topo {
+      background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+      border-radius: var(--radius);
+      padding: 2rem 2.5rem;
+      color: white;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .banner-topo .icone-banner {
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+
+    .banner-topo h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.3px;
+    }
+
+    .banner-topo p {
+      font-size: 0.88rem;
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    .banner-topo .badges-banner {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+
+    .badge-banner {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* STEPS */
+    .steps-wrap {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+    }
+
+    .steps-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--cinza-texto);
+      margin-bottom: 0.75rem;
+    }
+
+    .steps {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: calc(50% + 14px);
+      right: calc(-50% + 14px);
+      height: 2px;
+      background: var(--cinza-borda);
+      z-index: 0;
+    }
+
+    .step.completo:not(:last-child)::after { background: var(--verde); }
+    .step.ativo:not(:last-child)::after { background: var(--cinza-borda); }
+
+    .step-numero {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #f3f4f6;
+      color: #888;
+      border: 2px solid var(--cinza-borda);
+      z-index: 1;
+      transition: all 0.2s;
+    }
+
+    .step.ativo .step-numero {
+      background: var(--azul);
+      color: white;
+      border-color: var(--azul);
+      box-shadow: 0 0 0 4px rgba(26,86,219,0.15);
+    }
+
+    .step.completo .step-numero {
+      background: var(--verde);
+      color: white;
+      border-color: var(--verde);
+    }
+
+    .step-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .step.ativo .step-label { color: var(--azul); }
+    .step.completo .step-label { color: var(--verde); }
+
+    /* CARD FORMULÁRIO */
+    .card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 2rem 2.5rem;
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--cinza-borda);
+    }
+
+    .card-header-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--azul-claro);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .card-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--preto);
+    }
+
+    .card-header p {
+      font-size: 0.78rem;
+      color: var(--cinza-texto);
+      margin-top: 0.1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-grid.tres { grid-template-columns: 1fr 1fr 1fr; }
+    .form-grid.um { grid-template-columns: 1fr; }
+
+    @media (max-width: 600px) {
+      .form-grid, .form-grid.tres { grid-template-columns: 1fr; }
+      .banner-topo { flex-direction: column; text-align: center; }
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-group.span2 { grid-column: span 2; }
+    .form-group.span3 { grid-column: span 3; }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: #222;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+      background: var(--branco);
+    }
+
+    .form-group textarea { height: 90px; resize: vertical; }
+
+    .separador {
+      border: none;
+      border-top: 1px dashed var(--cinza-borda);
+      margin: 1.5rem 0;
+    }
+
+    .subsecao {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--azul);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .subsecao::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 14px;
+      background: var(--azul);
+      border-radius: 2px;
+    }
+
+    .info-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 9px;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      color: #92400e;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    /* BOTÕES */
+    .btns-nav {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--cinza-borda);
+    }
+
+    .btn-proximo {
+      background: var(--azul);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-proximo:hover { background: var(--azul-escuro); transform: translateY(-1px); }
+
+    .btn-voltar {
+      background: transparent;
+      color: var(--cinza-texto);
+      border: 1.5px solid var(--cinza-borda);
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-voltar:hover { border-color: var(--azul); color: var(--azul); }
+
+    .btn-gerar {
+      background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+      color: white;
+      border: none;
+      padding: 0.9rem 2.5rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 18px rgba(26,86,219,0.35);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-gerar:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* AÇÕES DO CONTRATO GERADO */
+    .acoes-contrato {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-imprimir {
+      background: var(--verde);
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-imprimir:hover { background: #047857; transform: translateY(-1px); }
+
+    .btn-novo {
+      background: transparent;
+      color: var(--azul);
+      border: 2px solid var(--azul);
+      padding: 0.9rem 2rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-novo:hover { background: var(--azul); color: white; }
+
+    /* PREVIEW DO CONTRATO */
+    #contratoGerado { display: none; }
+
+    .contrato-preview {
+      background: white;
+      border-radius: var(--radius);
+      padding: 3rem;
+      box-shadow: var(--sombra);
+      border: 1px solid var(--cinza-borda);
+    }
+
+    /* ESTILOS DO CONTRATO (fonte jurídica) */
+    .contrato {
+      font-family: 'Lora', 'Times New Roman', serif;
+      font-size: 11.5pt;
+      line-height: 1.9;
+      color: #1a1a1a;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .contrato-topo {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #1a56db;
+    }
+
+    .contrato-topo .brasao {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .contrato-topo h1 {
+      font-size: 14pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #0f172a;
+      margin-bottom: 0.3rem;
+    }
+
+    .contrato-topo .subtitulo {
+      font-size: 9.5pt;
+      color: #555;
+      font-style: italic;
+    }
+
+    .contrato-topo .lei {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #1a56db;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      margin-top: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    .partes-intro {
+      margin: 1.5rem 0;
+      font-size: 10.5pt;
+      color: #444;
+    }
+
+    .parte-bloco {
+      border: 1px solid #dde3f0;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+      background: #f9fbff;
+    }
+
+    .parte-bloco .parte-tipo {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1a56db;
+      margin-bottom: 0.4rem;
+    }
+
+    .parte-bloco .parte-nome {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.4rem;
+    }
+
+    .parte-bloco .parte-dados {
+      font-size: 10pt;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .contrato-acordo {
+      text-align: center;
+      margin: 1.5rem 0;
+      font-weight: 700;
+      font-size: 10.5pt;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .clausula {
+      margin: 1.5rem 0;
+    }
+
+    .clausula-titulo {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #0f172a;
+      background: #f1f5f9;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      border-left: 3px solid #1a56db;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .clausula p {
+      font-size: 11pt;
+      line-height: 1.85;
+      text-align: justify;
+      color: #222;
+    }
+
+    .clausula .destaque { font-weight: 700; }
+
+    .local-data {
+      text-align: center;
+      margin: 2.5rem 0 2rem;
+      font-size: 11pt;
+      color: #333;
+    }
+
+    .assinaturas-bloco {
+      margin-top: 2rem;
+    }
+
+    .assinaturas-titulo {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .assinaturas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .assinatura-item {
+      text-align: center;
+    }
+
+    .assinatura-linha {
+      border-top: 1px solid #000;
+      padding-top: 0.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .assinatura-nome {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .assinatura-cpf {
+      font-size: 9pt;
+      color: #555;
+    }
+
+    .assinatura-tipo {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1a56db;
+      margin-top: 0.2rem;
+    }
+
+    .rodape-contrato {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+    }
+
+    .rodape-contrato p {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .rodape-contrato .corretor-info {
+      color: #1a56db;
+      font-weight: 700;
+    }
+
+    /* PRINT */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white !important; }
+      header, .banner-topo, .steps-wrap, .acoes-contrato, .rodape-calc { display: none !important; }
+      #contratoGerado { display: block !important; }
+      #formSecoes { display: none !important; }
+      .contrato-preview { box-shadow: none !important; border: none !important; padding: 0 !important; }
+      .container { padding: 0; margin: 0; max-width: 100%; }
+      .parte-bloco { background: #f9fbff !important; border: 1px solid #dde3f0 !important; }
+      .clausula-titulo { background: #f1f5f9 !important; border-left: 3px solid #1a56db !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CF</div>
+  <a href="index.html">← Voltar ao site</a>
+</header>
+
+<div class="container">
+
+  <!-- BANNER -->
+  <div class="banner-topo">
+    <div class="icone-banner">📄</div>
+    <div>
+      <h1>Gerador de Contrato de Compra e Venda</h1>
+      <p>Preencha os dados em 5 etapas e gere um contrato profissional, com base no Código Civil Brasileiro, pronto para imprimir ou salvar em PDF.</p>
+      <div class="badges-banner">
+        <span class="badge-banner">⚖️ Código Civil — Art. 481</span>
+        <span class="badge-banner">🔒 Dados ficam só no seu dispositivo</span>
+        <span class="badge-banner">🖨️ Gera PDF profissional</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-wrap" id="stepsWrap">
+    <div class="steps-label">Progresso</div>
+    <div class="steps">
+      <div class="step ativo" id="step1">
+        <div class="step-numero">1</div>
+        <div class="step-label">Vendedor</div>
+      </div>
+      <div class="step" id="step2">
+        <div class="step-numero">2</div>
+        <div class="step-label">Comprador</div>
+      </div>
+      <div class="step" id="step3">
+        <div class="step-numero">3</div>
+        <div class="step-label">Imóvel</div>
+      </div>
+      <div class="step" id="step4">
+        <div class="step-numero">4</div>
+        <div class="step-label">Valores</div>
+      </div>
+      <div class="step" id="step5">
+        <div class="step-numero">5</div>
+        <div class="step-label">Condições</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="formSecoes">
+
+    <!-- SEÇÃO 1: VENDEDOR -->
+    <div id="secao1" class="card">
+      <div class="card-header">
+        <div class="card-header-icon">🏠</div>
+        <div>
+          <h2>Dados do Vendedor</h2>
+          <p>Informações completas do proprietário do imóvel</p>
+        </div>
+      </div>
+
+      <p class="subsecao">Identificação</p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Nome completo *</label>
+          <input type="text" id="vendNome" placeholder="Nome completo conforme RG/CPF">
+        </div>
+        <div class="form-group">
+          <label>CPF *</label>
+          <input type="text" id="vendCpf" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label>RG *</label>
+          <input type="text" id="vendRg" placeholder="0.000.000">
+        </div>
+        <div class="form-group">
+          <label>Órgão emissor / UF</label>
+          <input type="text" id="vendOrgao" placeholder="SSP/PB">
+        </div>
+        <div class="form-group">
+          <label>Nacionalidade</label>
+          <input type="text" id="vendNacionalidade" placeholder="Brasileiro(a)">
+        </div>
+        <div class="form-group">
+          <label>Estado civil</label>
+          <select id="vendEstadoCivil">
+            <option value="solteiro(a)">Solteiro(a)</option>
+            <option value="casado(a)">Casado(a)</option>
+            <option value="divorciado(a)">Divorciado(a)</option>
+            <option value="viúvo(a)">Viúvo(a)</option>
+            <option value="em união estável">União estável</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Profissão</label>
+          <input type="text" id="vendProfissao" placeholder="Profissão">
+        </div>
+        <div class="form-group">
+          <label>Telefone / WhatsApp</label>
+          <input type="text" id="vendTelefone" placeholder="(83) 9 0000-0000">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Endereço do Vendedor</p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Endereço completo</label>
+          <input type="text" id="vendEndereco" placeholder="Rua, número, complemento">
+        </div>
+        <div class="form-group">
+          <label>Bairro</label>
+          <input type="text" id="vendBairro" placeholder="Bairro">
+        </div>
+        <div class="form-group">
+          <label>Cidade / UF</label>
+          <input type="text" id="vendCidade" placeholder="João Pessoa / PB">
+        </div>
+        <div class="form-group">
+          <label>CEP</label>
+          <input type="text" id="vendCep" placeholder="00000-000">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Cônjuge / Companheiro(a) do Vendedor</p>
+      <div class="info-box">ℹ️ Preencha apenas se o vendedor for casado ou em união estável. A assinatura do cônjuge é obrigatória por lei para venda de imóveis (Art. 1.647 do Código Civil).</div>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Nome completo do cônjuge</label>
+          <input type="text" id="vendConjugeNome" placeholder="Deixe em branco se não se aplicar">
+        </div>
+        <div class="form-group">
+          <label>CPF do cônjuge</label>
+          <input type="text" id="vendConjugeCpf" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label>RG do cônjuge</label>
+          <input type="text" id="vendConjugeRg" placeholder="0.000.000">
+        </div>
+      </div>
+
+      <div class="btns-nav">
+        <button class="btn-proximo" onclick="irPara(2)">Próximo: Comprador →</button>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 2: COMPRADOR -->
+    <div id="secao2" class="card" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon">👤</div>
+        <div>
+          <h2>Dados do Comprador</h2>
+          <p>Informações completas de quem está adquirindo o imóvel</p>
+        </div>
+      </div>
+
+      <p class="subsecao">Identificação</p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Nome completo *</label>
+          <input type="text" id="comprNome" placeholder="Nome completo conforme RG/CPF">
+        </div>
+        <div class="form-group">
+          <label>CPF *</label>
+          <input type="text" id="comprCpf" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label>RG *</label>
+          <input type="text" id="comprRg" placeholder="0.000.000">
+        </div>
+        <div class="form-group">
+          <label>Órgão emissor / UF</label>
+          <input type="text" id="comprOrgao" placeholder="SSP/PB">
+        </div>
+        <div class="form-group">
+          <label>Nacionalidade</label>
+          <input type="text" id="comprNacionalidade" placeholder="Brasileiro(a)">
+        </div>
+        <div class="form-group">
+          <label>Estado civil</label>
+          <select id="comprEstadoCivil">
+            <option value="solteiro(a)">Solteiro(a)</option>
+            <option value="casado(a)">Casado(a)</option>
+            <option value="divorciado(a)">Divorciado(a)</option>
+            <option value="viúvo(a)">Viúvo(a)</option>
+            <option value="em união estável">União estável</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Profissão</label>
+          <input type="text" id="comprProfissao" placeholder="Profissão">
+        </div>
+        <div class="form-group">
+          <label>Telefone / WhatsApp</label>
+          <input type="text" id="comprTelefone" placeholder="(83) 9 0000-0000">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Endereço do Comprador</p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Endereço completo</label>
+          <input type="text" id="comprEndereco" placeholder="Rua, número, complemento">
+        </div>
+        <div class="form-group">
+          <label>Bairro</label>
+          <input type="text" id="comprBairro" placeholder="Bairro">
+        </div>
+        <div class="form-group">
+          <label>Cidade / UF</label>
+          <input type="text" id="comprCidade" placeholder="João Pessoa / PB">
+        </div>
+        <div class="form-group">
+          <label>CEP</label>
+          <input type="text" id="comprCep" placeholder="00000-000">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Cônjuge / Companheiro(a) do Comprador</p>
+      <div class="info-box">ℹ️ Preencha se o comprador for casado ou em união estável e ambos figurarão no contrato.</div>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Nome completo do cônjuge</label>
+          <input type="text" id="comprConjugeNome" placeholder="Deixe em branco se não se aplicar">
+        </div>
+        <div class="form-group">
+          <label>CPF do cônjuge</label>
+          <input type="text" id="comprConjugeCpf" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label>RG do cônjuge</label>
+          <input type="text" id="comprConjugeRg" placeholder="0.000.000">
+        </div>
+      </div>
+
+      <div class="btns-nav">
+        <button class="btn-voltar" onclick="irPara(1)">← Voltar</button>
+        <button class="btn-proximo" onclick="irPara(3)">Próximo: Imóvel →</button>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 3: IMÓVEL -->
+    <div id="secao3" class="card" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon">🏡</div>
+        <div>
+          <h2>Dados do Imóvel</h2>
+          <p>Identificação e características do bem imóvel</p>
+        </div>
+      </div>
+
+      <p class="subsecao">Localização e registro</p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Endereço completo do imóvel *</label>
+          <input type="text" id="imovEndereco" placeholder="Rua, número, complemento, bairro, cidade/UF, CEP">
+        </div>
+        <div class="form-group">
+          <label>Matrícula no cartório *</label>
+          <input type="text" id="imovMatricula" placeholder="Nº da matrícula">
+        </div>
+        <div class="form-group">
+          <label>Cartório de registro</label>
+          <input type="text" id="imovCartorio" placeholder="Nome do cartório e cidade">
+        </div>
+        <div class="form-group">
+          <label>Nº IPTU / Inscrição municipal</label>
+          <input type="text" id="imovIptu" placeholder="Número do IPTU">
+        </div>
+        <div class="form-group">
+          <label>Tipo de imóvel</label>
+          <select id="imovTipo">
+            <option value="casa residencial">Casa residencial</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="terreno / lote">Terreno / Lote</option>
+            <option value="sala comercial">Sala comercial</option>
+            <option value="loja comercial">Loja comercial</option>
+            <option value="galpão">Galpão</option>
+            <option value="sítio / chácara">Sítio / Chácara</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Área total (m²)</label>
+          <input type="text" id="imovArea" placeholder="Ex: 120,00 m²">
+        </div>
+        <div class="form-group">
+          <label>Área construída (m²)</label>
+          <input type="text" id="imovAreaConst" placeholder="Ex: 80,00 m²">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Descrição do imóvel</p>
+      <div class="form-grid um">
+        <div class="form-group">
+          <label>Descrição completa (características, cômodos, benfeitorias)</label>
+          <textarea id="imovDescricao" placeholder="Ex: imóvel residencial composto de 3 quartos sendo 1 suíte, sala de estar e jantar, cozinha americana, 2 banheiros, área de serviço, varanda e garagem para 2 veículos, devidamente murado e com portão eletrônico..."></textarea>
+        </div>
+      </div>
+
+      <div class="btns-nav">
+        <button class="btn-voltar" onclick="irPara(2)">← Voltar</button>
+        <button class="btn-proximo" onclick="irPara(4)">Próximo: Valores →</button>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 4: VALORES -->
+    <div id="secao4" class="card" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon">💰</div>
+        <div>
+          <h2>Valores e Forma de Pagamento</h2>
+          <p>Preço e condições financeiras do negócio</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Valor total de venda (R$) *</label>
+          <input type="text" id="valTotal" placeholder="Ex: 350.000,00">
+        </div>
+        <div class="form-group">
+          <label>Valor por extenso *</label>
+          <input type="text" id="valTotalExtenso" placeholder="Ex: trezentos e cinquenta mil reais">
+        </div>
+        <div class="form-group">
+          <label>Forma de pagamento *</label>
+          <select id="valForma" onchange="mostrarCamposPagamento()">
+            <option value="">Selecione</option>
+            <option value="avista">À vista</option>
+            <option value="financiamento">Financiamento bancário</option>
+            <option value="parcelado">Parcelado direto com vendedor</option>
+            <option value="misto">Entrada + Financiamento</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Data prevista para pagamento</label>
+          <input type="date" id="valDataPagamento">
+        </div>
+      </div>
+
+      <div id="camposAvista" style="display:none;">
+        <hr class="separador">
+        <p class="subsecao">Detalhes do pagamento à vista</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Meio de pagamento</label>
+            <input type="text" id="avistaMeio" placeholder="Ex: transferência via PIX">
+          </div>
+          <div class="form-group">
+            <label>Dados bancários / Chave PIX</label>
+            <input type="text" id="avistaBank" placeholder="Ex: CPF 000.000.000-00">
+          </div>
+        </div>
+      </div>
+
+      <div id="camposFinanciamento" style="display:none;">
+        <hr class="separador">
+        <p class="subsecao">Detalhes do financiamento bancário</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Instituição financeira</label>
+            <input type="text" id="finBanco" placeholder="Ex: Caixa Econômica Federal">
+          </div>
+          <div class="form-group">
+            <label>Valor financiado (R$)</label>
+            <input type="text" id="finValor" placeholder="Ex: 280.000,00">
+          </div>
+          <div class="form-group">
+            <label>Prazo (meses)</label>
+            <input type="text" id="finPrazo" placeholder="Ex: 360 meses">
+          </div>
+          <div class="form-group">
+            <label>Previsão de aprovação até</label>
+            <input type="date" id="finDataAprov">
+          </div>
+        </div>
+      </div>
+
+      <div id="camposParcelado" style="display:none;">
+        <hr class="separador">
+        <p class="subsecao">Detalhes do parcelamento direto</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Valor da entrada (R$)</label>
+            <input type="text" id="parcEntrada" placeholder="Ex: 50.000,00">
+          </div>
+          <div class="form-group">
+            <label>Valor de cada parcela (R$)</label>
+            <input type="text" id="parcValor" placeholder="Ex: 3.000,00">
+          </div>
+          <div class="form-group">
+            <label>Número de parcelas</label>
+            <input type="text" id="parcQtd" placeholder="Ex: 100">
+          </div>
+          <div class="form-group">
+            <label>Dia de vencimento</label>
+            <input type="text" id="parcVencimento" placeholder="Ex: dia 10 de cada mês">
+          </div>
+        </div>
+      </div>
+
+      <div id="camposMisto" style="display:none;">
+        <hr class="separador">
+        <p class="subsecao">Detalhes: Entrada + Financiamento</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Valor da entrada (R$)</label>
+            <input type="text" id="mistoEntrada" placeholder="Ex: 70.000,00">
+          </div>
+          <div class="form-group">
+            <label>Data do pagamento da entrada</label>
+            <input type="date" id="mistoDataEntrada">
+          </div>
+          <div class="form-group">
+            <label>Banco financiador</label>
+            <input type="text" id="mistoBanco" placeholder="Ex: Caixa Econômica Federal">
+          </div>
+          <div class="form-group">
+            <label>Valor financiado (R$)</label>
+            <input type="text" id="mistoFinanciado" placeholder="Ex: 280.000,00">
+          </div>
+        </div>
+      </div>
+
+      <div class="btns-nav">
+        <button class="btn-voltar" onclick="irPara(3)">← Voltar</button>
+        <button class="btn-proximo" onclick="irPara(5)">Próximo: Condições →</button>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 5: CONDIÇÕES -->
+    <div id="secao5" class="card" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon">📋</div>
+        <div>
+          <h2>Condições, Cláusulas e Assinatura</h2>
+          <p>Termos gerais, responsabilidades e dados da assinatura</p>
+        </div>
+      </div>
+
+      <p class="subsecao">Posse e escrituração</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Data de entrega das chaves / posse</label>
+          <input type="date" id="condDataPosse">
+        </div>
+        <div class="form-group">
+          <label>Prazo para escrituração pública</label>
+          <input type="text" id="condPrazoEscritura" placeholder="Ex: 90 dias após aprovação do financiamento">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Responsabilidades tributárias</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Quem paga o ITBI</label>
+          <select id="condItbi">
+            <option value="comprador">Comprador</option>
+            <option value="vendedor">Vendedor</option>
+            <option value="ambos">Dividido entre as partes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quem paga as despesas cartoriais</label>
+          <select id="condCartorio">
+            <option value="comprador">Comprador</option>
+            <option value="vendedor">Vendedor</option>
+            <option value="ambos">Dividido entre as partes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Multa por rescisão (%)</label>
+          <input type="text" id="condMulta" placeholder="Ex: 10">
+        </div>
+        <div class="form-group">
+          <label>Foro de eleição (cidade)</label>
+          <input type="text" id="condForo" placeholder="Ex: João Pessoa">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Corretor intermediador</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nome do corretor</label>
+          <input type="text" id="corretorNome" value="Clodoaldo Fernandes">
+        </div>
+        <div class="form-group">
+          <label>CRECI</label>
+          <input type="text" id="corretorCreci" value="14.464-F">
+        </div>
+        <div class="form-group">
+          <label>Comissão (%)</label>
+          <input type="text" id="corretorComissao" placeholder="Ex: 6">
+        </div>
+        <div class="form-group">
+          <label>Quem paga a comissão</label>
+          <select id="corretorPaga">
+            <option value="vendedor">Vendedor</option>
+            <option value="comprador">Comprador</option>
+            <option value="ambos">Dividido entre as partes</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Dados da assinatura</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Cidade de assinatura</label>
+          <input type="text" id="condCidadeAssinatura" placeholder="Ex: João Pessoa">
+        </div>
+        <div class="form-group">
+          <label>Data de assinatura</label>
+          <input type="date" id="condDataAssinatura">
+        </div>
+      </div>
+
+      <hr class="separador">
+      <p class="subsecao">Cláusulas especiais (opcional)</p>
+      <div class="form-grid um">
+        <div class="form-group">
+          <label>Observações adicionais</label>
+          <textarea id="condObservacoes" placeholder="Ex: o imóvel será entregue com as seguintes benfeitorias..."></textarea>
+        </div>
+      </div>
+
+      <div class="btns-nav">
+        <button class="btn-voltar" onclick="irPara(4)">← Voltar</button>
+        <button class="btn-gerar" onclick="gerarContrato()">📄 Gerar Contrato Profissional</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTRATO GERADO -->
+  <div id="contratoGerado">
+    <div class="acoes-contrato">
+      <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      <button class="btn-novo" onclick="novoContrato()">+ Novo Contrato</button>
+    </div>
+
+    <div class="contrato-preview">
+      <div class="contrato" id="contratoTexto"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let secaoAtual = 1;
+
+  function irPara(n) {
+    document.getElementById('secao' + secaoAtual).style.display = 'none';
+    document.getElementById('step' + secaoAtual).classList.remove('ativo');
+    document.getElementById('step' + secaoAtual).classList.add('completo');
+    secaoAtual = n;
+    document.getElementById('secao' + n).style.display = 'block';
+    document.getElementById('step' + n).classList.remove('completo');
+    document.getElementById('step' + n).classList.add('ativo');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function mostrarCamposPagamento() {
+    ['Avista','Financiamento','Parcelado','Misto'].forEach(t => {
+      document.getElementById('campos' + t).style.display = 'none';
+    });
+    const forma = document.getElementById('valForma').value;
+    const map = { avista: 'Avista', financiamento: 'Financiamento', parcelado: 'Parcelado', misto: 'Misto' };
+    if (map[forma]) document.getElementById('campos' + map[forma]).style.display = 'block';
+  }
+
+  function g(id) {
+    const val = document.getElementById(id).value.trim();
+    return val || '_____________________';
+  }
+
+  function formatarData(data) {
+    if (!data || data === '_____________________') return '_____ de _______________ de ________';
+    const d = new Date(data + 'T12:00:00');
+    const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+
+  function textoItbi() {
+    const v = document.getElementById('condItbi').value;
+    if (v === 'comprador') return 'O Imposto sobre Transmissão de Bens Imóveis — ITBI será de responsabilidade exclusiva do <strong>COMPRADOR</strong>, devendo ser recolhido antes da lavratura da escritura pública.';
+    if (v === 'vendedor') return 'O Imposto sobre Transmissão de Bens Imóveis — ITBI será de responsabilidade exclusiva do <strong>VENDEDOR</strong>.';
+    return 'O Imposto sobre Transmissão de Bens Imóveis — ITBI será dividido igualmente entre <strong>VENDEDOR</strong> e <strong>COMPRADOR</strong>.';
+  }
+
+  function textoCartorio() {
+    const v = document.getElementById('condCartorio').value;
+    if (v === 'comprador') return 'As despesas com a lavratura da escritura pública e seu registro no Cartório de Registro de Imóveis serão de responsabilidade exclusiva do <strong>COMPRADOR</strong>.';
+    if (v === 'vendedor') return 'As despesas com a lavratura da escritura pública e seu registro no Cartório de Registro de Imóveis serão de responsabilidade exclusiva do <strong>VENDEDOR</strong>.';
+    return 'As despesas com a lavratura da escritura pública e seu registro no Cartório de Registro de Imóveis serão rateadas igualmente entre as partes.';
+  }
+
+  function textoComissao() {
+    const paga = document.getElementById('corretorPaga').value;
+    const comissao = g('corretorComissao');
+    const nome = g('corretorNome');
+    const creci = g('corretorCreci');
+    const base = `A comissão de corretagem, no percentual de <strong>${comissao}%</strong> sobre o valor total da transação, é devida ao Corretor de Imóveis <strong>${nome}</strong>, detentor do CRECI nº <strong>${creci}</strong>`;
+    if (paga === 'vendedor') return base + ', sendo de responsabilidade exclusiva do <strong>VENDEDOR</strong>, e deverá ser paga na data da formalização do negócio.';
+    if (paga === 'comprador') return base + ', sendo de responsabilidade exclusiva do <strong>COMPRADOR</strong>, e deverá ser paga na data da formalização do negócio.';
+    return base + ', sendo o valor rateado igualmente entre <strong>VENDEDOR</strong> e <strong>COMPRADOR</strong>, devendo ser paga na data da formalização do negócio.';
+  }
+
+  function textoPagamento() {
+    const forma = document.getElementById('valForma').value;
+    const total = g('valTotal');
+    const extenso = g('valTotalExtenso');
+
+    if (forma === 'avista') return `O preço certo e ajustado da presente compra e venda é de <strong>R$ ${total} (${extenso})</strong>, a ser pago à vista, em parcela única, mediante <strong>${g('avistaMeio')}</strong> para ${g('avistaBank')}, na data da assinatura deste instrumento, contra a entrega das chaves do imóvel.`;
+
+    if (forma === 'financiamento') return `O preço certo e ajustado da presente compra e venda é de <strong>R$ ${total} (${extenso})</strong>, a ser pago mediante financiamento bancário junto à <strong>${g('finBanco')}</strong>, no valor de <strong>R$ ${g('finValor')}</strong>, em <strong>${g('finPrazo')}</strong>, com previsão de aprovação e liberação dos recursos até <strong>${formatarData(g('finDataAprov'))}</strong>, data na qual o VENDEDOR receberá o valor contratado diretamente da instituição financeira.`;
+
+    if (forma === 'parcelado') return `O preço certo e ajustado da presente compra e venda é de <strong>R$ ${total} (${extenso})</strong>, pago da seguinte forma: (a) entrada de <strong>R$ ${g('parcEntrada')}</strong> na data da assinatura deste instrumento; (b) saldo restante dividido em <strong>${g('parcQtd')} (${g('parcQtd')}) parcelas mensais e consecutivas</strong> no valor de <strong>R$ ${g('parcValor')}</strong> cada, com vencimento todo <strong>${g('parcVencimento')}</strong>, mediante depósito ou transferência bancária a ser informada pelo VENDEDOR.`;
+
+    if (forma === 'misto') return `O preço certo e ajustado da presente compra e venda é de <strong>R$ ${total} (${extenso})</strong>, pago da seguinte forma: (a) entrada de <strong>R$ ${g('mistoEntrada')}</strong> em <strong>${formatarData(g('mistoDataEntrada'))}</strong>; (b) saldo de <strong>R$ ${g('mistoFinanciado')}</strong> mediante financiamento bancário junto à <strong>${g('mistoBanco')}</strong>, liberado diretamente à conta do VENDEDOR após aprovação do crédito.`;
+
+    return `O preço certo e ajustado da presente compra e venda é de <strong>R$ ${total} (${extenso})</strong>, conforme condições acordadas entre as partes.`;
+  }
+
+  function blocoConjuge(prefixo, tipo) {
+    const nome = document.getElementById(prefixo + 'ConjugeNome').value.trim();
+    if (!nome) return '';
+    const cpf = document.getElementById(prefixo + 'ConjugeCpf').value.trim() || '_____________________';
+    const rg = document.getElementById(prefixo + 'ConjugeRg').value.trim() || '_____________________';
+    return `, e seu cônjuge/companheiro(a) <strong>${nome}</strong>, CPF nº ${cpf}, RG nº ${rg}, aqui denominado(a) outorgante anuente`;
+  }
+
+  function gerarContrato() {
+    const obsVal = document.getElementById('condObservacoes').value.trim();
+    const temObs = obsVal.length > 0;
+    const clausulaForo = temObs ? '10ª' : '9ª';
+    const dataAssinatura = formatarData(g('condDataAssinatura'));
+    const cidade = g('condCidadeAssinatura');
+    const agora = new Date();
+
+    const html = `
+      <div class="contrato-topo">
+        <div class="brasao">⚖️</div>
+        <h1>Contrato Particular de Compra e Venda de Imóvel</h1>
+        <p class="subtitulo">Instrumento particular com força de escritura pública entre as partes abaixo qualificadas</p>
+        <span class="lei">Lei 10.406/2002 — Código Civil Brasileiro · Art. 481 e seguintes</span>
+      </div>
+
+      <p class="partes-intro">Pelo presente instrumento particular, e na melhor forma de direito, as partes a seguir qualificadas:</p>
+
+      <div class="parte-bloco">
+        <div class="parte-tipo">Vendedor</div>
+        <div class="parte-nome">${g('vendNome')}</div>
+        <div class="parte-dados">
+          ${g('vendNacionalidade')}, ${g('vendEstadoCivil')}, ${g('vendProfissao')}${blocoConjuge('vend', 'vendedor')}, portador(a) do RG nº <strong>${g('vendRg')}</strong> ${g('vendOrgao')}, inscrito(a) no CPF sob o nº <strong>${g('vendCpf')}</strong>, residente e domiciliado(a) na ${g('vendEndereco')}, ${g('vendBairro')}, ${g('vendCidade')}, CEP ${g('vendCep')}, doravante denominado(a) simplesmente <strong>VENDEDOR</strong>.
+        </div>
+      </div>
+
+      <div class="parte-bloco">
+        <div class="parte-tipo">Comprador</div>
+        <div class="parte-nome">${g('comprNome')}</div>
+        <div class="parte-dados">
+          ${g('comprNacionalidade')}, ${g('comprEstadoCivil')}, ${g('comprProfissao')}${blocoConjuge('compr', 'comprador')}, portador(a) do RG nº <strong>${g('comprRg')}</strong> ${g('comprOrgao')}, inscrito(a) no CPF sob o nº <strong>${g('comprCpf')}</strong>, residente e domiciliado(a) na ${g('comprEndereco')}, ${g('comprBairro')}, ${g('comprCidade')}, CEP ${g('comprCep')}, doravante denominado(a) simplesmente <strong>COMPRADOR</strong>.
+        </div>
+      </div>
+
+      <p class="contrato-acordo">Têm entre si, justo e contratado, o presente instrumento, que se regerá pelas cláusulas e condições seguintes:</p>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 1ª — Do Objeto</span>
+        <p>O <strong>VENDEDOR</strong> é o legítimo e exclusivo proprietário do seguinte bem imóvel: <strong>${g('imovTipo')}</strong>, situado na <strong>${g('imovEndereco')}</strong>, com área total de <strong>${g('imovArea')} m²</strong>${g('imovAreaConst') !== '_____________________' ? ` e área construída de <strong>${g('imovAreaConst')} m²</strong>` : ''}, devidamente registrado sob a matrícula nº <strong>${g('imovMatricula')}</strong> no ${g('imovCartorio')}, inscrito no Cadastro Municipal (IPTU) sob o nº <strong>${g('imovIptu')}</strong>, adiante descrito como: ${g('imovDescricao')}, com todas as suas acessões, pertenças e benfeitorias que o constituem, livre e desembaraçado de quaisquer ônus, dívidas ou gravames.</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 2ª — Do Preço e da Forma de Pagamento</span>
+        <p>${textoPagamento()}</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 3ª — Da Transferência da Posse e Entrega das Chaves</span>
+        <p>A <strong>posse direta</strong> do imóvel ora vendido será transferida ao <strong>COMPRADOR</strong> em <strong>${formatarData(g('condDataPosse'))}</strong>, ocasião em que serão entregues as respectivas chaves, devendo o imóvel encontrar-se desocupado, limpo e em perfeitas condições de habitabilidade, tal como se encontra na data de assinatura do presente instrumento.</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 4ª — Da Escritura Pública Definitiva</span>
+        <p>As partes comprometem-se a outorgar e receber a <strong>escritura pública definitiva</strong> de compra e venda, junto ao Cartório de Notas de sua livre escolha, no prazo de <strong>${g('condPrazoEscritura')}</strong>, mediante prévio cumprimento de todas as condições financeiras estabelecidas neste instrumento. ${textoCartorio()}</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 5ª — Das Despesas Tributárias</span>
+        <p>${textoItbi()} Os débitos de IPTU, taxas de condomínio e demais encargos incidentes sobre o imóvel serão de responsabilidade do <strong>VENDEDOR</strong> até a data de entrega das chaves, e do <strong>COMPRADOR</strong> a partir desta data, cabendo ao VENDEDOR apresentar as certidões negativas de débitos municipais no ato da escritura.</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 6ª — Da Evicção, Vícios Ocultos e Garantias</span>
+        <p>O <strong>VENDEDOR</strong> declara, sob as penas da lei, que o imóvel objeto deste contrato encontra-se <strong>livre e desembaraçado</strong> de quaisquer ônus reais, dívidas, hipotecas, penhoras, usufrutos, servidões, litígios judiciais ou extrajudiciais, ou qualquer outro gravame que possa comprometer a plena fruição do bem pelo COMPRADOR, responsabilizando-se pelas obrigações de evicção, nos termos dos artigos 447 a 457, e pelos vícios redibitórios, nos termos dos artigos 441 a 446, todos do Código Civil.</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 7ª — Da Rescisão e Multa Contratual</span>
+        <p>Em caso de rescisão ou inadimplemento de qualquer das cláusulas do presente contrato, por qualquer das partes, sem justa causa devidamente comprovada, ficará a parte <strong>infratora</strong> sujeita ao pagamento de <strong>multa equivalente a ${g('condMulta')}% (${g('condMulta')} por cento)</strong> sobre o valor total da transação, além da obrigação de devolução integral de todos os valores recebidos, devidamente corrigidos pelo IGPM/FGV, na forma do artigo 413 do Código Civil. A rescisão não exime a parte infratora do pagamento da comissão de corretagem, caso o negócio já tenha sido concluído.</p>
+      </div>
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 8ª — Da Corretagem e Intermediação Imobiliária</span>
+        <p>${textoComissao()}</p>
+      </div>
+
+      ${temObs ? `
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula 9ª — Disposições Especiais</span>
+        <p>${obsVal}</p>
+      </div>` : ''}
+
+      <div class="clausula">
+        <span class="clausula-titulo">Cláusula ${clausulaForo} — Do Foro</span>
+        <p>As partes elegem o foro da comarca de <strong>${g('condForo')}</strong>, Estado da Paraíba, como competente para dirimir quaisquer dúvidas, litígios ou divergências oriundas do presente instrumento, com expressa renúncia a qualquer outro, por mais privilegiado que seja.</p>
+      </div>
+
+      <p style="text-align:justify; margin-top:1.5rem; font-size:10.5pt;">E, por estarem de pleno acordo com todos os termos, cláusulas e condições do presente instrumento, as partes o assinam em <strong>02 (duas) vias</strong> de igual teor e forma, juntamente com as 02 (duas) testemunhas abaixo identificadas, para que produza seus legais e jurídicos efeitos.</p>
+
+      <div class="local-data"><strong>${cidade}, ${dataAssinatura}.</strong></div>
+
+      <div class="assinaturas-bloco">
+        <div class="assinaturas-titulo">Assinaturas das Partes</div>
+        <div class="assinaturas-grid">
+          <div class="assinatura-item">
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">${g('vendNome')}</div>
+              <div class="assinatura-cpf">CPF: ${g('vendCpf')}</div>
+              <div class="assinatura-tipo">Vendedor</div>
+            </div>
+          </div>
+          <div class="assinatura-item">
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">${g('comprNome')}</div>
+              <div class="assinatura-cpf">CPF: ${g('comprCpf')}</div>
+              <div class="assinatura-tipo">Comprador</div>
+            </div>
+          </div>
+        </div>
+
+        ${(document.getElementById('vendConjugeNome').value.trim() || document.getElementById('comprConjugeNome').value.trim()) ? `
+        <div class="assinaturas-grid">
+          <div class="assinatura-item">
+            ${document.getElementById('vendConjugeNome').value.trim() ? `
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">${g('vendConjugeNome')}</div>
+              <div class="assinatura-cpf">CPF: ${g('vendConjugeCpf')}</div>
+              <div class="assinatura-tipo">Cônjuge do Vendedor</div>
+            </div>` : ''}
+          </div>
+          <div class="assinatura-item">
+            ${document.getElementById('comprConjugeNome').value.trim() ? `
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">${g('comprConjugeNome')}</div>
+              <div class="assinatura-cpf">CPF: ${g('comprConjugeCpf')}</div>
+              <div class="assinatura-tipo">Cônjuge do Comprador</div>
+            </div>` : ''}
+          </div>
+        </div>` : ''}
+
+        <div class="assinaturas-titulo" style="margin-top:2rem;">Testemunhas</div>
+        <div class="assinaturas-grid">
+          <div class="assinatura-item">
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">_________________________________</div>
+              <div class="assinatura-cpf">Nome: ____________________________</div>
+              <div class="assinatura-cpf">CPF: _____________________________</div>
+              <div class="assinatura-tipo">Testemunha 1</div>
+            </div>
+          </div>
+          <div class="assinatura-item">
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">_________________________________</div>
+              <div class="assinatura-cpf">Nome: ____________________________</div>
+              <div class="assinatura-cpf">CPF: _____________________________</div>
+              <div class="assinatura-tipo">Testemunha 2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="assinaturas-grid" style="margin-top:2rem;">
+          <div></div>
+          <div class="assinatura-item">
+            <div class="assinatura-linha">
+              <div class="assinatura-nome">${g('corretorNome')}</div>
+              <div class="assinatura-cpf">CRECI nº ${g('corretorCreci')}</div>
+              <div class="assinatura-tipo">Corretor Intermediador</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rodape-contrato">
+        <p>Documento gerado em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})} · <span class="corretor-info">${g('corretorNome')} · CRECI ${g('corretorCreci')}</span> · clodoaldofernandes.com.br</p>
+        <p style="margin-top:0.3rem; font-size:7.5pt;">Este documento é um instrumento particular. Para maior segurança jurídica, recomenda-se o reconhecimento de firmas em cartório e posterior lavratura de escritura pública.</p>
+      </div>
+    `;
+
+    document.getElementById('contratoTexto').innerHTML = html;
+    document.getElementById('formSecoes').style.display = 'none';
+    document.getElementById('stepsWrap').style.display = 'none';
+    document.getElementById('contratoGerado').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function novoContrato() {
+    document.getElementById('formSecoes').style.display = 'block';
+    document.getElementById('stepsWrap').style.display = 'block';
+    document.getElementById('contratoGerado').style.display = 'none';
+    irPara(1);
+  }
+</script>
+
+</body>
+</html>
