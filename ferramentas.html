@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas Imobiliárias | Clodoaldo Fernandes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7fb;
+        }
+
+        header {
+            background: #1a56db;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #1a56db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #1340a8;
+        }
+
+        .premium {
+            border: 2px solid #f4b400;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #fde68a;
+            color: #92400e;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .aviso-breve {
+            display: inline-block;
+            margin-top: 15px;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            color: #1a56db;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Ferramentas Imobiliárias</h1>
+        <p>Ferramentas gratuitas e profissionais desenvolvidas por Clodoaldo Fernandes.</p>
+    </header>
+
+    <div class="container">
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🧮 Calculadora de Financiamento</h3>
+                <p>Simule financiamentos imobiliários utilizando SAC e PRICE.</p>
+                <a href="calculadora.html" class="btn">Abrir</a>
+            </div>
+
+            <div class="card">
+                <h3>📄 Gerador de Contrato</h3>
+                <p>Gere contratos de compra e venda imobiliária.</p>
+                <a href="contrato-compra-venda.html" class="btn">Abrir</a>
+            </div>
+
+            <div class="card">
+                <h3>🏠 Calculadora ITBI</h3>
+                <p>Calcule rapidamente o valor do ITBI do imóvel.</p>
+                <a href="calculadora-itbi.html" class="btn">Abrir</a>
+            </div>
+
+            <div class="card premium">
+                <div class="tag">EM BREVE</div>
+                <h3>🔒 Kit Corretor Inteligente</h3>
+                <p>Modelos de contratos, checklists, planilhas e materiais profissionais.</p>
+                <span class="aviso-breve">Disponível em breve</span>
+            </div>
+
+        </div>
+
+        <a class="voltar" href="index.html">
+            ← Voltar para o site principal
+        </a>
+
+    </div>
+
+</body>
+
+</html>

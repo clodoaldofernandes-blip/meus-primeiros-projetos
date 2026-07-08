@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Calculadora de ITBI</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f7fb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    background:#fff;
+    width:90%;
+    max-width:600px;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
+
+h1{
+    color:#1a56db;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    background:#1a56db;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1340a8;
+}
+
+#resultado{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    background:#e8f0fe;
+    border-radius:8px;
+    color:#1a56db;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.voltar{
+    display:inline-block;
+    margin-top:20px;
+    text-decoration:none;
+    color:#1a56db;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>🏠 Calculadora de ITBI</h1>
+
+<label>Valor do imóvel (R$)</label>
+<input type="number" id="valor" placeholder="Ex: 250000">
+
+<label>Alíquota (%)</label>
+<input type="number" id="aliquota" value="3">
+
+<button onclick="calcularITBI()">
+Calcular ITBI
+</button>
+
+<div id="resultado"></div>
+
+<a href="ferramentas.html" class="voltar">
+← Voltar para Ferramentas
+</a>
+
+</div>
+
+<script>
+
+function calcularITBI() {
+
+    const valor =
+        parseFloat(document.getElementById("valor").value);
+
+    const aliquota =
+        parseFloat(document.getElementById("aliquota").value);
+
+    if(isNaN(valor) || valor <= 0){
+        alert("Informe o valor do imóvel.");
+        return;
+    }
+
+    const itbi =
+        (valor * aliquota) / 100;
+
+    const resultado =
+        document.getElementById("resultado");
+
+    resultado.style.display = "block";
+
+    resultado.innerHTML =
+        "ITBI estimado: R$ " +
+        itbi.toLocaleString(
+            "pt-BR",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+</script>
+
+</body>
+</html>
