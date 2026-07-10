@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos Digitais | Clodoaldo Fernandes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #1a56db;
+      --azul-escuro: #1340a8;
+      --azul-claro: #e8f0fe;
+      --cinza-borda: #e5e7eb;
+      --cinza-texto: #555;
+      --cinza-fundo: #f8faff;
+      --preto: #111;
+      --branco: #fff;
+      --radius: 14px;
+      --sombra: 0 8px 32px rgba(26,86,219,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--cinza-fundo);
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+    }
+
+    header .header-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 1.5rem;
+    }
+
+    header .header-badges {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .header-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .secao-titulo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--preto);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .secao-titulo::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--cinza-borda);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--sombra);
+      border-color: rgba(26,86,219,0.2);
+    }
+
+    .card.destaque {
+      border: 2px solid var(--azul);
+    }
+
+    .card.em-breve {
+      border: 2px solid #f4b400;
+      opacity: 0.85;
+    }
+
+    .card-icon { font-size: 2rem; }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--preto);
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--cinza-texto);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .selo {
+      display: inline-block;
+      background: #fde68a;
+      color: #92400e;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      width: fit-content;
+      letter-spacing: 0.3px;
+    }
+
+    .selo.azul {
+      background: var(--azul-claro);
+      color: var(--azul);
+    }
+
+    .selo.verde {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.4rem;
+      background: var(--azul);
+      color: white;
+      text-decoration: none;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: background 0.2s, transform 0.2s;
+      width: fit-content;
+    }
+
+    .btn:hover {
+      background: var(--azul-escuro);
+      transform: translateY(-1px);
+    }
+
+    .btn.cinza {
+      background: #f3f4f6;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    .btn.cinza:hover {
+      background: #f3f4f6;
+      transform: none;
+    }
+
+    .btn.escuro {
+      background: #0f172a;
+    }
+
+    .btn.escuro:hover { background: #1e293b; }
+
+    .btn.amarelo {
+      background: #f4b400;
+      color: #0f172a;
+    }
+
+    .btn.amarelo:hover { background: #d4a000; }
+
+    .rodape {
+      text-align: center;
+      margin-top: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--cinza-borda);
+    }
+
+    .voltar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--azul);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .voltar:hover { opacity: 0.7; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.6rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-icon">🛒</div>
+  <h1>Produtos Digitais</h1>
+  <p>Materiais profissionais desenvolvidos por Clodoaldo Fernandes</p>
+  <div class="header-badges">
+    <span class="header-badge">🏠 Imobiliário</span>
+    <span class="header-badge">💻 Tecnologia</span>
+    <span class="header-badge">📊 Gestão</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- FERRAMENTAS DIGITAIS -->
+  <div class="secao-titulo">🔧 Ferramentas gratuitas</div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-icon">🧮</div>
+      <span class="selo verde">✓ Disponível</span>
+      <h3>Calculadora de Financiamento</h3>
+      <p>Simule financiamentos imobiliários pelos sistemas SAC e PRICE, com subsídio do Minha Casa Minha Vida e tabela completa de amortização.</p>
+      <a href="calculadora.html" class="btn">Acessar calculadora →</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <span class="selo verde">✓ Disponível</span>
+      <h3>Gerador de Contrato de Compra e Venda</h3>
+      <p>Gere contratos imobiliários profissionais com base no Código Civil, prontos para imprimir ou salvar como PDF.</p>
+      <a href="contrato-compra-venda.html" class="btn escuro">Gerar contrato →</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <span class="selo verde">✓ Disponível</span>
+      <h3>Calculadora de ITBI</h3>
+      <p>Calcule rapidamente o valor do ITBI do imóvel com base na alíquota do município e valor venal ou de transação.</p>
+      <a href="calculadora-itbi.html" class="btn">Calcular ITBI →</a>
+    </div>
+
+  </div>
+
+  <!-- PRODUTOS EM BREVE -->
+  <div class="secao-titulo">🔒 Produtos em desenvolvimento</div>
+  <div class="grid">
+
+    <div class="card em-breve">
+      <div class="card-icon">📋</div>
+      <span class="selo">Em breve</span>
+      <h3>Kit de Contratos Imobiliários</h3>
+      <p>Modelos completos de compra e venda, locação residencial e comercial, recibos, procurações e documentos imobiliários profissionais.</p>
+      <span class="btn cinza">🔒 Em desenvolvimento</span>
+    </div>
+
+    <div class="card em-breve">
+      <div class="card-icon">✅</div>
+      <span class="selo">Em breve</span>
+      <h3>Checklists Imobiliários</h3>
+      <p>Checklists completos para compradores, vendedores e corretores — documentação, visitas, negociação e fechamento.</p>
+      <span class="btn cinza">🔒 Em desenvolvimento</span>
+    </div>
+
+    <div class="card em-breve">
+      <div class="card-icon">📊</div>
+      <span class="selo">Em breve</span>
+      <h3>Planilhas para Corretores</h3>
+      <p>Controle de clientes, imóveis, comissões, visitas e metas. Gestão completa da sua carteira imobiliária.</p>
+      <span class="btn cinza">🔒 Em desenvolvimento</span>
+    </div>
+
+    <div class="card em-breve">
+      <div class="card-icon">⚙️</div>
+      <span class="selo">Em breve</span>
+      <h3>CRM Imobiliário</h3>
+      <p>Sistema completo de gestão de clientes, imóveis e negociações. Software desenvolvido especialmente para corretores.</p>
+      <span class="btn cinza">🔒 Em desenvolvimento</span>
+    </div>
+
+  </div>
+
+  <!-- SERVIÇOS -->
+  <div class="secao-titulo">💼 Serviços personalizados</div>
+  <div class="grid">
+
+    <div class="card destaque">
+      <div class="card-icon">💻</div>
+      <span class="selo azul">Aceito encomendas</span>
+      <h3>Criação de Sites Profissionais</h3>
+      <p>Sites modernos e profissionais para corretores, imobiliárias, empresas e profissionais liberais. Com formulário de contato, calculadoras e muito mais.</p>
+      <a href="index.html#contato" class="btn">Solicitar orçamento →</a>
+    </div>
+
+    <div class="card destaque">
+      <div class="card-icon">🎨</div>
+      <span class="selo azul">Disponível na Etsy</span>
+      <h3>Templates Canva Imobiliários</h3>
+      <p>Templates profissionais para Instagram e marketing imobiliário, pensados para corretores que querem se destacar nas redes sociais.</p>
+      <a href="https://www.etsy.com" target="_blank" rel="noopener" class="btn amarelo">Visitar loja Etsy →</a>
+    </div>
+
+  </div>
+
+  <div class="rodape">
+    <a href="index.html" class="voltar">← Voltar para o site principal</a>
+  </div>
+
+</div>
+
+</body>
+</html>
