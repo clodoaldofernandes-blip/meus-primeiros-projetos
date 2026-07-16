@@ -49,6 +49,28 @@ header p{
 }
 
 .container{
+    .dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.dashboard-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    border:1px solid var(--cinza-borda);
+    box-shadow:var(--sombra);
+}
+
+.dashboard-card h3{
+    font-size:2rem;
+    color:var(--azul);
+    margin-bottom:5px;
+}
+
     max-width:1200px;
     margin:auto;
     padding:40px 20px;
@@ -144,6 +166,23 @@ button:hover{
     font-size:.92rem;
 }
 
+.btn-whatsapp{
+    display:inline-block;
+    margin-top:8px;
+    margin-right:8px;
+    background:#25d366;
+    color:white;
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:.85rem;
+    font-weight:600;
+}
+
+.btn-whatsapp:hover{
+    background:#1da851;
+}
+
 .excluir{
     margin-top:10px;
     background:#dc2626;
@@ -190,6 +229,30 @@ Organize clientes, visitas e oportunidades imobiliárias pelo celular.
 </header>
 
 <div class="container">
+
+    <div class="dashboard">
+
+    <div class="dashboard-card">
+        <h3 id="totalClientes">0</h3>
+        <p>👥 Clientes</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalCompradores">0</h3>
+        <p>🏠 Compradores</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalVendedores">0</h3>
+        <p>🏡 Vendedores</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalFotos">0</h3>
+        <p>📸 Fotos</p>
+    </div>
+
+</div>
 
 <div class="grid">
 
@@ -241,6 +304,12 @@ Salvar Cliente
 
 <h2>👥 Clientes Cadastrados</h2>
 
+<input
+type="text"
+id="pesquisa"
+placeholder="🔍 Pesquisar cliente..."
+onkeyup="renderizar()">
+
 <div id="clientes" class="lista-clientes"></div>
 
 </div>
@@ -263,6 +332,35 @@ function renderizar(){
 const lista =
 document.getElementById("clientes");
 
+const busca =
+document.getElementById("pesquisa")
+? document.getElementById("pesquisa").value.toLowerCase()
+: "";
+
+const compradores =
+clientes.filter(c => c.tipo === "Comprador").length;
+
+const vendedores =
+clientes.filter(c => c.tipo === "Vendedor").length;
+
+const fotos =
+clientes.reduce(
+(total,c) => total + (c.fotos ? c.fotos.length : 0),
+0
+);
+
+document.getElementById("totalClientes").textContent =
+clientes.length;
+
+document.getElementById("totalCompradores").textContent =
+compradores;
+
+document.getElementById("totalVendedores").textContent =
+vendedores;
+
+document.getElementById("totalFotos").textContent =
+fotos;
+
 if(clientes.length === 0){
 
 lista.innerHTML =
@@ -273,7 +371,11 @@ return;
 
 lista.innerHTML = "";
 
-clientes.forEach((cliente,index)=>{
+clientes
+.filter(cliente =>
+cliente.nome.toLowerCase().includes(busca)
+)
+.forEach((cliente,index)=>{
 
 lista.innerHTML += `
 <div class="cliente">
@@ -293,6 +395,13 @@ ${cliente.fotos.map(foto => `
 
 <div class="info">📞 ${cliente.telefone}</div>
 
+<a
+href="https://wa.me/55${cliente.telefone}"
+target="_blank"
+class="btn-whatsapp">
+📱 WhatsApp
+</a>
+
 <div class="info">🏠 ${cliente.tipo}</div>
 
 <div class="info">📌 ${cliente.status}</div>
@@ -304,6 +413,11 @@ ${cliente.fotos.map(foto => `
 <div class="info">📅 ${cliente.dataCadastro}</div>
 
 <div class="info">📝 ${cliente.obs}</div>
+
+<button
+onclick="editarCliente(${index})">
+✏️ Editar
+</button>
 
 <button
 class="excluir"
@@ -380,16 +494,58 @@ renderizar();
 
 function excluirCliente(indice){
 
-clientes.splice(indice,1);
+    clientes.splice(indice,1);
 
-localStorage.setItem(
-"clientesCF",
-JSON.stringify(clientes)
-);
+    localStorage.setItem(
+        "clientesCF",
+        JSON.stringify(clientes)
+    );
 
-renderizar();
+    renderizar();
 
 }
+
+function editarCliente(indice){
+
+    const cliente = clientes[indice];
+
+    document.getElementById("nome").value =
+    cliente.nome;
+
+    document.getElementById("telefone").value =
+    cliente.telefone;
+
+    document.getElementById("tipo").value =
+    cliente.tipo;
+
+    document.getElementById("status").value =
+    cliente.status;
+
+    document.getElementById("valor").value =
+    cliente.valor;
+
+    document.getElementById("bairro").value =
+    cliente.bairro;
+
+    document.getElementById("obs").value =
+    cliente.obs;
+
+    clientes.splice(indice,1);
+
+    localStorage.setItem(
+        "clientesCF",
+        JSON.stringify(clientes)
+    );
+
+    renderizar();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
 
 renderizar();
 
