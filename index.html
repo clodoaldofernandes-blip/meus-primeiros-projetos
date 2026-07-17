@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>Clodoaldo Fernandes — Corretor de Imóveis & Desenvolvedor</title>
-  <meta name="description" content="Corretor de Imóveis (CRECI 14.464-F) e Analista de Sistemas em João Pessoa/PB. Soluções imobiliárias personalizadas e desenvolvimento de sistemas web.">
-  <meta name="keywords" content="Corretor de imóveis, João Pessoa, CRECI 14464, Analista de Sistemas, Desenvolvedor Web, Contrato de compra e venda, Calculadora de financiamento">
+  <meta name="description"
+    content="Corretor de Imóveis (CRECI 14.464-F) e Analista de Sistemas em João Pessoa/PB. Soluções imobiliárias personalizadas e desenvolvimento de sistemas web.">
+  <meta name="keywords"
+    content="Corretor de imóveis, João Pessoa, CRECI 14464, Analista de Sistemas, Desenvolvedor Web, Contrato de compra e venda, Calculadora de financiamento">
   <meta name="author" content="Clodoaldo Fernandes">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://clodoaldofernandes.com.br/">
   <meta property="og:title" content="Clodoaldo Fernandes — Corretor & Desenvolvedor">
-  <meta property="og:description" content="Encontre o seu imóvel ideal ou desenvolva o seu sistema web com um profissional especializado.">
+  <meta property="og:description"
+    content="Encontre o seu imóvel ideal ou desenvolva o seu sistema web com um profissional especializado.">
   <meta property="og:image" content="https://clodoaldofernandes.com.br/foto-perfil.jpeg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="shortcut icon" href="foto-perfil.jpeg" type="image/x-icon">
 
   <style>
@@ -32,13 +36,20 @@
       --preto: #111;
       --branco: #fff;
       --instagram: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      --sombra: 0 8px 32px rgba(26,86,219,0.12);
+      --sombra: 0 8px 32px rgba(26, 86, 219, 0.12);
       --radius: 14px;
       --transition: 0.25s ease;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'Inter', 'Segoe UI', sans-serif;
@@ -49,8 +60,10 @@
 
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(255,255,255,0.95);
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--cinza-borda);
       display: flex;
@@ -61,7 +74,9 @@
       transition: box-shadow var(--transition);
     }
 
-    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+    nav.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    }
 
     .logo {
       font-size: 1.3rem;
@@ -70,7 +85,11 @@
       letter-spacing: -0.5px;
     }
 
-    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
 
     nav ul a {
       text-decoration: none;
@@ -85,17 +104,30 @@
     nav ul a::after {
       content: '';
       position: absolute;
-      bottom: -2px; left: 0;
-      width: 0; height: 2px;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
       background: var(--azul);
       border-radius: 2px;
       transition: width var(--transition);
     }
 
-    nav ul a:hover { color: var(--azul); }
-    nav ul a:hover::after { width: 100%; }
-    nav ul a.ativo { color: var(--azul); }
-    nav ul a.ativo::after { width: 100%; }
+    nav ul a:hover {
+      color: var(--azul);
+    }
+
+    nav ul a:hover::after {
+      width: 100%;
+    }
+
+    nav ul a.ativo {
+      color: var(--azul);
+    }
+
+    nav ul a.ativo::after {
+      width: 100%;
+    }
 
     #inicio {
       min-height: 100vh;
@@ -112,21 +144,24 @@
     #inicio::before {
       content: '';
       position: absolute;
-      top: -100px; right: -100px;
-      width: 400px; height: 400px;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(26,86,219,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(26, 86, 219, 0.06) 0%, transparent 70%);
       pointer-events: none;
     }
 
     .hero-avatar-img {
-      width: 120px; height: 120px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
       border: 4px solid var(--azul);
       margin: 0 auto 1.5rem;
       display: block;
-      box-shadow: 0 0 0 8px rgba(26,86,219,0.1);
+      box-shadow: 0 0 0 8px rgba(26, 86, 219, 0.1);
       animation: fadeDown 0.7s ease both;
     }
 
@@ -138,7 +173,9 @@
       animation: fadeDown 0.7s 0.1s ease both;
     }
 
-    #inicio h1 span { color: var(--azul); }
+    #inicio h1 span {
+      color: var(--azul);
+    }
 
     #inicio p {
       font-size: 1.05rem;
@@ -148,8 +185,10 @@
     }
 
     .badges {
-      display: flex; gap: 0.6rem;
-      justify-content: center; flex-wrap: wrap;
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
       margin-top: 1.5rem;
       animation: fadeDown 0.7s 0.3s ease both;
     }
@@ -164,14 +203,18 @@
     }
 
     .hero-buttons {
-      display: flex; gap: 1rem;
-      justify-content: center; flex-wrap: wrap;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
       margin-top: 2rem;
       animation: fadeDown 0.7s 0.4s ease both;
     }
 
     .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       padding: 0.85rem 2rem;
       background: var(--azul);
       color: var(--branco);
@@ -180,17 +223,19 @@
       font-weight: 600;
       font-size: 0.95rem;
       transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
-      box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+      box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
     }
 
     .btn:hover {
       background: var(--azul-escuro);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(26,86,219,0.4);
+      box-shadow: 0 6px 20px rgba(26, 86, 219, 0.4);
     }
 
     .btn-outline {
-      display: inline-flex; align-items: center; gap: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       padding: 0.85rem 2rem;
       background: var(--branco);
       color: var(--azul);
@@ -223,7 +268,8 @@
     }
 
     .section-line {
-      width: 48px; height: 4px;
+      width: 48px;
+      height: 4px;
       background: var(--azul);
       border-radius: 2px;
       margin-bottom: 2.5rem;
@@ -240,7 +286,9 @@
       transform: translateY(0);
     }
 
-    #sobre { background: var(--branco); }
+    #sobre {
+      background: var(--branco);
+    }
 
     .sobre-grid {
       display: grid;
@@ -273,12 +321,18 @@
       padding-left: 1rem;
     }
 
-    .linha-esquerda p, .linha-esquerda-cinza p {
+    .linha-esquerda p,
+    .linha-esquerda-cinza p {
       font-size: 0.9rem;
       margin-bottom: 0.25rem;
     }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
 
     .tag {
       display: inline-block;
@@ -290,7 +344,9 @@
       font-weight: 600;
     }
 
-    #servicos { background: var(--cinza-fundo); }
+    #servicos {
+      background: var(--cinza-fundo);
+    }
 
     .cards-grid {
       display: grid;
@@ -310,12 +366,26 @@
     .card:hover {
       box-shadow: var(--sombra);
       transform: translateY(-5px);
-      border-color: rgba(26,86,219,0.2);
+      border-color: rgba(26, 86, 219, 0.2);
     }
 
-    .card-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
-    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--preto); }
-    .card p { font-size: 0.87rem; color: #666; line-height: 1.65; }
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--preto);
+    }
+
+    .card p {
+      font-size: 0.87rem;
+      color: #666;
+      line-height: 1.65;
+    }
 
     .imovel-destaque {
       margin-top: 2.5rem;
@@ -326,8 +396,10 @@
     }
 
     .imovel-destaque img {
-      width: 100%; height: 300px;
-      object-fit: cover; display: block;
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
     }
 
     .imovel-destaque-texto {
@@ -336,15 +408,21 @@
     }
 
     .imovel-destaque-texto h3 {
-      font-size: 1rem; font-weight: 700;
-      color: var(--preto); margin-bottom: 0.3rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--preto);
+      margin-bottom: 0.3rem;
     }
 
     .imovel-destaque-texto p {
-      font-size: 0.88rem; color: #666; line-height: 1.6;
+      font-size: 0.88rem;
+      color: #666;
+      line-height: 1.6;
     }
 
-    #portfolio { background: var(--branco); }
+    #portfolio {
+      background: var(--branco);
+    }
 
     .portfolio-grid {
       display: grid;
@@ -364,7 +442,9 @@
       transform: translateY(-5px);
     }
 
-    .proj-card.destaque { border: 2px solid var(--azul); }
+    .proj-card.destaque {
+      border: 2px solid var(--azul);
+    }
 
     .proj-header {
       background: var(--azul);
@@ -372,9 +452,14 @@
       color: var(--branco);
     }
 
-    .proj-card.destaque .proj-header { background: #0f172a; }
+    .proj-card.destaque .proj-header {
+      background: #0f172a;
+    }
 
-    .proj-header-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .proj-header-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.4rem;
+    }
 
     .proj-header h3 {
       font-size: 0.95rem;
@@ -382,7 +467,9 @@
       margin-top: 0.25rem;
     }
 
-    .proj-body { padding: 1rem 1.5rem 1.5rem; }
+    .proj-body {
+      padding: 1rem 1.5rem 1.5rem;
+    }
 
     .proj-body p {
       font-size: 0.88rem;
@@ -393,8 +480,10 @@
 
     .selo {
       display: inline-block;
-      background: #fde68a; color: #92400e;
-      font-size: 0.68rem; font-weight: 700;
+      background: #fde68a;
+      color: #92400e;
+      font-size: 0.68rem;
+      font-weight: 700;
       padding: 0.2rem 0.6rem;
       border-radius: 999px;
       margin-bottom: 0.5rem;
@@ -423,9 +512,13 @@
       background: #0f172a;
     }
 
-    .proj-link.dark:hover { background: #1e293b; }
+    .proj-link.dark:hover {
+      background: #1e293b;
+    }
 
-    #contato { background: var(--cinza-fundo); }
+    #contato {
+      background: var(--cinza-fundo);
+    }
 
     .contato-inner {
       background: var(--branco);
@@ -435,7 +528,9 @@
       border: 1px solid var(--cinza-borda);
     }
 
-    .form-group { margin-bottom: 1.25rem; }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
 
     .form-group label {
       display: block;
@@ -461,14 +556,14 @@
     .form-group input:focus,
     .form-group textarea:focus {
       border-color: var(--azul);
-      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+      box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
       background: var(--branco);
     }
 
     .form-group input.erro,
     .form-group textarea.erro {
       border-color: #e53e3e;
-      box-shadow: 0 0 0 3px rgba(229,62,62,0.1);
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
     }
 
     .form-group .erro-msg {
@@ -478,7 +573,10 @@
       display: none;
     }
 
-    .form-group textarea { height: 130px; resize: vertical; }
+    .form-group textarea {
+      height: 130px;
+      resize: vertical;
+    }
 
     .btn-enviar {
       background: var(--azul);
@@ -490,21 +588,25 @@
       font-weight: 600;
       cursor: pointer;
       transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
-      box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+      box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
       font-family: inherit;
     }
 
     .btn-enviar:hover:not(:disabled) {
       background: var(--azul-escuro);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(26,86,219,0.4);
+      box-shadow: 0 6px 20px rgba(26, 86, 219, 0.4);
     }
 
-    .btn-enviar:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-enviar:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     .msg-sucesso {
       display: none;
-      background: #d1fae5; color: #065f46;
+      background: #d1fae5;
+      color: #065f46;
       padding: 1rem 1.25rem;
       border-radius: 9px;
       margin-top: 1rem;
@@ -515,7 +617,8 @@
 
     .msg-erro-form {
       display: none;
-      background: #fee2e2; color: #991b1b;
+      background: #fee2e2;
+      color: #991b1b;
       padding: 1rem 1.25rem;
       border-radius: 9px;
       margin-top: 1rem;
@@ -532,32 +635,58 @@
       font-size: 0.85rem;
     }
 
-    footer span { color: var(--azul); }
+    footer span {
+      color: var(--azul);
+    }
 
     .social-links {
-      display: flex; justify-content: center; gap: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
       margin-bottom: 1rem;
     }
 
     .social-links a {
       color: var(--branco);
-      width: 46px; height: 46px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
       transition: transform var(--transition), opacity var(--transition);
     }
 
-    .social-links a.insta-link { background: var(--instagram); }
-    .social-links a:hover { transform: scale(1.15); opacity: 0.9; }
+    .social-links a.insta-link {
+      background: var(--instagram);
+    }
+
+    .social-links a:hover {
+      transform: scale(1.15);
+      opacity: 0.9;
+    }
 
     @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .reveal, .hero-avatar-img, #inicio h1, #inicio p, .badges, .hero-buttons {
+
+      .reveal,
+      .hero-avatar-img,
+      #inicio h1,
+      #inicio p,
+      .badges,
+      .hero-buttons {
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
@@ -566,6 +695,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav id="navbar">
@@ -596,7 +726,8 @@
         <a href="#sobre" class="btn">Conheça meu trabalho</a>
         <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" class="btn-outline">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            <path
+              d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
           </svg>
           Siga no Instagram
         </a>
@@ -612,16 +743,21 @@
       <div class="sobre-grid reveal">
         <div class="sobre-bloco">
           <h3>🏠 Corretor & Perito</h3>
-          <p>Com o CRECI 14.464-F, atuo como corretor de imóveis e avaliador judicial em João Pessoa/PB. Tenho experiência em compra, venda, locação e laudos técnicos para processos judiciais.</p>
-          <p>Sou especialista em <strong>documentação imobiliária</strong> — análise de escrituras, matrículas, certidões, inventários, usucapião e regularização de imóveis, garantindo segurança jurídica em todas as transações.</p>
-          <p>Também sou empreendedor digital à frente da <strong>PropTechTemplates</strong>, loja na Etsy com templates de marketing imobiliário para corretores americanos.</p>
+          <p>Com o CRECI 14.464-F, atuo como corretor de imóveis e avaliador judicial em João Pessoa/PB. Tenho
+            experiência em compra, venda, locação e laudos técnicos para processos judiciais.</p>
+          <p>Sou especialista em <strong>documentação imobiliária</strong> — análise de escrituras, matrículas,
+            certidões, inventários, usucapião e regularização de imóveis, garantindo segurança jurídica em todas as
+            transações.</p>
+          <p>Também sou empreendedor digital à frente da <strong>PropTechTemplates</strong>, loja na Etsy com templates
+            de marketing imobiliário para corretores americanos.</p>
         </div>
         <div class="sobre-bloco">
           <h3>💻 Analista e Desenvolvedor de Sistemas</h3>
           <div class="linha-esquerda">
             <p><strong>Análise e Desenvolvimento de Sistemas</strong></p>
             <p style="color:#666; font-size:0.88rem; margin-top:0.2rem;">Faculdade SECTRAS · 4º Semestre</p>
-            <p style="color:#666; font-size:0.88rem; margin-top:0.5rem;">Desenvolvo sites, sistemas web e soluções de presença digital para negócios de qualquer setor, unindo programação com visão estratégica de mercado.</p>
+            <p style="color:#666; font-size:0.88rem; margin-top:0.5rem;">Desenvolvo sites, sistemas web e soluções de
+              presença digital para negócios de qualquer setor, unindo programação com visão estratégica de mercado.</p>
           </div>
           <div class="linha-esquerda-cinza" style="margin-top:1rem;">
             <p><strong>Habilidades Técnicas</strong></p>
@@ -648,7 +784,8 @@
         <div class="card">
           <div class="card-icon">🏡</div>
           <h3>Compra e Venda</h3>
-          <p>Intermediação profissional na compra e venda de imóveis residenciais e comerciais em João Pessoa e região.</p>
+          <p>Intermediação profissional na compra e venda de imóveis residenciais e comerciais em João Pessoa e região.
+          </p>
         </div>
         <div class="card">
           <div class="card-icon">🔑</div>
@@ -663,7 +800,8 @@
         <div class="card">
           <div class="card-icon">📄</div>
           <h3>Documentação</h3>
-          <p>Análise de escrituras, matrículas, certidões, inventários, usucapião e regularização com segurança jurídica.</p>
+          <p>Análise de escrituras, matrículas, certidões, inventários, usucapião e regularização com segurança
+            jurídica.</p>
         </div>
         <div class="card">
           <div class="card-icon">💻</div>
@@ -701,7 +839,8 @@
             <h3>Desenvolvimento & Presença Digital</h3>
           </div>
           <div class="proj-body">
-            <p>Desenvolvo sites, sistemas web e soluções digitais para negócios, profissionais autônomos e marcas pessoais de qualquer setor.</p>
+            <p>Desenvolvo sites, sistemas web e soluções digitais para negócios, profissionais autônomos e marcas
+              pessoais de qualquer setor.</p>
             <div class="tags">
               <span class="tag">Sites institucionais</span>
               <span class="tag">Landing pages</span>
@@ -717,7 +856,8 @@
             <h3>Calculadora de Financiamento</h3>
           </div>
           <div class="proj-body">
-            <p>Simule financiamentos pelo sistema SAC ou PRICE com tabela completa de amortização e subsídio da Caixa.</p>
+            <p>Simule financiamentos pelo sistema SAC ou PRICE com tabela completa de amortização e subsídio da Caixa.
+            </p>
             <div class="tags">
               <span class="tag">JavaScript</span>
               <span class="tag">SAC</span>
@@ -735,7 +875,8 @@
             <h3>Gerador de Contrato de Compra e Venda</h3>
           </div>
           <div class="proj-body">
-            <p>Gere contratos de compra e venda imobiliária profissionais, com base no Código Civil, prontos para imprimir ou salvar em PDF.</p>
+            <p>Gere contratos de compra e venda imobiliária profissionais, com base no Código Civil, prontos para
+              imprimir ou salvar em PDF.</p>
             <div class="tags">
               <span class="tag">Código Civil</span>
               <span class="tag">PDF</span>
@@ -751,7 +892,8 @@
             <h3>Site Pessoal</h3>
           </div>
           <div class="proj-body">
-            <p>Este site! Desenvolvido com HTML, CSS e JavaScript como projeto de aprendizado e vitrine profissional.</p>
+            <p>Este site! Desenvolvido com HTML, CSS e JavaScript como projeto de aprendizado e vitrine profissional.
+            </p>
             <div class="tags">
               <span class="tag">HTML</span>
               <span class="tag">CSS</span>
@@ -767,7 +909,8 @@
             <h3>Templates Imobiliários</h3>
           </div>
           <div class="proj-body">
-            <p>Templates editáveis para Instagram voltados a corretores americanos. Disponível na PropTechTemplates (Etsy).</p>
+            <p>Templates editáveis para Instagram voltados a corretores americanos. Disponível na PropTechTemplates
+              (Etsy).</p>
             <div class="tags">
               <span class="tag">Canva</span>
               <span class="tag">Design</span>
@@ -775,66 +918,76 @@
             </div>
           </div>
         </div>
-      <div class="proj-card">
+        <div class="proj-card">
 
-  <div class="proj-header">
+          <div class="proj-header">
 
-    <div class="proj-header-icon">🛠️</div>
+            <div class="proj-header-icon">🛠️</div>
 
-    <h3>Central de Ferramentas</h3>
+            <h3>Central de Ferramentas</h3>
 
-  </div>
+          </div>
 
-  <div class="proj-body">
+          <div class="proj-body">
 
-    <p>
-      Acesse todas as ferramentas imobiliárias desenvolvidas por Clodoaldo Fernandes.
-    </p>
+            <p>
+              Acesse todas as ferramentas imobiliárias desenvolvidas por Clodoaldo Fernandes.
+            </p>
 
-    <div class="tags">
-      <span class="tag">ITBI</span>
-      <span class="tag">Financiamento</span>
-      <span class="tag">Contratos</span>
-      <span class="tag">Calculadoras</span>
-    </div>
+            <div class="tags">
+              <span class="tag">ITBI</span>
+              <span class="tag">Financiamento</span>
+              <span class="tag">Contratos</span>
+              <span class="tag">Calculadoras</span>
+            </div>
 
-    <a href="ferramentas.html" class="proj-link">
-      🛠️ Acessar Ferramentas →
-    </a>
+            <a href="ferramentas.html" class="proj-link">
+              🛠️ Acessar Ferramentas →
+            </a>
 
-  </div>
+          </div>
 
-</div>
-<div class="proj-card">
+        </div>
+        <div class="proj-card">
 
-  <div class="proj-header">
+          <div class="proj-header">
 
-    <div class="proj-header-icon">🏠</div>
+            <div class="proj-header-icon">🏠</div>
 
-    <h3>Cliente Fácil</h3>
+            <h3>Cliente Fácil</h3>
 
-  </div>
+          </div>
 
-  <div class="proj-body">
+          <div class="proj-body">
 
-    <p>
-      Organize clientes, visitas e oportunidades imobiliárias diretamente pelo celular.
-    </p>
+            <p>
+              Organize clientes, visitas e oportunidades imobiliárias diretamente pelo celular.
+            </p>
 
-    <div class="tags">
-      <span class="tag">Clientes</span>
-      <span class="tag">Fotos</span>
-      <span class="tag">Status</span>
-      <span class="tag">Imobiliário</span>
-    </div>
+            <p style="font-weight:700;color:#16a34a;margin-top:10px;">
+              🎁 Teste grátis com até 2 clientes cadastrados
+            </p>
 
-    <a href="cliente-facil.html" class="proj-link">
-      🏠 Acessar Sistema →
-    </a>
+            <div class="tags">
+              <span class="tag">Clientes</span>
+              <span class="tag">Fotos</span>
+              <span class="tag">Status</span>
+              <span class="tag">Imobiliário</span>
+            </div>
 
-  </div>
+            <a href="cliente-facil.html" class="proj-link">
+    🎁 Testar Gratuitamente
+</a>
 
-</div>
+<br><br>
+
+<a href="pro/" class="proj-link">
+    🚀 Conhecer Plano PRO
+</a>
+
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
@@ -871,9 +1024,11 @@
 
   <footer>
     <div class="social-links">
-      <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" class="insta-link" aria-label="Instagram">
+      <a href="https://instagram.com/clodoaldofernandesimoveis" target="_blank" rel="noopener" class="insta-link"
+        aria-label="Instagram">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          <path
+            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
         </svg>
       </a>
     </div>
@@ -889,7 +1044,7 @@
 
     const navLinks = document.querySelectorAll('nav ul a');
     window.addEventListener('scroll', () => {
-      const secoes = ['inicio','sobre','servicos','portfolio','contato'];
+      const secoes = ['inicio', 'sobre', 'servicos', 'portfolio', 'contato'];
       let atual = '';
       secoes.forEach(id => {
         const el = document.getElementById(id);
@@ -930,7 +1085,7 @@
       return true;
     }
 
-    ['nome','email','mensagem'].forEach(id => {
+    ['nome', 'email', 'mensagem'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
         document.getElementById(id).classList.remove('erro');
         const erroEl = document.getElementById('erro' + id.charAt(0).toUpperCase() + id.slice(1));
@@ -938,7 +1093,7 @@
       });
     });
 
-    form.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
       msgSucesso.style.display = 'none';
       msgErro.style.display = 'none';
@@ -975,4 +1130,5 @@
   </script>
 
 </body>
+
 </html>
