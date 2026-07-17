@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Corretor Fácil | Gestão de Clientes Imobiliários</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+    --azul:#1a56db;
+    --azul-escuro:#1340a8;
+    --azul-claro:#e8f0fe;
+    --cinza:#f8faff;
+    --cinza-borda:#e5e7eb;
+    --texto:#555;
+    --preto:#111;
+    --branco:#fff;
+    --sombra:0 8px 32px rgba(26,86,219,.12);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--cinza);
+}
+
+header{
+    background:linear-gradient(135deg,#0f172a 0%,#1a56db 100%);
+    color:white;
+    text-align:center;
+    padding:60px 20px;
+}
+
+header h1{
+    font-size:2.2rem;
+    margin-bottom:10px;
+}
+
+header p{
+    opacity:.9;
+}
+
+.container{
+    .dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.dashboard-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    border:1px solid var(--cinza-borda);
+    box-shadow:var(--sombra);
+}
+
+.dashboard-card h3{
+    font-size:2rem;
+    color:var(--azul);
+    margin-bottom:5px;
+}
+
+    max-width:1200px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+}
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:var(--sombra);
+    border:1px solid var(--cinza-borda);
+}
+
+.card h2{
+    margin-bottom:20px;
+    font-size:1.1rem;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid var(--cinza-borda);
+    border-radius:8px;
+    font-family:inherit;
+}
+
+textarea{
+    min-height:100px;
+}
+
+button{
+    background:var(--azul);
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--azul-escuro);
+}
+
+.lista-clientes{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+.foto-cliente{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:10px;
+    margin:5px;
+    border:1px solid #ddd;
+}
+.galeria{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+}
+.cliente{
+    background:white;
+    border:1px solid var(--cinza-borda);
+    border-radius:12px;
+    padding:16px;
+}
+
+.cliente h3{
+    margin-bottom:10px;
+}
+
+.info{
+    margin:4px 0;
+    color:var(--texto);
+    font-size:.92rem;
+}
+
+.btn-whatsapp{
+    display:inline-block;
+    margin-top:8px;
+    margin-right:8px;
+    background:#25d366;
+    color:white;
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:.85rem;
+    font-weight:600;
+}
+
+.btn-whatsapp:hover{
+    background:#1da851;
+}
+
+.excluir{
+    margin-top:10px;
+    background:#dc2626;
+}
+
+.excluir:hover{
+    background:#b91c1c;
+}
+
+.vazio{
+    text-align:center;
+    color:#666;
+    margin-top:20px;
+}
+
+.voltar{
+    display:inline-block;
+    margin-top:30px;
+    text-decoration:none;
+    color:var(--azul);
+    font-weight:700;
+}
+
+@media(max-width:900px){
+
+.grid{
+    grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+
+<h1>🏠 Cliente Fácil</h1>
+
+<p>
+Organize clientes, visitas e oportunidades imobiliárias pelo celular.
+</p>
+
+</header>
+
+<div class="container">
+
+    <div class="dashboard">
+
+    <div class="dashboard-card">
+        <h3 id="totalClientes">0</h3>
+        <p>👥 Clientes</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalCompradores">0</h3>
+        <p>🏠 Compradores</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalVendedores">0</h3>
+        <p>🏡 Vendedores</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 id="totalFotos">0</h3>
+        <p>📸 Fotos</p>
+    </div>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>➕ Novo Cliente</h2>
+
+<label>Nome</label>
+<input type="text" id="nome">
+
+<label>WhatsApp</label>
+<input type="text" id="telefone">
+
+<label>Tipo de Cliente</label>
+<select id="tipo">
+<option>Comprador</option>
+<option>Vendedor</option>
+</select>
+
+<label>Status</label>
+
+<select id="status">
+    <option>Lead</option>
+    <option>Primeiro Contato</option>
+    <option>Em Atendimento</option>
+    <option>Visita Marcada</option>
+    <option>Proposta</option>
+    <option>Contrato</option>
+    <option>Concluído</option>
+</select>
+
+<label>Valor Desejado</label>
+<input type="text" id="valor">
+
+<label>Bairro</label>
+<input type="text" id="bairro">
+
+<label>Observações</label>
+<textarea id="obs"></textarea>
+<label>Foto do Cliente ou Imóvel</label>
+<<input type="file" id="foto" accept="image/*" multiple>
+<button onclick="salvarCliente()">
+Salvar Cliente
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>👥 Clientes Cadastrados</h2>
+
+<input
+type="text"
+id="pesquisa"
+placeholder="🔍 Pesquisar cliente..."
+onkeyup="renderizar()">
+
+<div id="clientes" class="lista-clientes"></div>
+
+</div>
+
+</div>
+
+<a href="index.html" class="voltar">
+← Voltar ao site principal
+</a>
+
+</div>
+
+<script>
+
+let clientes =
+JSON.parse(localStorage.getItem("clientesCF")) || [];
+
+function renderizar(){
+
+const lista =
+document.getElementById("clientes");
+
+const busca =
+document.getElementById("pesquisa")
+? document.getElementById("pesquisa").value.toLowerCase()
+: "";
+
+const compradores =
+clientes.filter(c => c.tipo === "Comprador").length;
+
+const vendedores =
+clientes.filter(c => c.tipo === "Vendedor").length;
+
+const fotos =
+clientes.reduce(
+(total,c) => total + (c.fotos ? c.fotos.length : 0),
+0
+);
+
+document.getElementById("totalClientes").textContent =
+clientes.length;
+
+document.getElementById("totalCompradores").textContent =
+compradores;
+
+document.getElementById("totalVendedores").textContent =
+vendedores;
+
+document.getElementById("totalFotos").textContent =
+fotos;
+
+if(clientes.length === 0){
+
+lista.innerHTML =
+'<div class="vazio">Nenhum cliente cadastrado.</div>';
+
+return;
+}
+
+lista.innerHTML = "";
+
+clientes
+.filter(cliente =>
+cliente.nome.toLowerCase().includes(busca)
+)
+.forEach((cliente,index)=>{
+
+lista.innerHTML += `
+<div class="cliente">
+
+<div class="cliente">
+
+${cliente.fotos
+? `<div class="galeria">
+${cliente.fotos.map(foto => `
+<img src="${foto}" class="foto-cliente">
+`).join("")}
+</div>`
+: ""}
+
+<h3>${cliente.nome}</h3>
+
+
+<div class="info">📞 ${cliente.telefone}</div>
+
+<a
+href="https://wa.me/55${cliente.telefone}"
+target="_blank"
+class="btn-whatsapp">
+📱 WhatsApp
+</a>
+
+<div class="info">🏠 ${cliente.tipo}</div>
+
+<div class="info">📌 ${cliente.status}</div>
+
+<div class="info">💰 ${cliente.valor}</div>
+
+<div class="info">📍 ${cliente.bairro}</div>
+
+<div class="info">📅 ${cliente.dataCadastro}</div>
+
+<div class="info">📝 ${cliente.obs}</div>
+
+<button
+onclick="editarCliente(${index})">
+✏️ Editar
+</button>
+
+<button
+class="excluir"
+onclick="excluirCliente(${index})">
+Excluir
+</button>
+
+</div>
+`;
+
+});
+
+}
+
+function salvarCliente(){
+
+const cliente = {
+
+nome:
+document.getElementById("nome").value,
+
+telefone:
+document.getElementById("telefone").value,
+
+tipo:
+document.getElementById("tipo").value,
+
+status:
+document.getElementById("status").value,
+
+dataCadastro:
+new Date().toLocaleString("pt-BR"),
+
+valor:
+document.getElementById("valor").value,
+
+bairro:
+document.getElementById("bairro").value,
+
+obs:
+document.getElementById("obs").value,
+fotos:
+Array.from(
+document.getElementById("foto").files
+).map(arquivo => URL.createObjectURL(arquivo))
+
+};
+
+if(cliente.nome.trim() === ""){
+
+alert("Informe o nome do cliente.");
+
+return;
+
+}
+
+clientes.push(cliente);
+
+localStorage.setItem(
+"clientesCF",
+JSON.stringify(clientes)
+);
+
+document.getElementById("nome").value="";
+document.getElementById("telefone").value="";
+document.getElementById("valor").value="";
+document.getElementById("bairro").value="";
+document.getElementById("obs").value="";
+document.getElementById("foto").value="";
+
+renderizar();
+
+}
+
+function excluirCliente(indice){
+
+    clientes.splice(indice,1);
+
+    localStorage.setItem(
+        "clientesCF",
+        JSON.stringify(clientes)
+    );
+
+    renderizar();
+
+}
+
+function editarCliente(indice){
+
+    const cliente = clientes[indice];
+
+    document.getElementById("nome").value =
+    cliente.nome;
+
+    document.getElementById("telefone").value =
+    cliente.telefone;
+
+    document.getElementById("tipo").value =
+    cliente.tipo;
+
+    document.getElementById("status").value =
+    cliente.status;
+
+    document.getElementById("valor").value =
+    cliente.valor;
+
+    document.getElementById("bairro").value =
+    cliente.bairro;
+
+    document.getElementById("obs").value =
+    cliente.obs;
+
+    clientes.splice(indice,1);
+
+    localStorage.setItem(
+        "clientesCF",
+        JSON.stringify(clientes)
+    );
+
+    renderizar();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+renderizar();
+
+</script>
+
+</body>
+</html>
