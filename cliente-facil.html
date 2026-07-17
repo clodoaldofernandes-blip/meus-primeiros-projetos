@@ -223,7 +223,7 @@ button:hover{
 <h1>🏠 Cliente Fácil</h1>
 
 <p>
-Organize clientes, visitas e oportunidades imobiliárias pelo celular.
+Organize clientes, visitas, contratos e oportunidades imobiliárias pelo celular e computador.
 </p>
 
 </header>
@@ -272,20 +272,31 @@ Organize clientes, visitas e oportunidades imobiliárias pelo celular.
 <option>Vendedor</option>
 </select>
 
-<label>Status</label>
+<label>Tipo de Contrato</label>
+
+<select id="contrato">
+    <option>Compra</option>
+    <option>Venda</option>
+    <option>Locação</option>
+    <option>Contrato de Gestão</option>
+    <option>Captação de Imóvel</option>
+    <option>Sem Contrato</option>
+</select>
+
+<label>Temperatura do Lead</label>
 
 <select id="status">
-    <option>Lead</option>
-    <option>Primeiro Contato</option>
-    <option>Em Atendimento</option>
-    <option>Visita Marcada</option>
-    <option>Proposta</option>
-    <option>Contrato</option>
-    <option>Concluído</option>
+    <option>🔴 Lead Frio (Sem Interesse)</option>
+<option>🟡 Lead Morno (Pouco Interesse)</option>
+<option>🟢 Lead Quente (Alto Interesse)</option>
+<option>🔵 Contrato Assinado</option>
 </select>
 
 <label>Valor Desejado</label>
-<input type="text" id="valor">
+<input
+type="text"
+id="valor"
+oninput="formatarMoeda(this)">
 
 <label>Bairro</label>
 <input type="text" id="bairro">
@@ -404,6 +415,8 @@ class="btn-whatsapp">
 
 <div class="info">🏠 ${cliente.tipo}</div>
 
+<div class="info">📄 ${cliente.contrato}</div>
+
 <div class="info">📌 ${cliente.status}</div>
 
 <div class="info">💰 ${cliente.valor}</div>
@@ -445,6 +458,9 @@ document.getElementById("telefone").value,
 tipo:
 document.getElementById("tipo").value,
 
+contrato:
+document.getElementById("contrato").value,
+
 status:
 document.getElementById("status").value,
 
@@ -452,7 +468,15 @@ dataCadastro:
 new Date().toLocaleString("pt-BR"),
 
 valor:
-document.getElementById("valor").value,
+Number(
+document.getElementById("valor").value
+).toLocaleString(
+"pt-BR",
+{
+style:"currency",
+currency:"BRL"
+}
+),
 
 bairro:
 document.getElementById("bairro").value,
@@ -498,6 +522,22 @@ document.getElementById("obs").value="";
 document.getElementById("foto").value="";
 
 renderizar();
+
+}
+
+function formatarMoeda(campo){
+
+    let valor = campo.value.replace(/\D/g,'');
+
+    valor = (Number(valor) / 100).toLocaleString(
+        "pt-BR",
+        {
+            style:"currency",
+            currency:"BRL"
+        }
+    );
+
+    campo.value = valor;
 
 }
 
