@@ -53,7 +53,7 @@ header p { opacity: .85; font-size: .95rem; }
   margin-bottom: 20px;
   font-size: .88rem;
   color: #92400e;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -120,7 +120,13 @@ header p { opacity: .85; font-size: .95rem; }
 
 .card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
 
-label { display: block; margin-bottom: 5px; font-weight: 600; font-size: .85rem; color: #333; }
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: .85rem;
+  color: #333;
+}
 
 input, select, textarea {
   width: 100%;
@@ -166,19 +172,26 @@ textarea { min-height: 80px; resize: vertical; }
   border: 1px solid var(--cinza-borda);
   border-radius: 12px;
   padding: 16px;
+  transition: box-shadow .2s;
 }
+
+.cliente:hover { box-shadow: var(--sombra); }
 
 .cliente-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 10px;
+  gap: .5rem;
+  flex-wrap: wrap;
 }
 
 .cliente h3 { font-size: 1rem; color: var(--preto); }
 
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
 .badge-tipo {
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 700;
   padding: .2rem .6rem;
   border-radius: 999px;
@@ -186,14 +199,13 @@ textarea { min-height: 80px; resize: vertical; }
   color: var(--azul);
 }
 
-.badge-status {
-  font-size: .7rem;
+.badge-temp {
+  font-size: .68rem;
   font-weight: 700;
   padding: .2rem .6rem;
   border-radius: 999px;
-  background: #d1fae5;
-  color: #065f46;
-  margin-left: 4px;
+  background: #f3f4f6;
+  color: #444;
 }
 
 .info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
@@ -221,7 +233,10 @@ textarea { min-height: 80px; resize: vertical; }
   border-radius: 8px;
   font-size: .82rem;
   font-weight: 600;
+  transition: background .2s;
 }
+
+.btn-whatsapp:hover { background: #1da851; }
 
 .btn-editar {
   background: #f3f4f6;
@@ -235,6 +250,8 @@ textarea { min-height: 80px; resize: vertical; }
   font-family: inherit;
 }
 
+.btn-editar:hover { background: #e5e7eb; }
+
 .btn-excluir {
   background: #fee2e2;
   color: var(--vermelho);
@@ -246,6 +263,8 @@ textarea { min-height: 80px; resize: vertical; }
   cursor: pointer;
   font-family: inherit;
 }
+
+.btn-excluir:hover { background: #fca5a5; }
 
 .vazio { text-align: center; color: #aaa; padding: 2rem 0; font-size: .9rem; }
 
@@ -270,6 +289,8 @@ textarea { min-height: 80px; resize: vertical; }
   font-size: .9rem;
 }
 
+.voltar:hover { opacity: .7; }
+
 @media (max-width: 768px) {
   .grid { grid-template-columns: 1fr; }
   header h1 { font-size: 1.5rem; }
@@ -286,7 +307,7 @@ textarea { min-height: 80px; resize: vertical; }
 
 <div class="container">
 
-  <div class="aviso-limite" id="avisoLimite" style="display:none;">
+  <div class="aviso-limite" id="avisoLimite">
     <div>
       <strong>🔒 Limite do teste gratuito atingido</strong>
       Você usou 2 de 2 clientes gratuitos. Faça o upgrade para cadastrar ilimitados.
@@ -297,7 +318,7 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="dashboard">
     <div class="dashboard-card">
       <h3 id="totalClientes">0</h3>
-      <p>👥 Clientes <span style="font-size:.7rem; color:#aaa;">(máx. 2)</span></p>
+      <p>👥 Clientes <span style="font-size:.7rem;color:#aaa;">(máx. 2)</span></p>
     </div>
     <div class="dashboard-card">
       <h3 id="totalCompradores">0</h3>
@@ -330,19 +351,26 @@ textarea { min-height: 80px; resize: vertical; }
         <option>Vendedor</option>
       </select>
 
-      <label>Status</label>
+      <label>Tipo de Contrato</label>
+      <select id="contrato">
+        <option>Compra</option>
+        <option>Venda</option>
+        <option>Locação</option>
+        <option>Contrato de Gestão</option>
+        <option>Captação de Imóvel</option>
+        <option>Sem Contrato</option>
+      </select>
+
+      <label>Temperatura do Lead</label>
       <select id="status">
-        <option>Lead</option>
-        <option>Primeiro Contato</option>
-        <option>Em Atendimento</option>
-        <option>Visita Marcada</option>
-        <option>Proposta</option>
-        <option>Contrato</option>
-        <option>Concluído</option>
+        <option>🔴 Lead Frio (Sem Interesse)</option>
+        <option>🟡 Lead Morno (Pouco Interesse)</option>
+        <option>🟢 Lead Quente (Alto Interesse)</option>
+        <option>🔵 Contrato Assinado</option>
       </select>
 
       <label>Valor Desejado (R$)</label>
-      <input type="text" id="valor" placeholder="Ex: 300.000,00">
+      <input type="text" id="valor" placeholder="R$ 0,00" oninput="formatarMoeda(this)">
 
       <label>Bairro / Região</label>
       <input type="text" id="bairro" placeholder="Bairro de interesse">
@@ -376,6 +404,13 @@ textarea { min-height: 80px; resize: vertical; }
   const LIMITE = 2;
   let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
 
+  function formatarMoeda(campo) {
+    let v = campo.value.replace(/\D/g, '');
+    if (!v) { campo.value = ''; return; }
+    v = (Number(v) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    campo.value = v;
+  }
+
   function toBase64(arquivo) {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -386,7 +421,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   async function salvarCliente() {
     if (clientes.length >= LIMITE) {
-      alert('Limite de ' + LIMITE + ' clientes atingido no teste gratuito.\nFaça o upgrade para continuar!');
+      alert('Limite de ' + LIMITE + ' clientes atingido.\nFaça o upgrade para continuar!');
       return;
     }
 
@@ -400,6 +435,7 @@ textarea { min-height: 80px; resize: vertical; }
       nome,
       telefone: document.getElementById('telefone').value,
       tipo: document.getElementById('tipo').value,
+      contrato: document.getElementById('contrato').value,
       status: document.getElementById('status').value,
       valor: document.getElementById('valor').value,
       bairro: document.getElementById('bairro').value,
@@ -411,7 +447,7 @@ textarea { min-height: 80px; resize: vertical; }
     clientes.push(cliente);
     localStorage.setItem(CHAVE, JSON.stringify(clientes));
 
-    ['nome','telefone','valor','bairro','obs','foto'].forEach(id => {
+    ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
       document.getElementById(id).value = '';
     });
 
@@ -430,6 +466,7 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('nome').value = c.nome;
     document.getElementById('telefone').value = c.telefone;
     document.getElementById('tipo').value = c.tipo;
+    document.getElementById('contrato').value = c.contrato || 'Compra';
     document.getElementById('status').value = c.status;
     document.getElementById('valor').value = c.valor;
     document.getElementById('bairro').value = c.bairro;
@@ -453,11 +490,12 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('totalVendedores').textContent = vendedores;
     document.getElementById('totalFotos').textContent = fotos;
 
-    // Mostra aviso e bloqueia botão se limite atingido
     const atingiu = clientes.length >= LIMITE;
     document.getElementById('avisoLimite').style.display = atingiu ? 'flex' : 'none';
     document.getElementById('btnSalvar').disabled = atingiu;
-    document.getElementById('btnSalvar').textContent = atingiu ? '🔒 Limite atingido — Faça upgrade' : '💾 Salvar Cliente';
+    document.getElementById('btnSalvar').textContent = atingiu
+      ? '🔒 Limite atingido — Faça upgrade'
+      : '💾 Salvar Cliente';
 
     const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
 
@@ -466,13 +504,13 @@ textarea { min-height: 80px; resize: vertical; }
       return;
     }
 
-    lista.innerHTML = filtrados.map((c, i) => `
+    lista.innerHTML = filtrados.map((c) => `
       <div class="cliente">
         <div class="cliente-header">
           <h3>${c.nome}</h3>
-          <div>
+          <div class="badges">
             <span class="badge-tipo">${c.tipo}</span>
-            <span class="badge-status">${c.status}</span>
+            <span class="badge-temp">${c.status}</span>
           </div>
         </div>
         ${c.fotos && c.fotos.length ? `
@@ -480,6 +518,7 @@ textarea { min-height: 80px; resize: vertical; }
             ${c.fotos.map(f => `<img src="${f}" class="foto-cliente">`).join('')}
           </div>` : ''}
         <div class="info">📞 ${c.telefone || '—'}</div>
+        <div class="info">📄 ${c.contrato || '—'}</div>
         <div class="info">💰 ${c.valor || '—'}</div>
         <div class="info">📍 ${c.bairro || '—'}</div>
         <div class="info">📅 ${c.dataCadastro}</div>

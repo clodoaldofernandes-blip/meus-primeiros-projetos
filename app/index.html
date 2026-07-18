@@ -21,7 +21,6 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body { font-family: 'Inter', sans-serif; background: var(--cinza); }
 
 header {
@@ -68,12 +67,7 @@ header p { opacity: .85; font-size: .95rem; }
   box-shadow: var(--sombra);
 }
 
-.dashboard-card h3 {
-  font-size: 2rem;
-  color: var(--azul);
-  margin-bottom: 4px;
-}
-
+.dashboard-card h3 { font-size: 2rem; color: var(--azul); margin-bottom: 4px; }
 .dashboard-card p { font-size: .85rem; color: var(--texto); }
 
 .grid {
@@ -90,12 +84,7 @@ header p { opacity: .85; font-size: .95rem; }
   border: 1px solid var(--cinza-borda);
 }
 
-.card h2 {
-  margin-bottom: 18px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--preto);
-}
+.card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
 
 label {
   display: block;
@@ -135,11 +124,11 @@ textarea { min-height: 80px; resize: vertical; }
   font-size: .95rem;
   cursor: pointer;
   font-family: inherit;
-  transition: background .2s, transform .2s;
+  transition: background .2s;
   margin-top: 4px;
 }
 
-.btn-salvar:hover { background: var(--azul-escuro); transform: translateY(-1px); }
+.btn-salvar:hover { background: var(--azul-escuro); }
 
 .lista-clientes { display: flex; flex-direction: column; gap: 14px; }
 
@@ -158,12 +147,16 @@ textarea { min-height: 80px; resize: vertical; }
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 10px;
+  gap: .5rem;
+  flex-wrap: wrap;
 }
 
 .cliente h3 { font-size: 1rem; color: var(--preto); }
 
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
 .badge-tipo {
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 700;
   padding: .2rem .6rem;
   border-radius: 999px;
@@ -171,14 +164,13 @@ textarea { min-height: 80px; resize: vertical; }
   color: var(--azul);
 }
 
-.badge-status {
-  font-size: .7rem;
+.badge-temp {
+  font-size: .68rem;
   font-weight: 700;
   padding: .2rem .6rem;
   border-radius: 999px;
-  background: #d1fae5;
-  color: #065f46;
-  margin-left: 4px;
+  background: #f3f4f6;
+  color: #444;
 }
 
 .info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
@@ -251,7 +243,6 @@ textarea { min-height: 80px; resize: vertical; }
   top: 50%;
   transform: translateY(-50%);
   color: #aaa;
-  font-size: .9rem;
 }
 
 .voltar {
@@ -319,19 +310,26 @@ textarea { min-height: 80px; resize: vertical; }
         <option>Vendedor</option>
       </select>
 
-      <label>Status</label>
+      <label>Tipo de Contrato</label>
+      <select id="contrato">
+        <option>Compra</option>
+        <option>Venda</option>
+        <option>Locação</option>
+        <option>Contrato de Gestão</option>
+        <option>Captação de Imóvel</option>
+        <option>Sem Contrato</option>
+      </select>
+
+      <label>Temperatura do Lead</label>
       <select id="status">
-        <option>Lead</option>
-        <option>Primeiro Contato</option>
-        <option>Em Atendimento</option>
-        <option>Visita Marcada</option>
-        <option>Proposta</option>
-        <option>Contrato</option>
-        <option>Concluído</option>
+        <option>🔴 Lead Frio (Sem Interesse)</option>
+        <option>🟡 Lead Morno (Pouco Interesse)</option>
+        <option>🟢 Lead Quente (Alto Interesse)</option>
+        <option>🔵 Contrato Assinado</option>
       </select>
 
       <label>Valor Desejado (R$)</label>
-      <input type="text" id="valor" placeholder="Ex: 300.000,00">
+      <input type="text" id="valor" placeholder="R$ 0,00" oninput="formatarMoeda(this)">
 
       <label>Bairro / Região</label>
       <input type="text" id="bairro" placeholder="Bairro de interesse">
@@ -347,12 +345,10 @@ textarea { min-height: 80px; resize: vertical; }
 
     <div class="card">
       <h2>👥 Clientes Cadastrados</h2>
-
       <div class="pesquisa-wrap">
         <span class="icone">🔍</span>
         <input type="text" id="pesquisa" placeholder="Pesquisar cliente..." onkeyup="renderizar()">
       </div>
-
       <div id="clientes" class="lista-clientes"></div>
     </div>
 
@@ -365,6 +361,13 @@ textarea { min-height: 80px; resize: vertical; }
 <script>
   const CHAVE = 'clientesCF_app';
   let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
+
+  function formatarMoeda(campo) {
+    let v = campo.value.replace(/\D/g, '');
+    if (!v) { campo.value = ''; return; }
+    v = (Number(v) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    campo.value = v;
+  }
 
   function toBase64(arquivo) {
     return new Promise((resolve) => {
@@ -385,6 +388,7 @@ textarea { min-height: 80px; resize: vertical; }
       nome,
       telefone: document.getElementById('telefone').value,
       tipo: document.getElementById('tipo').value,
+      contrato: document.getElementById('contrato').value,
       status: document.getElementById('status').value,
       valor: document.getElementById('valor').value,
       bairro: document.getElementById('bairro').value,
@@ -396,7 +400,7 @@ textarea { min-height: 80px; resize: vertical; }
     clientes.push(cliente);
     localStorage.setItem(CHAVE, JSON.stringify(clientes));
 
-    ['nome','telefone','valor','bairro','obs','foto'].forEach(id => {
+    ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
       document.getElementById(id).value = '';
     });
 
@@ -415,6 +419,7 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('nome').value = c.nome;
     document.getElementById('telefone').value = c.telefone;
     document.getElementById('tipo').value = c.tipo;
+    document.getElementById('contrato').value = c.contrato || 'Compra';
     document.getElementById('status').value = c.status;
     document.getElementById('valor').value = c.valor;
     document.getElementById('bairro').value = c.bairro;
@@ -441,17 +446,17 @@ textarea { min-height: 80px; resize: vertical; }
     const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
 
     if (filtrados.length === 0) {
-      lista.innerHTML = '<div class="vazio">Nenhum cliente encontrado.</div>';
+      lista.innerHTML = '<div class="vazio">Nenhum cliente cadastrado.</div>';
       return;
     }
 
-    lista.innerHTML = filtrados.map((c, i) => `
+    lista.innerHTML = filtrados.map((c) => `
       <div class="cliente">
         <div class="cliente-header">
           <h3>${c.nome}</h3>
-          <div>
+          <div class="badges">
             <span class="badge-tipo">${c.tipo}</span>
-            <span class="badge-status">${c.status}</span>
+            <span class="badge-temp">${c.status}</span>
           </div>
         </div>
         ${c.fotos && c.fotos.length ? `
@@ -459,6 +464,7 @@ textarea { min-height: 80px; resize: vertical; }
             ${c.fotos.map(f => `<img src="${f}" class="foto-cliente">`).join('')}
           </div>` : ''}
         <div class="info">📞 ${c.telefone || '—'}</div>
+        <div class="info">📄 ${c.contrato || '—'}</div>
         <div class="info">💰 ${c.valor || '—'}</div>
         <div class="info">📍 ${c.bairro || '—'}</div>
         <div class="info">📅 ${c.dataCadastro}</div>
