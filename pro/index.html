@@ -1,232 +1,499 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Cliente Fácil PRO</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cliente Fácil PRO | Teste Gratuito</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+:root {
+  --azul: #1a56db;
+  --azul-escuro: #1340a8;
+  --azul-claro: #e8f0fe;
+  --cinza: #f8faff;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --branco: #fff;
+  --sombra: 0 8px 32px rgba(26,86,219,.12);
+  --verde: #25d366;
+  --vermelho: #dc2626;
 }
 
-body{
-    font-family:'Inter',sans-serif;
-    background:#f8faff;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--cinza); }
+
+header {
+  background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+  color: white;
+  text-align: center;
+  padding: 50px 20px 40px;
 }
 
-header{
-    background:linear-gradient(135deg,#0f172a 0%,#1a56db 100%);
-    color:white;
-    text-align:center;
-    padding:70px 20px;
+header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
+header p { opacity: .85; font-size: .95rem; }
+
+.badge-trial {
+  display: inline-block;
+  background: #fde68a;
+  color: #92400e;
+  font-size: .72rem;
+  font-weight: 800;
+  padding: .25rem .8rem;
+  border-radius: 999px;
+  margin-top: .75rem;
+  letter-spacing: .5px;
 }
 
-header h1{
-    font-size:3rem;
-    margin-bottom:10px;
+.aviso-limite {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 20px;
+  font-size: .88rem;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-header p{
-    opacity:.9;
-    max-width:700px;
-    margin:auto;
+.aviso-limite strong { display: block; font-size: .95rem; margin-bottom: .2rem; }
+
+.btn-upgrade {
+  background: #f4b400;
+  color: #0f172a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .82rem;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:50px 20px;
+.btn-upgrade:hover { background: #d4a000; }
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px 60px;
 }
 
-.preco{
-    text-align:center;
-    margin:40px 0;
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 25px;
 }
 
-.preco h2{
-    font-size:4rem;
-    color:#1a56db;
+.dashboard-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  border: 1px solid var(--cinza-borda);
+  box-shadow: var(--sombra);
 }
 
-.preco p{
-    font-size:1.1rem;
-    color:#666;
+.dashboard-card h3 { font-size: 2rem; color: var(--azul); margin-bottom: 4px; }
+.dashboard-card p { font-size: .85rem; color: var(--texto); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-    margin-top:40px;
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
 }
 
-.card{
-    background:white;
-    border-radius:16px;
-    padding:25px;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
+.card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
+
+label { display: block; margin-bottom: 5px; font-weight: 600; font-size: .85rem; color: #333; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .9rem;
+  outline: none;
+  transition: border-color .2s;
 }
 
-.card h3{
-    margin-bottom:15px;
+input:focus, select:focus, textarea:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
 }
 
-.card ul{
-    padding-left:20px;
-    line-height:2;
+textarea { min-height: 80px; resize: vertical; }
+
+.btn-salvar {
+  width: 100%;
+  background: var(--azul);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+  margin-top: 4px;
 }
 
-.botao{
-    display:inline-block;
-    padding:15px 25px;
-    background:#1a56db;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    font-weight:700;
-    margin-top:20px;
+.btn-salvar:hover { background: var(--azul-escuro); }
+.btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.lista-clientes { display: flex; flex-direction: column; gap: 14px; }
+
+.cliente {
+  background: white;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 12px;
+  padding: 16px;
 }
 
-.botao:hover{
-    background:#1340a8;
+.cliente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
 }
 
-.cta{
-    text-align:center;
-    margin-top:50px;
+.cliente h3 { font-size: 1rem; color: var(--preto); }
+
+.badge-tipo {
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  background: var(--azul-claro);
+  color: var(--azul);
 }
 
-.aviso{
-    margin-top:20px;
-    color:#888;
-    font-size:.9rem;
+.badge-status {
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  background: #d1fae5;
+  color: #065f46;
+  margin-left: 4px;
 }
 
+.info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
+
+.galeria { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+
+.foto-cliente {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.acoes { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--verde);
+  color: white;
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.btn-editar {
+  background: #f3f4f6;
+  color: #333;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-excluir {
+  background: #fee2e2;
+  color: var(--vermelho);
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.vazio { text-align: center; color: #aaa; padding: 2rem 0; font-size: .9rem; }
+
+.pesquisa-wrap { position: relative; margin-bottom: 14px; }
+.pesquisa-wrap input { padding-left: 36px; margin-bottom: 0; }
+.pesquisa-wrap .icone {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 30px;
+  text-decoration: none;
+  color: var(--azul);
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.5rem; }
+}
 </style>
 </head>
-
 <body>
 
 <header>
-
-<h1>🏠 Cliente Fácil PRO</h1>
-
-<p>
-Organize clientes, visitas e oportunidades imobiliárias
-diretamente pelo celular.
-</p>
-
+  <h1>🏠 Cliente Fácil PRO</h1>
+  <p>Organize clientes, visitas e oportunidades imobiliárias diretamente pelo celular.</p>
+  <span class="badge-trial">🎁 TESTE GRATUITO — até 2 clientes</span>
 </header>
 
-<div class=" container">
+<div class="container">
 
-    <div class="card" style="text-align:center;margin-bottom:30px;">
+  <div class="aviso-limite" id="avisoLimite" style="display:none;">
+    <div>
+      <strong>🔒 Limite do teste gratuito atingido</strong>
+      Você usou 2 de 2 clientes gratuitos. Faça o upgrade para cadastrar ilimitados.
+    </div>
+    <a href="../produtos.html" class="btn-upgrade">⭐ Ver planos PRO</a>
+  </div>
 
-    <h3>🎁 Teste Gratuito</h3>
+  <div class="dashboard">
+    <div class="dashboard-card">
+      <h3 id="totalClientes">0</h3>
+      <p>👥 Clientes <span style="font-size:.7rem; color:#aaa;">(máx. 2)</span></p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalCompradores">0</h3>
+      <p>🏠 Compradores</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalVendedores">0</h3>
+      <p>🏡 Vendedores</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalFotos">0</h3>
+      <p>📸 Fotos</p>
+    </div>
+  </div>
 
-    <p>
-        Experimente o Cliente Fácil sem pagar nada.
-    </p>
+  <div class="grid">
 
-    <p>
-        ✅ Até 2 clientes gratuitamente<br>
-        ✅ Dashboard<br>
-        ✅ Pesquisa<br>
-        ✅ WhatsApp<br>
-        ✅ Galeria de Fotos
-    </p>
+    <div class="card">
+      <h2>➕ Novo Cliente</h2>
 
-<a href="../cliente-facil.html" class="botao">
-    🎁 Testar Gratuitamente
-</a>
+      <label>Nome *</label>
+      <input type="text" id="nome" placeholder="Nome completo">
+
+      <label>WhatsApp</label>
+      <input type="text" id="telefone" placeholder="(83) 9 0000-0000">
+
+      <label>Tipo de Cliente</label>
+      <select id="tipo">
+        <option>Comprador</option>
+        <option>Vendedor</option>
+      </select>
+
+      <label>Status</label>
+      <select id="status">
+        <option>Lead</option>
+        <option>Primeiro Contato</option>
+        <option>Em Atendimento</option>
+        <option>Visita Marcada</option>
+        <option>Proposta</option>
+        <option>Contrato</option>
+        <option>Concluído</option>
+      </select>
+
+      <label>Valor Desejado (R$)</label>
+      <input type="text" id="valor" placeholder="Ex: 300.000,00">
+
+      <label>Bairro / Região</label>
+      <input type="text" id="bairro" placeholder="Bairro de interesse">
+
+      <label>Observações</label>
+      <textarea id="obs" placeholder="Preferências, urgência, detalhes..."></textarea>
+
+      <label>Foto do Cliente ou Imóvel</label>
+      <input type="file" id="foto" accept="image/*" multiple>
+
+      <button class="btn-salvar" id="btnSalvar" onclick="salvarCliente()">💾 Salvar Cliente</button>
+    </div>
+
+    <div class="card">
+      <h2>👥 Clientes Cadastrados</h2>
+      <div class="pesquisa-wrap">
+        <span class="icone">🔍</span>
+        <input type="text" id="pesquisa" placeholder="Pesquisar cliente..." onkeyup="renderizar()">
+      </div>
+      <div id="clientes" class="lista-clientes"></div>
+    </div>
+
+  </div>
+
+  <a href="../index.html" class="voltar">← Voltar ao site principal</a>
 
 </div>
 
-    <div class="grid">
+<script>
+  const CHAVE = 'clientesCF_pro';
+  const LIMITE = 2;
+  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
 
-        <div class="card">
+  function toBase64(arquivo) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(arquivo);
+    });
+  }
 
-            <h3>✅ Versão Gratuita</h3>
+  async function salvarCliente() {
+    if (clientes.length >= LIMITE) {
+      alert('Limite de ' + LIMITE + ' clientes atingido no teste gratuito.\nFaça o upgrade para continuar!');
+      return;
+    }
 
-            <ul>
-                <li>Até 2 clientes</li>
-                <li>Pesquisa</li>
-                <li>WhatsApp</li>
-                <li>Dashboard</li>
-                <li>Galeria de Fotos</li>
-            </ul>
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome) { alert('Informe o nome do cliente.'); return; }
 
+    const arquivos = Array.from(document.getElementById('foto').files);
+    const fotos = await Promise.all(arquivos.map(toBase64));
+
+    const cliente = {
+      nome,
+      telefone: document.getElementById('telefone').value,
+      tipo: document.getElementById('tipo').value,
+      status: document.getElementById('status').value,
+      valor: document.getElementById('valor').value,
+      bairro: document.getElementById('bairro').value,
+      obs: document.getElementById('obs').value,
+      fotos,
+      dataCadastro: new Date().toLocaleString('pt-BR')
+    };
+
+    clientes.push(cliente);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+
+    ['nome','telefone','valor','bairro','obs','foto'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    renderizar();
+  }
+
+  function excluirCliente(i) {
+    if (!confirm('Excluir este cliente?')) return;
+    clientes.splice(i, 1);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    renderizar();
+  }
+
+  function editarCliente(i) {
+    const c = clientes[i];
+    document.getElementById('nome').value = c.nome;
+    document.getElementById('telefone').value = c.telefone;
+    document.getElementById('tipo').value = c.tipo;
+    document.getElementById('status').value = c.status;
+    document.getElementById('valor').value = c.valor;
+    document.getElementById('bairro').value = c.bairro;
+    document.getElementById('obs').value = c.obs;
+    clientes.splice(i, 1);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    renderizar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderizar() {
+    const lista = document.getElementById('clientes');
+    const busca = document.getElementById('pesquisa').value.toLowerCase();
+
+    const compradores = clientes.filter(c => c.tipo === 'Comprador').length;
+    const vendedores = clientes.filter(c => c.tipo === 'Vendedor').length;
+    const fotos = clientes.reduce((t, c) => t + (c.fotos ? c.fotos.length : 0), 0);
+
+    document.getElementById('totalClientes').textContent = clientes.length;
+    document.getElementById('totalCompradores').textContent = compradores;
+    document.getElementById('totalVendedores').textContent = vendedores;
+    document.getElementById('totalFotos').textContent = fotos;
+
+    // Mostra aviso e bloqueia botão se limite atingido
+    const atingiu = clientes.length >= LIMITE;
+    document.getElementById('avisoLimite').style.display = atingiu ? 'flex' : 'none';
+    document.getElementById('btnSalvar').disabled = atingiu;
+    document.getElementById('btnSalvar').textContent = atingiu ? '🔒 Limite atingido — Faça upgrade' : '💾 Salvar Cliente';
+
+    const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
+
+    if (filtrados.length === 0) {
+      lista.innerHTML = '<div class="vazio">Nenhum cliente cadastrado.</div>';
+      return;
+    }
+
+    lista.innerHTML = filtrados.map((c, i) => `
+      <div class="cliente">
+        <div class="cliente-header">
+          <h3>${c.nome}</h3>
+          <div>
+            <span class="badge-tipo">${c.tipo}</span>
+            <span class="badge-status">${c.status}</span>
+          </div>
         </div>
-
-        <div class="card">
-
-            <h3>🚀 Cliente Fácil PRO</h3>
-
-            <ul>
-                <li>Clientes ilimitados</li>
-                <li>Fotos ilimitadas</li>
-                <li>Status de negociação</li>
-                <li>Dashboard avançado</li>
-                <li>Atualizações futuras</li>
-                <li>Suporte</li>
-            </ul>
-
+        ${c.fotos && c.fotos.length ? `
+          <div class="galeria">
+            ${c.fotos.map(f => `<img src="${f}" class="foto-cliente">`).join('')}
+          </div>` : ''}
+        <div class="info">📞 ${c.telefone || '—'}</div>
+        <div class="info">💰 ${c.valor || '—'}</div>
+        <div class="info">📍 ${c.bairro || '—'}</div>
+        <div class="info">📅 ${c.dataCadastro}</div>
+        ${c.obs ? `<div class="info">📝 ${c.obs}</div>` : ''}
+        <div class="acoes">
+          <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+          <button class="btn-editar" onclick="editarCliente(${clientes.indexOf(c)})">✏️ Editar</button>
+          <button class="btn-excluir" onclick="excluirCliente(${clientes.indexOf(c)})">🗑️ Excluir</button>
         </div>
+      </div>
+    `).join('');
+  }
 
-    </div>
-
-    <div class="card" style="margin-top:40px;">
-
-        <h3>🔥 Por que usar o Cliente Fácil PRO?</h3>
-
-        <ul>
-            <li>✅ Organize todos os seus clientes em um único lugar</li>
-            <li>✅ Registre fotos dos imóveis diretamente pelo celular</li>
-            <li>✅ Acompanhe o andamento das negociações</li>
-            <li>✅ Localize clientes rapidamente com a pesquisa inteligente</li>
-            <li>✅ Entre em contato pelo WhatsApp com apenas um clique</li>
-            <li>✅ Tenha mais produtividade e organização no dia a dia</li>
-
-        </ul>
-
-    </div>
-
-    <div class="card" style="margin-top:20px;">
-
-        <h3>🏠 Para quem é o Cliente Fácil?</h3>
-
-        <ul>
-            <li>✅ Corretores de imóveis</li>
-            <li>✅ Correspondentes bancários</li>
-            <li>✅ Captadores de imóveis</li>
-            <li>✅ Pequenas imobiliárias</li>
-            <li>✅ Profissionais que desejam organizar atendimentos pelo celular</li>
-        </ul>
-
-    </div>
-
-    <div class="cta">
-
-        <a href="https://wa.me/5583982001314" class="botao">
-            🚀 Quero Desbloquear o PRO
-        </a>
-
-        <div class="aviso">
-            PIX, Débito e Crédito
-        </div>
-
-    </div>
-
-    </div>
-
-    </body>
-
+  renderizar();
+</script>
+</body>
 </html>
