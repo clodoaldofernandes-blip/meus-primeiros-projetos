@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cliente Fácil PRO | Teste Gratuito</title>
+<title>Cliente Fácil PRO | Clodoaldo Fernandes</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -16,523 +16,422 @@
   --preto: #111;
   --branco: #fff;
   --sombra: 0 8px 32px rgba(26,86,219,.12);
-  --verde: #25d366;
-  --vermelho: #dc2626;
+  --radius: 14px;
+  --verde: #059669;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: var(--cinza); }
+body { font-family: 'Inter', sans-serif; background: var(--cinza); color: #222; }
 
 header {
   background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
   color: white;
   text-align: center;
-  padding: 50px 20px 40px;
+  padding: 4rem 2rem 3rem;
+  position: relative;
 }
 
-header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
-header p { opacity: .85; font-size: .95rem; }
-
-.badge-trial {
-  display: inline-block;
-  background: #fde68a;
-  color: #92400e;
-  font-size: .72rem;
-  font-weight: 800;
-  padding: .25rem .8rem;
-  border-radius: 999px;
-  margin-top: .75rem;
-  letter-spacing: .5px;
-}
-
-.aviso-limite {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 20px;
-  font-size: .88rem;
-  color: #92400e;
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.aviso-limite strong { display: block; font-size: .95rem; margin-bottom: .2rem; }
-
-.btn-upgrade {
-  background: #f4b400;
-  color: #0f172a;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: .82rem;
-  cursor: pointer;
-  font-family: inherit;
-  white-space: nowrap;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-upgrade:hover { background: #d4a000; }
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px 20px 60px;
-}
-
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-  margin-bottom: 25px;
-}
-
-.dashboard-card {
-  background: white;
-  border-radius: 14px;
-  padding: 18px;
-  text-align: center;
-  border: 1px solid var(--cinza-borda);
-  box-shadow: var(--sombra);
-}
-
-.dashboard-card h3 { font-size: 2rem; color: var(--azul); margin-bottom: 4px; }
-.dashboard-card p { font-size: .85rem; color: var(--texto); }
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 22px;
-  box-shadow: var(--sombra);
-  border: 1px solid var(--cinza-borda);
-}
-
-.card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-  font-size: .85rem;
-  color: #333;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  border: 1.5px solid var(--cinza-borda);
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: .9rem;
-  outline: none;
-  transition: border-color .2s;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--azul);
-  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
-}
-
-textarea { min-height: 80px; resize: vertical; }
-
-.btn-salvar {
-  width: 100%;
-  background: var(--azul);
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 9px;
-  font-weight: 700;
-  font-size: .95rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .2s;
-  margin-top: 4px;
-}
-
-.btn-salvar:hover { background: var(--azul-escuro); }
-.btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
-
-.lista-clientes { display: flex; flex-direction: column; gap: 14px; }
-
-.cliente {
-  background: white;
-  border: 1px solid var(--cinza-borda);
-  border-radius: 12px;
-  padding: 16px;
-  transition: box-shadow .2s;
-}
-
-.cliente:hover { box-shadow: var(--sombra); }
-
-.cliente-header {
+.header-nav {
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+  right: 2rem;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
+}
+
+.header-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  opacity: .85;
+}
+
+.header-nav a:hover { opacity: 1; }
+
+header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: .5rem; letter-spacing: -1px; }
+header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
+
+.badge-pro-header {
+  display: inline-block;
+  background: #f4b400;
+  color: #0f172a;
+  font-size: .78rem;
+  font-weight: 800;
+  padding: .3rem 1rem;
+  border-radius: 999px;
+  letter-spacing: .3px;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+/* PLANOS */
+.planos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 640px) { .planos-grid { grid-template-columns: 1fr; } }
+
+.plano-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+  text-align: center;
+}
+
+.plano-card.destaque {
+  border: 2px solid var(--azul);
+  position: relative;
+}
+
+.plano-popular {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--azul);
+  color: white;
+  font-size: .7rem;
+  font-weight: 800;
+  padding: .25rem .9rem;
+  border-radius: 999px;
+  letter-spacing: .3px;
+  white-space: nowrap;
+}
+
+.plano-nome {
+  font-size: .82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--texto);
+  margin-bottom: .75rem;
+}
+
+.plano-preco {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--preto);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: .25rem;
+}
+
+.plano-preco span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--texto);
+}
+
+.plano-desc {
+  font-size: .82rem;
+  color: var(--texto);
+  margin-bottom: 1.5rem;
+}
+
+.plano-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.plano-features li {
+  font-size: .88rem;
+  color: #333;
+  display: flex;
+  align-items: center;
   gap: .5rem;
-  flex-wrap: wrap;
 }
 
-.cliente h3 { font-size: 1rem; color: var(--preto); }
+.plano-features li .check { color: var(--verde); font-weight: 700; }
+.plano-features li .lock { color: #ccc; }
 
-.badges { display: flex; gap: 4px; flex-wrap: wrap; }
-
-.badge-tipo {
-  font-size: .68rem;
+.btn-plano {
+  width: 100%;
+  padding: .85rem;
+  border-radius: 10px;
+  font-size: .95rem;
   font-weight: 700;
-  padding: .2rem .6rem;
-  border-radius: 999px;
-  background: var(--azul-claro);
-  color: var(--azul);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .2s;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
 }
 
-.badge-temp {
-  font-size: .68rem;
-  font-weight: 700;
-  padding: .2rem .6rem;
-  border-radius: 999px;
+.btn-plano.gratis {
   background: #f3f4f6;
   color: #444;
 }
 
-.info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
+.btn-plano.gratis:hover { background: #e5e7eb; }
 
-.galeria { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-
-.foto-cliente {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.btn-plano.pro {
+  background: var(--azul);
+  color: white;
+  box-shadow: 0 4px 14px rgba(26,86,219,.3);
 }
 
-.acoes { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.btn-plano.pro:hover { background: var(--azul-escuro); transform: translateY(-1px); }
 
-.btn-whatsapp {
+/* COMPARATIVO */
+.comparativo {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+  margin-bottom: 2rem;
+}
+
+.comparativo h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--preto);
+  text-align: center;
+}
+
+.comp-table { width: 100%; border-collapse: collapse; }
+
+.comp-table th {
+  padding: .75rem 1rem;
+  font-size: .82rem;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid var(--cinza-borda);
+  color: var(--texto);
+}
+
+.comp-table th.col-pro { color: var(--azul); }
+
+.comp-table td {
+  padding: .65rem 1rem;
+  font-size: .85rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #333;
+}
+
+.comp-table td:not(:first-child) { text-align: center; }
+
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr:hover td { background: var(--cinza); }
+
+.check-verde { color: var(--verde); font-size: 1rem; }
+.check-cinza { color: #ddd; font-size: 1rem; }
+
+/* FAQ */
+.faq {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+  margin-bottom: 2rem;
+}
+
+.faq h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: var(--preto);
+  text-align: center;
+}
+
+.faq-item {
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.faq-item:last-child { border-bottom: none; }
+
+.faq-pergunta {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--preto);
+  margin-bottom: .4rem;
+}
+
+.faq-resposta {
+  font-size: .85rem;
+  color: var(--texto);
+  line-height: 1.6;
+}
+
+/* CTA */
+.cta {
+  background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  color: white;
+}
+
+.cta h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: .5rem; }
+.cta p { opacity: .85; margin-bottom: 1.5rem; font-size: .95rem; }
+
+.btn-cta-whats {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: var(--verde);
+  gap: .5rem;
+  background: #25d366;
   color: white;
   text-decoration: none;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: .82rem;
-  font-weight: 600;
-  transition: background .2s;
+  padding: .9rem 2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: .95rem;
+  transition: background .2s, transform .2s;
 }
 
-.btn-whatsapp:hover { background: #1da851; }
-
-.btn-editar {
-  background: #f3f4f6;
-  color: #333;
-  border: none;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: .82rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.btn-editar:hover { background: #e5e7eb; }
-
-.btn-excluir {
-  background: #fee2e2;
-  color: var(--vermelho);
-  border: none;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: .82rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.btn-excluir:hover { background: #fca5a5; }
-
-.vazio { text-align: center; color: #aaa; padding: 2rem 0; font-size: .9rem; }
-
-.pesquisa-wrap { position: relative; margin-bottom: 14px; }
-.pesquisa-wrap input { padding-left: 36px; margin-bottom: 0; }
-.pesquisa-wrap .icone {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #aaa;
-}
+.btn-cta-whats:hover { background: #1da851; transform: translateY(-1px); }
 
 .voltar {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 30px;
-  text-decoration: none;
+  gap: .4rem;
+  margin-top: 2rem;
   color: var(--azul);
+  text-decoration: none;
   font-weight: 600;
   font-size: .9rem;
-}
-
-.voltar:hover { opacity: .7; }
-
-@media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
-  header h1 { font-size: 1.5rem; }
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🏠 Cliente Fácil PRO</h1>
-  <p>Organize clientes, visitas e oportunidades imobiliárias diretamente pelo celular.</p>
-  <span class="badge-trial">🎁 TESTE GRATUITO — até 2 clientes</span>
+  <div class="header-nav">
+    <a href="../index.html">← Site principal</a>
+    <a href="../app/">Já sou cliente →</a>
+  </div>
+  <h1>🏠 Cliente Fácil</h1>
+  <p>O sistema de gestão de clientes feito para corretores de imóveis</p>
+  <span class="badge-pro-header">⭐ PLANO PRO — Acesso ilimitado</span>
 </header>
 
 <div class="container">
 
-  <div class="aviso-limite" id="avisoLimite">
-    <div>
-      <strong>🔒 Limite do teste gratuito atingido</strong>
-      Você usou 2 de 2 clientes gratuitos. Faça o upgrade para cadastrar ilimitados.
+  <!-- PLANOS -->
+  <div class="planos-grid">
+
+    <div class="plano-card">
+      <div class="plano-nome">🎁 Gratuito</div>
+      <div class="plano-preco">R$ 0<span>/mês</span></div>
+      <div class="plano-desc">Para experimentar</div>
+      <ul class="plano-features">
+        <li><span class="check">✓</span> Até 2 clientes</li>
+        <li><span class="check">✓</span> Dashboard</li>
+        <li><span class="check">✓</span> Pesquisa</li>
+        <li><span class="check">✓</span> WhatsApp</li>
+        <li><span class="lock">✗</span> Clientes ilimitados</li>
+        <li><span class="lock">✗</span> Fotos dos imóveis</li>
+        <li><span class="lock">✗</span> Exportar PDF</li>
+        <li><span class="lock">✗</span> Ficha de visita</li>
+      </ul>
+      <a href="../cliente-facil.html" class="btn-plano gratis">Usar grátis</a>
     </div>
-    <a href="../produtos.html" class="btn-upgrade">⭐ Ver planos PRO</a>
+
+    <div class="plano-card destaque">
+      <span class="plano-popular">⭐ MAIS POPULAR</span>
+      <div class="plano-nome">🚀 PRO</div>
+      <div class="plano-preco">R$ 49<span>,90/mês</span></div>
+      <div class="plano-desc">Para corretores ativos</div>
+      <ul class="plano-features">
+        <li><span class="check">✓</span> Clientes ilimitados</li>
+        <li><span class="check">✓</span> Dashboard completo</li>
+        <li><span class="check">✓</span> Pesquisa avançada</li>
+        <li><span class="check">✓</span> WhatsApp direto</li>
+        <li><span class="check">✓</span> Fotos dos clientes/imóveis</li>
+        <li><span class="check">✓</span> Temperatura do lead</li>
+        <li><span class="check">✓</span> Ficha de visita digital</li>
+        <li><span class="check">✓</span> Suporte via WhatsApp</li>
+      </ul>
+      <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero assinar o Cliente Fácil PRO por R$ 49,90/mês."
+         target="_blank" class="btn-plano pro">📱 Assinar agora via WhatsApp</a>
+    </div>
+
   </div>
 
-  <div class="dashboard">
-    <div class="dashboard-card">
-      <h3 id="totalClientes">0</h3>
-      <p>👥 Clientes <span style="font-size:.7rem;color:#aaa;">(máx. 2)</span></p>
+  <!-- COMPARATIVO -->
+  <div class="comparativo">
+    <h2>📊 Comparativo detalhado</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Funcionalidade</th>
+          <th>Gratuito</th>
+          <th class="col-pro">PRO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Cadastro de clientes</td><td>Até 2</td><td class="col-pro">✓ Ilimitado</td></tr>
+        <tr><td>Dashboard com estatísticas</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Pesquisa de clientes</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Botão WhatsApp direto</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Tipo de contrato</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Temperatura do lead</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Fotos dos clientes/imóveis</td><td><span class="check-cinza">✗</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Ficha de visita digital</td><td><span class="check-cinza">✗</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Editar e excluir clientes</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Suporte via WhatsApp</td><td><span class="check-cinza">✗</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Acesso pelo celular</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+        <tr><td>Sem instalação</td><td><span class="check-verde">✓</span></td><td><span class="check-verde">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>❓ Perguntas frequentes</h2>
+    <div class="faq-item">
+      <div class="faq-pergunta">Como funciona o pagamento?</div>
+      <div class="faq-resposta">O pagamento é feito via WhatsApp. Após o contato, você recebe o link de pagamento via PIX ou cartão. O acesso é liberado em até 1 hora após a confirmação.</div>
     </div>
-    <div class="dashboard-card">
-      <h3 id="totalCompradores">0</h3>
-      <p>🏠 Compradores</p>
+    <div class="faq-item">
+      <div class="faq-pergunta">Preciso instalar algum aplicativo?</div>
+      <div class="faq-resposta">Não! O Cliente Fácil funciona direto no navegador do celular ou computador, sem instalação. Funciona até sem internet (offline).</div>
     </div>
-    <div class="dashboard-card">
-      <h3 id="totalVendedores">0</h3>
-      <p>🏡 Vendedores</p>
+    <div class="faq-item">
+      <div class="faq-pergunta">Meus dados ficam seguros?</div>
+      <div class="faq-resposta">Sim. Todos os dados ficam salvos apenas no seu próprio dispositivo (localStorage). Ninguém além de você tem acesso.</div>
     </div>
-    <div class="dashboard-card">
-      <h3 id="totalFotos">0</h3>
-      <p>📸 Fotos</p>
+    <div class="faq-item">
+      <div class="faq-pergunta">Posso cancelar quando quiser?</div>
+      <div class="faq-resposta">Sim. Não há fidelidade. Basta avisar via WhatsApp e o cancelamento é feito imediatamente, sem burocracia.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-pergunta">O sistema funciona no celular?</div>
+      <div class="faq-resposta">Sim! O Cliente Fácil foi desenvolvido com foco mobile, funciona perfeitamente no celular, tablet e computador.</div>
     </div>
   </div>
 
-  <div class="grid">
-
-    <div class="card">
-      <h2>➕ Novo Cliente</h2>
-
-      <label>Nome *</label>
-      <input type="text" id="nome" placeholder="Nome completo">
-
-      <label>WhatsApp</label>
-      <input type="text" id="telefone" placeholder="(83) 9 0000-0000">
-
-      <label>Tipo de Cliente</label>
-      <select id="tipo">
-        <option>Comprador</option>
-        <option>Vendedor</option>
-      </select>
-
-      <label>Tipo de Contrato</label>
-      <select id="contrato">
-        <option>Compra</option>
-        <option>Venda</option>
-        <option>Locação</option>
-        <option>Contrato de Gestão</option>
-        <option>Captação de Imóvel</option>
-        <option>Sem Contrato</option>
-      </select>
-
-      <label>Temperatura do Lead</label>
-      <select id="status">
-        <option>🔴 Lead Frio (Sem Interesse)</option>
-        <option>🟡 Lead Morno (Pouco Interesse)</option>
-        <option>🟢 Lead Quente (Alto Interesse)</option>
-        <option>🔵 Contrato Assinado</option>
-      </select>
-
-      <label>Valor Desejado (R$)</label>
-      <input type="text" id="valor" placeholder="R$ 0,00" oninput="formatarMoeda(this)">
-
-      <label>Bairro / Região</label>
-      <input type="text" id="bairro" placeholder="Bairro de interesse">
-
-      <label>Observações</label>
-      <textarea id="obs" placeholder="Preferências, urgência, detalhes..."></textarea>
-
-      <label>Foto do Cliente ou Imóvel</label>
-      <input type="file" id="foto" accept="image/*" multiple>
-
-      <button class="btn-salvar" id="btnSalvar" onclick="salvarCliente()">💾 Salvar Cliente</button>
-    </div>
-
-    <div class="card">
-      <h2>👥 Clientes Cadastrados</h2>
-      <div class="pesquisa-wrap">
-        <span class="icone">🔍</span>
-        <input type="text" id="pesquisa" placeholder="Pesquisar cliente..." onkeyup="renderizar()">
-      </div>
-      <div id="clientes" class="lista-clientes"></div>
-    </div>
-
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Pronto para organizar seus clientes?</h2>
+    <p>Fale comigo agora pelo WhatsApp e comece a usar o PRO hoje mesmo.</p>
+    <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero assinar o Cliente Fácil PRO por R$ 49,90/mês."
+       target="_blank" class="btn-cta-whats">
+      📱 Falar no WhatsApp agora
+    </a>
   </div>
 
   <a href="../index.html" class="voltar">← Voltar ao site principal</a>
 
 </div>
-
-<script>
-  const CHAVE = 'clientesCF_pro';
-  const LIMITE = 2;
-  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
-
-  function formatarMoeda(campo) {
-    let v = campo.value.replace(/\D/g, '');
-    if (!v) { campo.value = ''; return; }
-    v = (Number(v) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    campo.value = v;
-  }
-
-  function toBase64(arquivo) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(arquivo);
-    });
-  }
-
-  async function salvarCliente() {
-    if (clientes.length >= LIMITE) {
-      alert('Limite de ' + LIMITE + ' clientes atingido.\nFaça o upgrade para continuar!');
-      return;
-    }
-
-    const nome = document.getElementById('nome').value.trim();
-    if (!nome) { alert('Informe o nome do cliente.'); return; }
-
-    const arquivos = Array.from(document.getElementById('foto').files);
-    const fotos = await Promise.all(arquivos.map(toBase64));
-
-    const cliente = {
-      nome,
-      telefone: document.getElementById('telefone').value,
-      tipo: document.getElementById('tipo').value,
-      contrato: document.getElementById('contrato').value,
-      status: document.getElementById('status').value,
-      valor: document.getElementById('valor').value,
-      bairro: document.getElementById('bairro').value,
-      obs: document.getElementById('obs').value,
-      fotos,
-      dataCadastro: new Date().toLocaleString('pt-BR')
-    };
-
-    clientes.push(cliente);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-
-    ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-
-    renderizar();
-  }
-
-  function excluirCliente(i) {
-    if (!confirm('Excluir este cliente?')) return;
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
-  }
-
-  function editarCliente(i) {
-    const c = clientes[i];
-    document.getElementById('nome').value = c.nome;
-    document.getElementById('telefone').value = c.telefone;
-    document.getElementById('tipo').value = c.tipo;
-    document.getElementById('contrato').value = c.contrato || 'Compra';
-    document.getElementById('status').value = c.status;
-    document.getElementById('valor').value = c.valor;
-    document.getElementById('bairro').value = c.bairro;
-    document.getElementById('obs').value = c.obs;
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function renderizar() {
-    const lista = document.getElementById('clientes');
-    const busca = document.getElementById('pesquisa').value.toLowerCase();
-
-    const compradores = clientes.filter(c => c.tipo === 'Comprador').length;
-    const vendedores = clientes.filter(c => c.tipo === 'Vendedor').length;
-    const fotos = clientes.reduce((t, c) => t + (c.fotos ? c.fotos.length : 0), 0);
-
-    document.getElementById('totalClientes').textContent = clientes.length;
-    document.getElementById('totalCompradores').textContent = compradores;
-    document.getElementById('totalVendedores').textContent = vendedores;
-    document.getElementById('totalFotos').textContent = fotos;
-
-    const atingiu = clientes.length >= LIMITE;
-    document.getElementById('avisoLimite').style.display = atingiu ? 'flex' : 'none';
-    document.getElementById('btnSalvar').disabled = atingiu;
-    document.getElementById('btnSalvar').textContent = atingiu
-      ? '🔒 Limite atingido — Faça upgrade'
-      : '💾 Salvar Cliente';
-
-    const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
-
-    if (filtrados.length === 0) {
-      lista.innerHTML = '<div class="vazio">Nenhum cliente cadastrado.</div>';
-      return;
-    }
-
-    lista.innerHTML = filtrados.map((c) => `
-      <div class="cliente">
-        <div class="cliente-header">
-          <h3>${c.nome}</h3>
-          <div class="badges">
-            <span class="badge-tipo">${c.tipo}</span>
-            <span class="badge-temp">${c.status}</span>
-          </div>
-        </div>
-        ${c.fotos && c.fotos.length ? `
-          <div class="galeria">
-            ${c.fotos.map(f => `<img src="${f}" class="foto-cliente">`).join('')}
-          </div>` : ''}
-        <div class="info">📞 ${c.telefone || '—'}</div>
-        <div class="info">📄 ${c.contrato || '—'}</div>
-        <div class="info">💰 ${c.valor || '—'}</div>
-        <div class="info">📍 ${c.bairro || '—'}</div>
-        <div class="info">📅 ${c.dataCadastro}</div>
-        ${c.obs ? `<div class="info">📝 ${c.obs}</div>` : ''}
-        <div class="acoes">
-          <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-          <button class="btn-editar" onclick="editarCliente(${clientes.indexOf(c)})">✏️ Editar</button>
-          <button class="btn-excluir" onclick="excluirCliente(${clientes.indexOf(c)})">🗑️ Excluir</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  renderizar();
-</script>
 </body>
 </html>
