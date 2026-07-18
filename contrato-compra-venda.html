@@ -660,7 +660,17 @@
 </head>
 <body>
 
-<header>
+  <div id="bloqueioOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.75); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+  <div style="background:white; border-radius:16px; padding:2.5rem; max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:3rem; margin-bottom:1rem;">🔒</div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:#111; margin-bottom:.5rem;">Limite gratuito atingido</h2>
+    <p style="color:#555; font-size:.9rem; line-height:1.6; margin-bottom:1.5rem;">Você usou seus <strong>2 contratos gratuitos</strong>.<br>Para gerar contratos sem limites, adquira o plano PRO.</p>
+    <a href="https://wa.me/5583982001314?text=Olá! Quero acesso ilimitado às ferramentas." target="_blank" style="display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:#25d366;color:white;text-decoration:none;padding:.85rem 1.75rem;border-radius:10px;font-weight:700;font-size:.95rem;margin-bottom:.75rem;width:100%;">📱 Falar no WhatsApp</a>
+    <a href="pro/" style="display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:#e8f0fe;color:#1a56db;text-decoration:none;padding:.75rem 1.75rem;border-radius:10px;font-weight:700;font-size:.88rem;width:100%;">⭐ Ver plano PRO</a>
+  </div>
+</div>
+
+  <header>
   <div class="logo">CF</div>
   <a href="index.html">← Voltar ao site</a>
 </header>
@@ -1298,6 +1308,8 @@
   }
 
   function gerarContrato() {
+    if (!verificarLimite()) return;
+    registrarUso();
     const obsVal = document.getElementById('condObservacoes').value.trim();
     const temObs = obsVal.length > 0;
     const clausulaForo = temObs ? '10ª' : '9ª';
@@ -1478,6 +1490,31 @@
     document.getElementById('contratoGerado').style.display = 'none';
     irPara(1);
   }
+
+  const CHAVE_USO_CALC = 'usosCF_contrato';
+  const LIMITE_USO = 2;
+
+  function verificarLimite() {
+    const usos = Number(localStorage.getItem(CHAVE_USO_CALC) || 0);
+    if (usos >= LIMITE_USO) {
+      document.getElementById('bloqueioOverlay').style.display = 'flex';
+      return false;
+    }
+    return true;
+  }
+
+  function registrarUso() {
+    const usos = Number(localStorage.getItem(CHAVE_USO_CALC) || 0);
+    localStorage.setItem(CHAVE_USO_CALC, usos + 1);
+  }
+
+  window.addEventListener('load', () => {
+    const usos = Number(localStorage.getItem(CHAVE_USO_CALC) || 0);
+    if (usos >= LIMITE_USO) {
+      document.getElementById('bloqueioOverlay').style.display = 'flex';
+    }
+  });
+
 </script>
 
 </body>
