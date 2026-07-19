@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo | Imóveis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --azul: #1a56db;
+  --azul-escuro: #1340a8;
+  --azul-claro: #e8f0fe;
+  --cinza: #f8faff;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --branco: #fff;
+  --sombra: 0 8px 32px rgba(26,86,219,.12);
+  --radius: 14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--cinza); color: #222; }
+
+header {
+  background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+  color: white;
+  text-align: center;
+  padding: 3rem 2rem 2.5rem;
+  position: relative;
+}
+
+.header-nav {
+  position: absolute;
+  top: 1rem; left: 2rem; right: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.btn-voltar-header {
+  color: white; text-decoration: none;
+  font-size: .85rem; font-weight: 600;
+  opacity: .85; transition: opacity .2s;
+}
+
+.btn-voltar-header:hover { opacity: 1; }
+
+header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: .4rem; }
+header p { opacity: .85; font-size: .9rem; }
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.toolbar h2 { font-size: 1.1rem; font-weight: 700; color: var(--preto); }
+
+.btn-novo {
+  background: var(--azul); color: white;
+  border: none; padding: .7rem 1.3rem;
+  border-radius: 9px; font-size: .9rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-novo:hover { background: var(--azul-escuro); }
+
+.grid-imoveis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-imovel {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  border: 1px solid var(--cinza-borda);
+}
+
+.card-foto {
+  position: relative; height: 200px;
+  overflow: hidden; background: #e5e7eb;
+}
+
+.card-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-foto .sem-foto {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: #ccc; background: #f3f4f6;
+}
+
+.badge-tipo-imovel {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--azul); color: white;
+  font-size: .7rem; font-weight: 700;
+  padding: .25rem .7rem; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: .3px;
+}
+
+.badge-tipo-imovel.venda { background: #0f172a; }
+.badge-tipo-imovel.locacao { background: #059669; }
+.badge-tipo-imovel.temporada { background: #7c3aed; }
+
+.card-body { padding: 1.1rem; }
+.card-preco { font-size: 1.3rem; font-weight: 800; color: var(--azul); margin-bottom: .2rem; }
+.card-titulo { font-size: .92rem; font-weight: 700; color: var(--preto); margin-bottom: .4rem; }
+
+.card-local {
+  font-size: .8rem; color: var(--texto);
+  margin-bottom: .9rem;
+}
+
+.card-acoes { display: flex; gap: .5rem; }
+
+.btn-editar, .btn-excluir {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: .35rem;
+  border: none; padding: .6rem;
+  border-radius: 9px; font-size: .82rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-editar { background: var(--azul-claro); color: var(--azul); }
+.btn-editar:hover { background: #c7d7fc; }
+
+.btn-excluir { background: #fde8e8; color: #c0392b; }
+.btn-excluir:hover { background: #fbd0d0; }
+
+.vazio-wrap {
+  text-align: center; padding: 4rem 2rem; color: #aaa;
+  grid-column: 1/-1;
+}
+
+.vazio-wrap .icone { font-size: 3rem; margin-bottom: 1rem; }
+
+/* MODAL FORMULÁRIO */
+.modal-overlay {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1000; padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-overlay.aberto { display: flex; align-items: flex-start; justify-content: center; padding-top: 2rem; }
+
+.modal {
+  background: white; border-radius: var(--radius);
+  max-width: 600px; width: 100%; overflow: hidden;
+}
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+
+.btn-fechar {
+  background: none; border: none;
+  font-size: 1.3rem; cursor: pointer; color: #888;
+}
+
+.modal-body { padding: 1.5rem; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-grid .full { grid-column: 1/-1; }
+
+.campo label {
+  display: block;
+  font-size: .78rem; font-weight: 700;
+  color: var(--texto); margin-bottom: .35rem;
+}
+
+.campo input, .campo select, .campo textarea {
+  width: 100%;
+  padding: .6rem .75rem;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 8px;
+  font-size: .87rem; font-family: inherit;
+  outline: none;
+}
+
+.campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--azul); }
+
+.campo textarea { resize: vertical; min-height: 70px; }
+
+.campo-checkbox {
+  display: flex; align-items: center; gap: .5rem;
+  margin-top: .3rem;
+}
+
+.campo-checkbox input { width: auto; }
+
+.modal-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--cinza-borda);
+  display: flex; justify-content: flex-end; gap: .75rem;
+}
+
+.btn-cancelar {
+  background: #f1f2f4; color: #555;
+  border: none; padding: .7rem 1.3rem;
+  border-radius: 9px; font-size: .87rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+
+.btn-salvar {
+  background: var(--azul); color: white;
+  border: none; padding: .7rem 1.3rem;
+  border-radius: 9px; font-size: .87rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+
+.btn-salvar:hover { background: var(--azul-escuro); }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .grid-imoveis { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-nav">
+    <a href="../index.html" class="btn-voltar-header">← Voltar ao site</a>
+  </div>
+  <h1>⚙️ Painel Administrativo</h1>
+  <p>Gerencie os imóveis cadastrados no site</p>
+</header>
+
+<div class="container">
+
+  <div class="toolbar">
+    <h2 id="contador">0 imóveis cadastrados</h2>
+    <button class="btn-novo" onclick="abrirFormulario()">+ Novo Imóvel</button>
+  </div>
+
+  <div id="gridImoveis" class="grid-imoveis"></div>
+
+</div>
+
+<!-- MODAL FORMULÁRIO -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharSeClicouFora(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitulo">Novo Imóvel</h3>
+      <button class="btn-fechar" onclick="fecharFormulario()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="campo full">
+          <label>Título</label>
+          <input type="text" id="fTitulo" placeholder="Ex: Flat beira mar">
+        </div>
+        <div class="campo">
+          <label>Preço</label>
+          <input type="text" id="fPreco" placeholder="R$ 0,00" oninput="mascararPreco(this)" inputmode="numeric">
+        </div>
+        <div class="campo">
+          <label>Tipo</label>
+          <select id="fTipo">
+            <option value="Venda">Venda</option>
+            <option value="Locação">Locação</option>
+            <option value="Temporada">Temporada</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Bairro</label>
+          <input type="text" id="fBairro" placeholder="Ex: Bessa">
+        </div>
+        <div class="campo">
+          <label>Cidade</label>
+          <input type="text" id="fCidade" placeholder="Ex: João Pessoa/PB">
+        </div>
+        <div class="campo">
+          <label>Quartos</label>
+          <input type="number" id="fQuartos" min="0">
+        </div>
+        <div class="campo">
+          <label>Banheiros</label>
+          <input type="number" id="fBanheiros" min="0">
+        </div>
+        <div class="campo">
+          <label>Área (m²)</label>
+          <input type="number" id="fArea" min="0">
+        </div>
+        <div class="campo">
+          <label>Vagas</label>
+          <input type="number" id="fVagas" min="0">
+        </div>
+        <div class="campo full">
+          <label>WhatsApp (só números, com DDI+DDD, ex: 5583999999999)</label>
+          <input type="text" id="fWhatsapp" placeholder="5583999999999">
+        </div>
+        <div class="campo full">
+          <label>URL da foto</label>
+          <input type="text" id="fFoto" placeholder="https://...">
+        </div>
+        <div class="campo full">
+          <label>Descrição</label>
+          <textarea id="fDescricao"></textarea>
+        </div>
+        <div class="campo full">
+          <div class="campo-checkbox">
+            <input type="checkbox" id="fDestaque">
+            <label style="margin:0;">Marcar como destaque</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" onclick="fecharFormulario()">Cancelar</button>
+      <button class="btn-salvar" onclick="salvarImovel()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CHAVE_IMOVEIS = 'imoveisCF';
+  let imoveis = JSON.parse(localStorage.getItem(CHAVE_IMOVEIS)) || [];
+  let idEmEdicao = null;
+
+  function salvar() {
+    localStorage.setItem(CHAVE_IMOVEIS, JSON.stringify(imoveis));
+  }
+
+  function formatarTipo(tipo) {
+    const map = { 'Venda': 'venda', 'Locação': 'locacao', 'Temporada': 'temporada' };
+    return map[tipo] || '';
+  }
+
+  function mascararPreco(campo) {
+    let digitos = campo.value.replace(/\D/g, '');
+    if (!digitos) { campo.value = ''; return; }
+    digitos = digitos.replace(/^0+(?=\d)/, '');
+    while (digitos.length < 3) digitos = '0' + digitos;
+    const centavos = digitos.slice(-2);
+    let inteiro = digitos.slice(0, -2);
+    inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    campo.value = `R$ ${inteiro},${centavos}`;
+  }
+
+  function renderizar() {
+    const grid = document.getElementById('gridImoveis');
+    document.getElementById('contador').textContent =
+      `${imoveis.length} imóvel${imoveis.length !== 1 ? 'is' : ''} cadastrado${imoveis.length !== 1 ? 's' : ''}`;
+
+    if (imoveis.length === 0) {
+      grid.innerHTML = `
+        <div class="vazio-wrap">
+          <div class="icone">🏠</div>
+          <p>Nenhum imóvel cadastrado ainda. Clique em "+ Novo Imóvel" para começar.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = imoveis.map(i => `
+      <div class="card-imovel">
+        <div class="card-foto">
+          ${i.foto ? `<img src="${i.foto}" alt="${i.titulo}">` : `<div class="sem-foto">🏠</div>`}
+          <span class="badge-tipo-imovel ${formatarTipo(i.tipo)}">${i.tipo}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-preco">${i.preco}</div>
+          <div class="card-titulo">${i.titulo}</div>
+          <div class="card-local">📍 ${i.bairro} · ${i.cidade}</div>
+          <div class="card-acoes">
+            <button class="btn-editar" onclick="editarImovel(${i.id})">✏️ Editar</button>
+            <button class="btn-excluir" onclick="excluirImovel(${i.id})">🗑️ Excluir</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function abrirFormulario() {
+    idEmEdicao = null;
+    document.getElementById('modalTitulo').textContent = 'Novo Imóvel';
+    limparFormulario();
+    document.getElementById('modalOverlay').classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function editarImovel(id) {
+    const imovel = imoveis.find(i => i.id === id);
+    if (!imovel) return;
+    idEmEdicao = id;
+    document.getElementById('modalTitulo').textContent = 'Editar Imóvel';
+    document.getElementById('fTitulo').value = imovel.titulo || '';
+    document.getElementById('fPreco').value = imovel.preco || '';
+    document.getElementById('fTipo').value = imovel.tipo || 'Venda';
+    document.getElementById('fBairro').value = imovel.bairro || '';
+    document.getElementById('fCidade').value = imovel.cidade || '';
+    document.getElementById('fQuartos').value = imovel.quartos || '';
+    document.getElementById('fBanheiros').value = imovel.banheiros || '';
+    document.getElementById('fArea').value = imovel.area || '';
+    document.getElementById('fVagas').value = imovel.vagas || '';
+    document.getElementById('fWhatsapp').value = imovel.whatsapp || '';
+    document.getElementById('fFoto').value = imovel.foto || '';
+    document.getElementById('fDescricao').value = imovel.descricao || '';
+    document.getElementById('fDestaque').checked = !!imovel.destaque;
+    document.getElementById('modalOverlay').classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function limparFormulario() {
+    ['fTitulo','fPreco','fBairro','fCidade','fQuartos','fBanheiros','fArea','fVagas','fWhatsapp','fFoto','fDescricao']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fTipo').value = 'Venda';
+    document.getElementById('fDestaque').checked = false;
+  }
+
+  function fecharFormulario() {
+    document.getElementById('modalOverlay').classList.remove('aberto');
+    document.body.style.overflow = '';
+  }
+
+  function fecharSeClicouFora(e) {
+    if (e.target === document.getElementById('modalOverlay')) fecharFormulario();
+  }
+
+  function salvarImovel() {
+    const titulo = document.getElementById('fTitulo').value.trim();
+    const preco = document.getElementById('fPreco').value.trim();
+
+    if (!titulo || !preco) {
+      alert('Preencha ao menos o título e o preço.');
+      return;
+    }
+
+    const dados = {
+      titulo,
+      preco,
+      tipo: document.getElementById('fTipo').value,
+      bairro: document.getElementById('fBairro').value.trim(),
+      cidade: document.getElementById('fCidade').value.trim(),
+      quartos: Number(document.getElementById('fQuartos').value) || 0,
+      banheiros: Number(document.getElementById('fBanheiros').value) || 0,
+      area: Number(document.getElementById('fArea').value) || 0,
+      vagas: Number(document.getElementById('fVagas').value) || 0,
+      whatsapp: document.getElementById('fWhatsapp').value.trim(),
+      foto: document.getElementById('fFoto').value.trim(),
+      descricao: document.getElementById('fDescricao').value.trim(),
+      destaque: document.getElementById('fDestaque').checked
+    };
+
+    if (idEmEdicao !== null) {
+      const idx = imoveis.findIndex(i => i.id === idEmEdicao);
+      if (idx !== -1) imoveis[idx] = { ...imoveis[idx], ...dados };
+    } else {
+      const novoId = imoveis.length > 0 ? Math.max(...imoveis.map(i => i.id)) + 1 : 1;
+      imoveis.push({ id: novoId, ...dados });
+    }
+
+    salvar();
+    renderizar();
+    fecharFormulario();
+  }
+
+  function excluirImovel(id) {
+    if (!confirm('Tem certeza que deseja excluir este imóvel?')) return;
+    imoveis = imoveis.filter(i => i.id !== id);
+    salvar();
+    renderizar();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharFormulario();
+  });
+
+  renderizar();
+</script>
+</body>
+</html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imóveis | Clodoaldo Fernandes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --azul: #1a56db;
+  --azul-escuro: #1340a8;
+  --azul-claro: #e8f0fe;
+  --cinza: #f8faff;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --branco: #fff;
+  --sombra: 0 8px 32px rgba(26,86,219,.12);
+  --radius: 14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--cinza); color: #222; }
+
+header {
+  background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+  color: white;
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+  position: relative;
+}
+
+.header-nav {
+  position: absolute;
+  top: 1rem; left: 2rem; right: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo { font-size: 1.2rem; font-weight: 800; color: white; text-decoration: none; }
+
+.btn-voltar-header {
+  color: white; text-decoration: none;
+  font-size: .85rem; font-weight: 600;
+  opacity: .85; transition: opacity .2s;
+}
+
+.btn-voltar-header:hover { opacity: 1; }
+
+header h1 { font-size: 2rem; font-weight: 800; margin-bottom: .5rem; }
+header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
+
+.stats { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+
+.stat {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  padding: .35rem 1rem;
+  font-size: .82rem; font-weight: 600;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.filtros {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filtros-titulo {
+  font-size: .78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px;
+  color: var(--azul); margin-right: .5rem;
+}
+
+.filtro-btn {
+  padding: .4rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--cinza-borda);
+  background: white;
+  font-size: .82rem; font-weight: 600;
+  color: var(--texto);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+}
+
+.filtro-btn:hover { border-color: var(--azul); color: var(--azul); }
+.filtro-btn.ativo { background: var(--azul); color: white; border-color: var(--azul); }
+
+.busca-wrap { margin-left: auto; position: relative; }
+
+.busca-wrap input {
+  padding: .45rem 1rem .45rem 2.2rem;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 999px;
+  font-size: .85rem; font-family: inherit;
+  outline: none; transition: border-color .2s; width: 200px;
+}
+
+.busca-wrap input:focus { border-color: var(--azul); }
+
+.busca-wrap .icone {
+  position: absolute; left: .75rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: .85rem; color: #aaa;
+}
+
+.grid-imoveis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-imovel {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  border: 1px solid var(--cinza-borda);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card-imovel:hover { transform: translateY(-5px); box-shadow: var(--sombra); }
+
+.card-foto {
+  position: relative; height: 220px;
+  overflow: hidden; background: #e5e7eb;
+}
+
+.card-foto img {
+  width: 100%; height: 100%;
+  object-fit: cover; transition: transform .3s;
+}
+
+.card-imovel:hover .card-foto img { transform: scale(1.05); }
+
+.card-foto .sem-foto {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: #ccc; background: #f3f4f6;
+}
+
+.badge-tipo-imovel {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--azul); color: white;
+  font-size: .7rem; font-weight: 700;
+  padding: .25rem .7rem; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: .3px;
+}
+
+.badge-tipo-imovel.venda { background: #0f172a; }
+.badge-tipo-imovel.locacao { background: #059669; }
+.badge-tipo-imovel.temporada { background: #7c3aed; }
+
+.badge-destaque {
+  position: absolute; top: 12px; right: 12px;
+  background: #f4b400; color: #0f172a;
+  font-size: .68rem; font-weight: 800;
+  padding: .2rem .6rem; border-radius: 999px;
+}
+
+.card-body { padding: 1.25rem; }
+.card-preco { font-size: 1.4rem; font-weight: 800; color: var(--azul); margin-bottom: .3rem; }
+.card-titulo { font-size: .95rem; font-weight: 700; color: var(--preto); margin-bottom: .5rem; }
+
+.card-local {
+  font-size: .82rem; color: var(--texto);
+  margin-bottom: .75rem;
+  display: flex; align-items: center; gap: .3rem;
+}
+
+.card-specs {
+  display: flex; gap: .75rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.spec { font-size: .78rem; color: var(--texto); display: flex; align-items: center; gap: .25rem; }
+
+.card-desc {
+  font-size: .83rem; color: var(--texto);
+  line-height: 1.6; margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-acoes { display: flex; gap: .6rem; }
+
+.btn-whatsapp-imovel {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  background: #25d366; color: white;
+  text-decoration: none; padding: .7rem;
+  border-radius: 9px; font-size: .85rem; font-weight: 700;
+  transition: background .2s;
+}
+
+.btn-whatsapp-imovel:hover { background: #1da851; }
+
+.btn-ver-mais {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  background: var(--azul-claro); color: var(--azul);
+  border: none; padding: .7rem; border-radius: 9px;
+  font-size: .85rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-ver-mais:hover { background: #c7d7fc; }
+
+.vazio-wrap {
+  text-align: center; padding: 4rem 2rem; color: #aaa;
+}
+
+.vazio-wrap .icone { font-size: 3rem; margin-bottom: 1rem; }
+.vazio-wrap p { font-size: .95rem; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1000; padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-overlay.aberto { display: flex; align-items: flex-start; justify-content: center; padding-top: 2rem; }
+
+.modal {
+  background: white; border-radius: var(--radius);
+  max-width: 700px; width: 100%; overflow: hidden;
+  animation: fadeIn .2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-foto { width: 100%; height: 300px; object-fit: cover; display: block; }
+
+.modal-sem-foto {
+  width: 100%; height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; background: #f3f4f6; color: #ccc;
+}
+
+.modal-body { padding: 1.75rem; }
+.modal-preco { font-size: 1.8rem; font-weight: 800; color: var(--azul); margin-bottom: .3rem; }
+.modal-titulo { font-size: 1.1rem; font-weight: 700; color: var(--preto); margin-bottom: .5rem; }
+.modal-local { font-size: .88rem; color: var(--texto); margin-bottom: 1rem; }
+
+.modal-specs {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 0;
+  border-top: 1px solid var(--cinza-borda);
+  border-bottom: 1px solid var(--cinza-borda);
+  margin-bottom: 1rem;
+}
+
+.modal-spec { font-size: .85rem; color: var(--texto); display: flex; align-items: center; gap: .3rem; }
+.modal-desc { font-size: .9rem; color: var(--texto); line-height: 1.8; margin-bottom: 1.25rem; }
+.modal-acoes { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+.btn-fechar {
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(0,0,0,.5); color: white;
+  border: none; width: 36px; height: 36px;
+  border-radius: 50%; font-size: 1.1rem;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+}
+
+.modal-topo { position: relative; }
+
+.rodape {
+  text-align: center; padding: 2rem;
+  font-size: .82rem; color: #aaa;
+  border-top: 1px solid var(--cinza-borda);
+}
+
+.rodape a { color: var(--azul); text-decoration: none; font-weight: 600; }
+
+@media (max-width: 600px) {
+  .grid-imoveis { grid-template-columns: 1fr; }
+  .busca-wrap { margin-left: 0; width: 100%; }
+  .busca-wrap input { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-nav">
+    <a href="index.html" class="logo">CF</a>
+    <a href="index.html" class="btn-voltar-header">← Voltar ao site</a>
+  </div>
+  <h1>🏠 Imóveis</h1>
+  <p>Oportunidades selecionadas por Clodoaldo Fernandes · CRECI 14.464-F · João Pessoa/PB</p>
+  <div class="stats">
+    <span class="stat" id="statTotal">0 imóveis</span>
+    <span class="stat" id="statVenda">0 à venda</span>
+    <span class="stat" id="statLocacao">0 para alugar</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="filtros">
+    <span class="filtros-titulo">Filtrar:</span>
+    <button class="filtro-btn ativo" onclick="filtrar('todos', this)">Todos</button>
+    <button class="filtro-btn" onclick="filtrar('Venda', this)">🏡 Venda</button>
+    <button class="filtro-btn" onclick="filtrar('Locação', this)">🔑 Locação</button>
+    <button class="filtro-btn" onclick="filtrar('Temporada', this)">🌴 Temporada</button>
+    <div class="busca-wrap">
+      <span class="icone">🔍</span>
+      <input type="text" id="busca" placeholder="Buscar bairro, tipo..." oninput="renderizar()">
+    </div>
+  </div>
+
+  <div id="gridImoveis" class="grid-imoveis"></div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-topo">
+      <button class="btn-fechar" onclick="fecharModalBtn()">✕</button>
+      <div id="modalFoto"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-preco" id="modalPreco"></div>
+      <div class="modal-titulo" id="modalTitulo"></div>
+      <div class="modal-local" id="modalLocal"></div>
+      <div class="modal-specs" id="modalSpecs"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-acoes" id="modalAcoes"></div>
+    </div>
+  </div>
+</div>
+
+<div class="rodape">
+  <a href="index.html">← Voltar ao site principal</a> &nbsp;·&nbsp;
+  Clodoaldo Fernandes · CRECI 14.464-F · clodoaldofernandes.com.br
+</div>
+
+<script>
+  const CHAVE_IMOVEIS = 'imoveisCF';
+  let filtroAtivo = 'todos';
+  let imoveis = JSON.parse(localStorage.getItem(CHAVE_IMOVEIS)) || [];
+
+  function filtrar(tipo, btn) {
+    filtroAtivo = tipo;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('ativo'));
+    btn.classList.add('ativo');
+    renderizar();
+  }
+
+  function formatarTipo(tipo) {
+    const map = { 'Venda': 'venda', 'Locação': 'locacao', 'Temporada': 'temporada' };
+    return map[tipo] || '';
+  }
+
+  function abrirModal(id) {
+    const imovel = imoveis.find(i => i.id === id);
+    if (!imovel) return;
+
+    document.getElementById('modalFoto').innerHTML = imovel.foto
+      ? `<img src="${imovel.foto}" class="modal-foto" alt="${imovel.titulo}">`
+      : `<div class="modal-sem-foto">🏠</div>`;
+
+    document.getElementById('modalPreco').textContent = imovel.preco;
+    document.getElementById('modalTitulo').textContent = imovel.titulo;
+    document.getElementById('modalLocal').textContent = `📍 ${imovel.bairro} · ${imovel.cidade}`;
+
+    document.getElementById('modalSpecs').innerHTML = `
+      ${imovel.quartos ? `<div class="modal-spec">🛏️ ${imovel.quartos} quarto${imovel.quartos > 1 ? 's' : ''}</div>` : ''}
+      ${imovel.banheiros ? `<div class="modal-spec">🚿 ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</div>` : ''}
+      ${imovel.area ? `<div class="modal-spec">📐 ${imovel.area} m²</div>` : ''}
+      ${imovel.vagas ? `<div class="modal-spec">🚗 ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</div>` : ''}
+    `;
+
+    document.getElementById('modalDesc').textContent = imovel.descricao;
+
+    document.getElementById('modalAcoes').innerHTML = `
+      <a href="https://wa.me/${imovel.whatsapp}?text=Olá! Tenho interesse no imóvel: ${encodeURIComponent(imovel.titulo)} - ${imovel.bairro}"
+         target="_blank" class="btn-whatsapp-imovel" style="flex:1;">
+        📱 Falar com o Corretor
+      </a>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) fecharModalBtn();
+  }
+
+  function fecharModalBtn() {
+    document.getElementById('modalOverlay').classList.remove('aberto');
+    document.body.style.overflow = '';
+  }
+
+  function renderizar() {
+    const grid = document.getElementById('gridImoveis');
+    const busca = document.getElementById('busca').value.toLowerCase();
+
+    const filtrados = imoveis.filter(i => {
+      const matchTipo = filtroAtivo === 'todos' || i.tipo === filtroAtivo;
+      const matchBusca = !busca ||
+        i.titulo.toLowerCase().includes(busca) ||
+        i.bairro.toLowerCase().includes(busca) ||
+        i.tipo.toLowerCase().includes(busca);
+      return matchTipo && matchBusca;
+    });
+
+    const venda = imoveis.filter(i => i.tipo === 'Venda').length;
+    const locacao = imoveis.filter(i => i.tipo === 'Locação').length;
+    document.getElementById('statTotal').textContent = `${imoveis.length} imóvel${imoveis.length !== 1 ? 'is' : ''}`;
+    document.getElementById('statVenda').textContent = `${venda} à venda`;
+    document.getElementById('statLocacao').textContent = `${locacao} para alugar`;
+
+    if (filtrados.length === 0) {
+      grid.innerHTML = `
+        <div class="vazio-wrap" style="grid-column:1/-1;">
+          <div class="icone">🏠</div>
+          <p>Nenhum imóvel encontrado.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = filtrados.map(i => `
+      <div class="card-imovel">
+        <div class="card-foto">
+          ${i.foto ? `<img src="${i.foto}" alt="${i.titulo}">` : `<div class="sem-foto">🏠</div>`}
+          <span class="badge-tipo-imovel ${formatarTipo(i.tipo)}">${i.tipo}</span>
+          ${i.destaque ? `<span class="badge-destaque">⭐ Destaque</span>` : ''}
+        </div>
+        <div class="card-body">
+          <div class="card-preco">${i.preco}</div>
+          <div class="card-titulo">${i.titulo}</div>
+          <div class="card-local">📍 ${i.bairro} · ${i.cidade}</div>
+          <div class="card-specs">
+            ${i.quartos ? `<span class="spec">🛏️ ${i.quartos} qto${i.quartos > 1 ? 's' : ''}</span>` : ''}
+            ${i.banheiros ? `<span class="spec">🚿 ${i.banheiros} bnh</span>` : ''}
+            ${i.area ? `<span class="spec">📐 ${i.area}m²</span>` : ''}
+            ${i.vagas ? `<span class="spec">🚗 ${i.vagas} vaga${i.vagas > 1 ? 's' : ''}</span>` : ''}
+          </div>
+          ${i.descricao ? `<div class="card-desc">${i.descricao}</div>` : ''}
+          <div class="card-acoes">
+            <a href="https://wa.me/${i.whatsapp}?text=Olá! Tenho interesse no imóvel: ${encodeURIComponent(i.titulo)}"
+               target="_blank" class="btn-whatsapp-imovel">📱 WhatsApp</a>
+            <button class="btn-ver-mais" onclick="abrirModal(${i.id})">🔍 Ver mais</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharModalBtn();
+  });
+
+  renderizar();
+</script>
+</body>
+</html>
