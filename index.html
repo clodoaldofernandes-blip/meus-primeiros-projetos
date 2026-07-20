@@ -1335,6 +1335,7 @@
 
     function iniciarCarrossel() {
       const imoveis = JSON.parse(localStorage.getItem('imoveisCF') || '[]');
+      const capaDoImovel = (im) => (im.fotos && im.fotos.length) ? im.fotos[0] : (im.foto || '');
 
       const track = document.getElementById('carrosselTrack');
       const dots = document.getElementById('carrosselDots');
@@ -1355,8 +1356,8 @@
 
       track.innerHTML = imoveis.map(im => `
         <div class="carrossel-slide">
-          ${im.foto
-            ? `<img src="${im.foto}" alt="${im.titulo}">`
+          ${capaDoImovel(im)
+            ? `<img src="${capaDoImovel(im)}" alt="${im.titulo}">`
             : `<div class="slide-sem-foto">🏠</div>`}
           <div class="slide-info">
             <div class="slide-tipo ${im.tipo === 'Venda' ? 'venda' : im.tipo === 'Locação' ? 'locacao' : 'temporada'}">${im.tipo}</div>
