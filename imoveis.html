@@ -171,6 +171,13 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   padding: .2rem .6rem; border-radius: 999px;
 }
 
+.badge-mais-fotos {
+  position: absolute; bottom: 12px; right: 12px;
+  background: rgba(0,0,0,.6); color: white;
+  font-size: .7rem; font-weight: 700;
+  padding: .2rem .6rem; border-radius: 999px;
+}
+
 .card-body { padding: 1.25rem; }
 .card-preco { font-size: 1.4rem; font-weight: 800; color: var(--azul); margin-bottom: .3rem; }
 .card-titulo { font-size: .95rem; font-weight: 700; color: var(--preto); margin-bottom: .5rem; }
@@ -253,6 +260,7 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+.modal-foto-wrap { position: relative; background: #eee; }
 .modal-foto { width: 100%; height: 300px; object-fit: cover; display: block; }
 
 .modal-sem-foto {
@@ -260,6 +268,38 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   display: flex; align-items: center; justify-content: center;
   font-size: 4rem; background: #f3f4f6; color: #ccc;
 }
+
+.modal-nav-foto {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(0,0,0,.5); color: white;
+  border: none; width: 34px; height: 34px;
+  border-radius: 50%; font-size: 1rem;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+}
+
+.modal-nav-foto.prev { left: 10px; }
+.modal-nav-foto.next { right: 10px; }
+
+.modal-thumbs {
+  display: flex; gap: .4rem;
+  padding: .6rem .75rem;
+  overflow-x: auto;
+  background: #fafbff;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.modal-thumb {
+  width: 56px; height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: .6;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.modal-thumb.ativa { opacity: 1; border-color: var(--azul); }
 
 .modal-body { padding: 1.75rem; }
 .modal-preco { font-size: 1.8rem; font-weight: 800; color: var(--azul); margin-bottom: .3rem; }
@@ -285,6 +325,7 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   border-radius: 50%; font-size: 1.1rem;
   cursor: pointer; display: flex;
   align-items: center; justify-content: center;
+  z-index: 2;
 }
 
 .modal-topo { position: relative; }
@@ -342,8 +383,9 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   <div class="modal" id="modal">
     <div class="modal-topo">
       <button class="btn-fechar" onclick="fecharModalBtn()">✕</button>
-      <div id="modalFoto"></div>
+      <div class="modal-foto-wrap" id="modalFotoWrap"></div>
     </div>
+    <div id="modalThumbs" class="modal-thumbs" style="display:none;"></div>
     <div class="modal-body">
       <div class="modal-preco" id="modalPreco"></div>
       <div class="modal-titulo" id="modalTitulo"></div>
@@ -364,6 +406,8 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   const CHAVE_IMOVEIS = 'imoveisCF';
   let filtroAtivo = 'todos';
   let imoveis = JSON.parse(localStorage.getItem(CHAVE_IMOVEIS)) || [];
+  let fotosModalAtual = [];
+  let indiceFotoAtual = 0;
 
   function filtrar(tipo, btn) {
     filtroAtivo = tipo;
@@ -377,13 +421,53 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
     return map[tipo] || '';
   }
 
+  function fotosDoImovel(imovel) {
+    return (imovel.fotos && imovel.fotos.length) ? imovel.fotos : (imovel.foto ? [imovel.foto] : []);
+  }
+
+  function renderizarFotoModal() {
+    const wrap = document.getElementById('modalFotoWrap');
+    if (fotosModalAtual.length === 0) {
+      wrap.innerHTML = `<div class="modal-sem-foto">🏠</div>`;
+      return;
+    }
+    wrap.innerHTML = `
+      <img src="${fotosModalAtual[indiceFotoAtual]}" class="modal-foto">
+      ${fotosModalAtual.length > 1 ? `
+        <button class="modal-nav-foto prev" onclick="navegarFotoModal(-1)">‹</button>
+        <button class="modal-nav-foto next" onclick="navegarFotoModal(1)">›</button>
+      ` : ''}
+    `;
+
+    const thumbsWrap = document.getElementById('modalThumbs');
+    if (fotosModalAtual.length > 1) {
+      thumbsWrap.style.display = 'flex';
+      thumbsWrap.innerHTML = fotosModalAtual.map((f, idx) => `
+        <img src="${f}" class="modal-thumb ${idx === indiceFotoAtual ? 'ativa' : ''}" onclick="irParaFotoModal(${idx})">
+      `).join('');
+    } else {
+      thumbsWrap.style.display = 'none';
+      thumbsWrap.innerHTML = '';
+    }
+  }
+
+  function navegarFotoModal(direcao) {
+    indiceFotoAtual = (indiceFotoAtual + direcao + fotosModalAtual.length) % fotosModalAtual.length;
+    renderizarFotoModal();
+  }
+
+  function irParaFotoModal(idx) {
+    indiceFotoAtual = idx;
+    renderizarFotoModal();
+  }
+
   function abrirModal(id) {
     const imovel = imoveis.find(i => i.id === id);
     if (!imovel) return;
 
-    document.getElementById('modalFoto').innerHTML = imovel.foto
-      ? `<img src="${imovel.foto}" class="modal-foto" alt="${imovel.titulo}">`
-      : `<div class="modal-sem-foto">🏠</div>`;
+    fotosModalAtual = fotosDoImovel(imovel);
+    indiceFotoAtual = 0;
+    renderizarFotoModal();
 
     document.getElementById('modalPreco').textContent = imovel.preco;
     document.getElementById('modalTitulo').textContent = imovel.titulo;
@@ -446,12 +530,16 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
       return;
     }
 
-    grid.innerHTML = filtrados.map(i => `
+    grid.innerHTML = filtrados.map(i => {
+      const fotos = fotosDoImovel(i);
+      const capa = fotos[0];
+      return `
       <div class="card-imovel">
         <div class="card-foto">
-          ${i.foto ? `<img src="${i.foto}" alt="${i.titulo}">` : `<div class="sem-foto">🏠</div>`}
+          ${capa ? `<img src="${capa}" alt="${i.titulo}">` : `<div class="sem-foto">🏠</div>`}
           <span class="badge-tipo-imovel ${formatarTipo(i.tipo)}">${i.tipo}</span>
           ${i.destaque ? `<span class="badge-destaque">⭐ Destaque</span>` : ''}
+          ${fotos.length > 1 ? `<span class="badge-mais-fotos">📷 ${fotos.length}</span>` : ''}
         </div>
         <div class="card-body">
           <div class="card-preco">${i.preco}</div>
@@ -471,7 +559,8 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
           </div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   document.addEventListener('keydown', e => {
