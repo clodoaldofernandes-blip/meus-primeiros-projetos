@@ -833,15 +833,29 @@ textarea { min-height: 80px; resize: vertical; }
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   // ── CÓDIGO DE ACESSO ──
   // Cada linha é um código válido — um por cliente que comprar o PRO.
   // Para revogar acesso de alguém, apague a linha dele daqui.
   const CODIGOS_VALIDOS = [
-    'CF-CLODOALDO2026'
+    'CF-EXEMPLO2026'
   ];
 
   const CHAVE_ACESSO = 'clienteFacilProAcesso';
+  let codigoAtual = null;
 
   function validarAcesso() {
     const campo = document.getElementById('codigoAcesso');
@@ -850,31 +864,39 @@ textarea { min-height: 80px; resize: vertical; }
 
     if (CODIGOS_VALIDOS.map(c => c.toUpperCase()).includes(digitado)) {
       localStorage.setItem(CHAVE_ACESSO, digitado);
-      liberarAcesso();
+      liberarAcesso(digitado);
     } else {
       erro.style.display = 'block';
     }
   }
 
-  function liberarAcesso() {
+  function liberarAcesso(codigo) {
+    codigoAtual = codigo;
     document.getElementById('acessoOverlay').style.display = 'none';
     document.getElementById('appConteudo').style.display = 'block';
-    renderizar();
+
+    db.collection('clientes_pro')
+      .where('workspace', '==', codigoAtual)
+      .orderBy('criadoEm', 'desc')
+      .onSnapshot(snapshot => {
+        clientes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderizar();
+      }, erro => {
+        console.error('Erro ao carregar clientes:', erro);
+      });
   }
 
   (function verificarAcessoSalvo() {
     const salvo = localStorage.getItem(CHAVE_ACESSO);
     if (salvo && CODIGOS_VALIDOS.map(c => c.toUpperCase()).includes(salvo.toUpperCase())) {
-      liberarAcesso();
+      liberarAcesso(salvo.toUpperCase());
     }
   })();
 
   // ── CLIENTE FÁCIL — VERSÃO PRO ──
-  const CHAVE = 'clientesCF_app';
-  const DEMO = false; // versão PRO: PDF liberado
-  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
+  let clientes = [];
+  let idEmEdicao = null;
   let clienteFichaAtual = null;
-  let fichasEmEdicao = null;
 
   function formatarMoeda(campo) {
     let v = campo.value.replace(/\D/g, '');
@@ -883,10 +905,28 @@ textarea { min-height: 80px; resize: vertical; }
     campo.value = v;
   }
 
-  function toBase64(arquivo) {
-    return new Promise((resolve) => {
+  function comprimirImagem(arquivo, maxLargura = 800, qualidade = 0.7) {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let largura = img.width;
+          let altura = img.height;
+          if (largura > maxLargura) {
+            altura = Math.round(altura * (maxLargura / largura));
+            largura = maxLargura;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = largura;
+          canvas.height = altura;
+          canvas.getContext('2d').drawImage(img, 0, 0, largura, altura);
+          resolve(canvas.toDataURL('image/jpeg', qualidade));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
       reader.readAsDataURL(arquivo);
     });
   }
@@ -896,9 +936,9 @@ textarea { min-height: 80px; resize: vertical; }
     if (!nome) { alert('Informe o nome do cliente.'); return; }
 
     const arquivos = Array.from(document.getElementById('foto').files);
-    const fotos = await Promise.all(arquivos.map(toBase64));
+    const fotos = await Promise.all(arquivos.map(f => comprimirImagem(f)));
 
-    const cliente = {
+    const dados = {
       nome,
       telefone: document.getElementById('telefone').value,
       tipo: document.getElementById('tipo').value,
@@ -907,31 +947,45 @@ textarea { min-height: 80px; resize: vertical; }
       valor: document.getElementById('valor').value,
       bairro: document.getElementById('bairro').value,
       obs: document.getElementById('obs').value,
-      fotos,
-      fichas: fichasEmEdicao || [],
-      dataCadastro: new Date().toLocaleString('pt-BR')
+      dataCadastro: new Date().toLocaleString('pt-BR'),
+      workspace: codigoAtual
     };
-    fichasEmEdicao = null;
+    if (fotos.length) dados.fotos = fotos;
 
-    clientes.push(cliente);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    try {
+      if (idEmEdicao !== null) {
+        await db.collection('clientes_pro').doc(idEmEdicao).update(dados);
+      } else {
+        dados.fichas = [];
+        dados.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+        await db.collection('clientes_pro').add(dados);
+      }
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao salvar o cliente. Confira sua conexão e tente novamente.');
+      return;
+    }
 
+    idEmEdicao = null;
     ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
       document.getElementById(id).value = '';
     });
-
-    renderizar();
   }
 
-  function excluirCliente(i) {
+  async function excluirCliente(id) {
     if (!confirm('Excluir este cliente? As fichas de visita dele também serão apagadas.')) return;
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
+    try {
+      await db.collection('clientes_pro').doc(id).delete();
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao excluir o cliente. Tente novamente.');
+    }
   }
 
-  function editarCliente(i) {
-    const c = clientes[i];
+  function editarCliente(id) {
+    const c = clientes.find(cl => cl.id === id);
+    if (!c) return;
+    idEmEdicao = id;
     document.getElementById('nome').value = c.nome;
     document.getElementById('telefone').value = c.telefone;
     document.getElementById('tipo').value = c.tipo;
@@ -940,16 +994,13 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('valor').value = c.valor;
     document.getElementById('bairro').value = c.bairro;
     document.getElementById('obs').value = c.obs;
-    fichasEmEdicao = c.fichas || [];
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function abrirFicha(indexCliente) {
     clienteFichaAtual = indexCliente;
-    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + clientes[indexCliente].nome;
+    const cliente = clientes.find(c => c.id === indexCliente);
+    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + (cliente ? cliente.nome : '');
     limparFormFicha();
     document.getElementById('fData').valueAsDate = new Date();
     atualizarVisibilidadePredio();
@@ -993,7 +1044,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (e.target === document.getElementById('modalFichaOverlay')) fecharFicha();
   }
 
-  function salvarFicha() {
+  async function salvarFicha() {
     if (clienteFichaAtual === null) return;
     const endereco = document.getElementById('fEndereco').value.trim();
     if (!endereco) { alert('Informe o endereço do imóvel visitado.'); return; }
@@ -1036,16 +1087,22 @@ textarea { min-height: 80px; resize: vertical; }
       dataCriacao: new Date().toLocaleString('pt-BR')
     };
 
-    if (!clientes[clienteFichaAtual].fichas) clientes[clienteFichaAtual].fichas = [];
-    clientes[clienteFichaAtual].fichas.push(ficha);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    if (!clienteFichaAtual) return;
 
-    fecharFicha();
-    renderizar();
+    try {
+      await db.collection('clientes_pro').doc(clienteFichaAtual).update({
+        fichas: firebase.firestore.FieldValue.arrayUnion(ficha)
+      });
+      fecharFicha();
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao salvar a ficha. Tente novamente.');
+    }
   }
 
-  function gerarPDFFicha(indexCliente, indexFicha) {
-    const cliente = clientes[indexCliente];
+  function gerarPDFFicha(idCliente, indexFicha) {
+    const cliente = clientes.find(c => c.id === idCliente);
+    if (!cliente) return;
     const f = cliente.fichas[indexFicha];
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -1152,7 +1209,6 @@ textarea { min-height: 80px; resize: vertical; }
     }
 
     lista.innerHTML = filtrados.map((c) => {
-      const i = clientes.indexOf(c);
       const fichas = c.fichas || [];
       const interesseClasse = { Alto: 'interesse-alto', Medio: 'interesse-medio', Baixo: 'interesse-baixo' };
       const interesseLabel = { Alto: '🟢 Alto', Medio: '🟡 Médio', Baixo: '🔴 Baixo' };
@@ -1180,7 +1236,7 @@ textarea { min-height: 80px; resize: vertical; }
         <div class="secao-fichas">
           <div class="secao-fichas-header">
             <span>📋 Fichas de Visita (${fichas.length})</span>
-            <button class="btn-nova-ficha" onclick="abrirFicha(${i})">+ Nova Ficha</button>
+            <button class="btn-nova-ficha" onclick="abrirFicha('${c.id}')">+ Nova Ficha</button>
           </div>
           ${fichas.length === 0
             ? '<div class="sem-fichas">Nenhuma ficha registrada ainda.</div>'
@@ -1191,7 +1247,7 @@ textarea { min-height: 80px; resize: vertical; }
                   · ${f.tipoImovel || ''} · ${f.enderecoImovel}
                   <span class="interesse-badge ${interesseClasse[f.interesse] || 'interesse-medio'}">${interesseLabel[f.interesse] || f.interesse}</span>
                 </div>
-                <button class="btn-pdf" onclick="gerarPDFFicha(${i}, ${fi})">📄 Gerar PDF</button>
+                <button class="btn-pdf" onclick="gerarPDFFicha('${c.id}', ${fi})">📄 Gerar PDF</button>
               </div>
             `).join('')
           }
@@ -1199,8 +1255,8 @@ textarea { min-height: 80px; resize: vertical; }
 
         <div class="acoes">
           <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-          <button class="btn-editar" onclick="editarCliente(${i})">✏️ Editar</button>
-          <button class="btn-excluir" onclick="excluirCliente(${i})">🗑️ Excluir</button>
+          <button class="btn-editar" onclick="editarCliente('${c.id}')">✏️ Editar</button>
+          <button class="btn-excluir" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button>
         </div>
       </div>
     `;
