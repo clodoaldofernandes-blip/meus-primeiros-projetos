@@ -848,26 +848,41 @@ textarea { min-height: 80px; resize: vertical; }
   const db = firebase.firestore();
 
   // ── CÓDIGO DE ACESSO ──
-  // Cada linha é um código válido — um por cliente que comprar o PRO.
-  // Para revogar acesso de alguém, apague a linha dele daqui.
-  const CODIGOS_VALIDOS = [
-     'CF-CLODOALDO2026'
-  ];
+  // Os códigos válidos agora vivem no Firestore, na coleção "codigos_acesso".
+  // Para liberar um cliente novo: no console do Firebase, abra Firestore Database,
+  // clique em "codigos_acesso" > "Adicionar documento", use o código (ex: CF-MARIA2026)
+  // como ID do documento, e crie um campo "ativo" (boolean) = true.
+  // Para revogar: mude "ativo" para false, ou apague o documento.
 
   const CHAVE_ACESSO = 'clienteFacilProAcesso';
   let codigoAtual = null;
 
-  function validarAcesso() {
+  async function validarAcesso() {
     const campo = document.getElementById('codigoAcesso');
     const digitado = campo.value.trim().toUpperCase();
     const erro = document.getElementById('acessoErro');
+    const botao = document.querySelector('.acesso-card button');
 
-    if (CODIGOS_VALIDOS.map(c => c.toUpperCase()).includes(digitado)) {
-      localStorage.setItem(CHAVE_ACESSO, digitado);
-      liberarAcesso(digitado);
-    } else {
+    erro.style.display = 'none';
+    botao.disabled = true;
+    botao.textContent = 'Verificando...';
+
+    try {
+      const doc = await db.collection('codigos_acesso').doc(digitado).get();
+      if (doc.exists && doc.data().ativo !== false) {
+        localStorage.setItem(CHAVE_ACESSO, digitado);
+        liberarAcesso(digitado);
+      } else {
+        erro.style.display = 'block';
+      }
+    } catch (e) {
+      console.error(e);
+      erro.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
       erro.style.display = 'block';
     }
+
+    botao.disabled = false;
+    botao.textContent = 'Entrar';
   }
 
   function liberarAcesso(codigo) {
@@ -886,10 +901,18 @@ textarea { min-height: 80px; resize: vertical; }
       });
   }
 
-  (function verificarAcessoSalvo() {
+  (async function verificarAcessoSalvo() {
     const salvo = localStorage.getItem(CHAVE_ACESSO);
-    if (salvo && CODIGOS_VALIDOS.map(c => c.toUpperCase()).includes(salvo.toUpperCase())) {
-      liberarAcesso(salvo.toUpperCase());
+    if (!salvo) return;
+    try {
+      const doc = await db.collection('codigos_acesso').doc(salvo.toUpperCase()).get();
+      if (doc.exists && doc.data().ativo !== false) {
+        liberarAcesso(salvo.toUpperCase());
+      } else {
+        localStorage.removeItem(CHAVE_ACESSO);
+      }
+    } catch (e) {
+      console.error('Erro ao verificar acesso salvo:', e);
     }
   })();
 
