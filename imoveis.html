@@ -202,7 +202,6 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   line-height: 1.6; margin-bottom: 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -403,12 +402,31 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
   Clodoaldo Fernandes · CRECI 14.464-F · clodoaldofernandes.com.br
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-  const CHAVE_IMOVEIS = 'imoveisCF';
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   let filtroAtivo = 'todos';
-  let imoveis = JSON.parse(localStorage.getItem(CHAVE_IMOVEIS)) || [];
+  let imoveis = [];
   let fotosModalAtual = [];
   let indiceFotoAtual = 0;
+
+  db.collection('imoveis').orderBy('criadoEm', 'desc').onSnapshot(snapshot => {
+    imoveis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderizar();
+  }, erro => {
+    console.error('Erro ao carregar imoveis:', erro);
+  });
 
   function filtrar(tipo, btn) {
     filtroAtivo = tipo;
@@ -556,7 +574,7 @@ header p { opacity: .85; font-size: .95rem; margin-bottom: 1.5rem; }
           <div class="card-acoes">
             <a href="https://wa.me/${i.whatsapp}?text=Olá! Tenho interesse no imóvel: ${encodeURIComponent(i.titulo)}"
                target="_blank" class="btn-whatsapp-imovel">📱 WhatsApp</a>
-            <button class="btn-ver-mais" onclick="abrirModal(${i.id})">🔍 Ver mais</button>
+            <button class="btn-ver-mais" onclick="abrirModal('${i.id}')">🔍 Ver mais</button>
           </div>
         </div>
       </div>

@@ -382,18 +382,59 @@ header p { opacity: .85; font-size: .9rem; }
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-  const CHAVE_IMOVEIS = 'imoveisCF';
-  let imoveis = JSON.parse(localStorage.getItem(CHAVE_IMOVEIS)) || [];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  let imoveis = [];
   let idEmEdicao = null;
 
-  function salvar() {
-    localStorage.setItem(CHAVE_IMOVEIS, JSON.stringify(imoveis));
-  }
+  db.collection('imoveis').orderBy('criadoEm', 'desc').onSnapshot(snapshot => {
+    imoveis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderizar();
+  }, erro => {
+    console.error('Erro ao carregar imoveis:', erro);
+  });
 
   function formatarTipo(tipo) {
     const map = { 'Venda': 'venda', 'Locação': 'locacao', 'Temporada': 'temporada' };
     return map[tipo] || '';
+  }
+
+  function comprimirImagem(arquivo, maxLargura = 800, qualidade = 0.7) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let largura = img.width;
+          let altura = img.height;
+          if (largura > maxLargura) {
+            altura = Math.round(altura * (maxLargura / largura));
+            largura = maxLargura;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = largura;
+          canvas.height = altura;
+          canvas.getContext('2d').drawImage(img, 0, 0, largura, altura);
+          resolve(canvas.toDataURL('image/jpeg', qualidade));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(arquivo);
+    });
   }
 
   function mascararPreco(campo) {
@@ -436,8 +477,8 @@ header p { opacity: .85; font-size: .9rem; }
           <div class="card-titulo">${i.titulo}</div>
           <div class="card-local">📍 ${i.bairro} · ${i.cidade}</div>
           <div class="card-acoes">
-            <button class="btn-editar" onclick="editarImovel(${i.id})">✏️ Editar</button>
-            <button class="btn-excluir" onclick="excluirImovel(${i.id})">🗑️ Excluir</button>
+            <button class="btn-editar" onclick="editarImovel('${i.id}')">✏️ Editar</button>
+            <button class="btn-excluir" onclick="excluirImovel('${i.id}')">🗑️ Excluir</button>
           </div>
         </div>
       </div>
@@ -496,14 +537,6 @@ header p { opacity: .85; font-size: .9rem; }
 
   let fotosSelecionadas = [];
 
-  function toBase64(arquivo) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(arquivo);
-    });
-  }
-
   function renderizarThumbs() {
     const wrap = document.getElementById('fFotosPreview');
     wrap.innerHTML = fotosSelecionadas.map((f, idx) => `
@@ -522,8 +555,8 @@ header p { opacity: .85; font-size: .9rem; }
   document.getElementById('fFotosArquivos').addEventListener('change', async (e) => {
     const arquivos = Array.from(e.target.files);
     for (const arquivo of arquivos) {
-      const base64 = await toBase64(arquivo);
-      fotosSelecionadas.push(base64);
+      const comprimida = await comprimirImagem(arquivo);
+      fotosSelecionadas.push(comprimida);
     }
     e.target.value = '';
     renderizarThumbs();
@@ -538,6 +571,10 @@ header p { opacity: .85; font-size: .9rem; }
       return;
     }
 
+    const btnSalvar = document.querySelector('.btn-salvar');
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = 'Salvando...';
+
     const dados = {
       titulo,
       preco,
@@ -551,34 +588,40 @@ header p { opacity: .85; font-size: .9rem; }
       whatsapp: document.getElementById('fWhatsapp').value.trim(),
       fotos: [...fotosSelecionadas],
       descricao: document.getElementById('fDescricao').value.trim(),
-      destaque: document.getElementById('fDestaque').checked
+      destaque: document.getElementById('fDestaque').checked,
+      criadoEm: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    if (idEmEdicao !== null) {
-      const idx = imoveis.findIndex(i => i.id === idEmEdicao);
-      if (idx !== -1) imoveis[idx] = { ...imoveis[idx], ...dados };
-    } else {
-      const novoId = imoveis.length > 0 ? Math.max(...imoveis.map(i => i.id)) + 1 : 1;
-      imoveis.push({ id: novoId, ...dados });
+    try {
+      if (idEmEdicao !== null) {
+        const { criadoEm, ...dadosSemData } = dados;
+        await db.collection('imoveis').doc(idEmEdicao).update(dadosSemData);
+      } else {
+        await db.collection('imoveis').add(dados);
+      }
+      fecharFormulario();
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao salvar o imóvel. Confira sua conexão e tente novamente.');
     }
 
-    salvar();
-    renderizar();
-    fecharFormulario();
+    btnSalvar.disabled = false;
+    btnSalvar.textContent = 'Salvar';
   }
 
-  function excluirImovel(id) {
+  async function excluirImovel(id) {
     if (!confirm('Tem certeza que deseja excluir este imóvel?')) return;
-    imoveis = imoveis.filter(i => i.id !== id);
-    salvar();
-    renderizar();
+    try {
+      await db.collection('imoveis').doc(id).delete();
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao excluir o imóvel. Tente novamente.');
+    }
   }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') fecharFormulario();
   });
-
-  renderizar();
 </script>
 </body>
 </html>

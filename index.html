@@ -1233,13 +1233,14 @@
       </a>
     </div>
     <p>@clodoaldofernandesimóveis</p>
-<p style="margin-top:0.5rem;">© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
-<p style="margin-top:0.75rem;">
-  <a href="admin/gerenciar.html" style="color:#666; text-decoration:none; font-size:0.78rem;">⚙️ Área do corretor</a>
-</p>
-    
+    <p style="margin-top:0.5rem;">© 2026 <span>Clodoaldo Fernandes</span> · Todos os direitos reservados</p>
+    <p style="margin-top:0.75rem;">
+      <a href="admin/gerenciar.html" style="color:#666; text-decoration:none; font-size:0.78rem;">⚙️ Área do corretor</a>
+    </p>
   </footer>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -1337,8 +1338,7 @@
     let carrosselTotal = 0;
     let carrosselTimer;
 
-    function iniciarCarrossel() {
-      const imoveis = JSON.parse(localStorage.getItem('imoveisCF') || '[]');
+    function iniciarCarrossel(imoveis) {
       const capaDoImovel = (im) => (im.fotos && im.fotos.length) ? im.fotos[0] : (im.foto || '');
 
       const track = document.getElementById('carrosselTrack');
@@ -1346,6 +1346,9 @@
       const vazio = document.getElementById('carrosselVazio');
       const prev = document.getElementById('carrosselPrev');
       const next = document.getElementById('carrosselNext');
+
+      clearInterval(carrosselTimer);
+      carrosselIndex = 0;
 
       if (!imoveis.length) {
         vazio.style.display = 'flex';
@@ -1356,6 +1359,7 @@
       }
 
       vazio.style.display = 'none';
+      track.style.display = 'flex';
       carrosselTotal = imoveis.length;
 
       track.innerHTML = imoveis.map(im => `
@@ -1376,12 +1380,11 @@
         `<button class="dot ${i === 0 ? 'ativo' : ''}" onclick="irParaSlide(${i})"></button>`
       ).join('');
 
-      if (imoveis.length <= 1) {
-        if (prev) prev.style.display = 'none';
-        if (next) next.style.display = 'none';
-      }
+      if (prev) prev.style.display = imoveis.length > 1 ? 'flex' : 'none';
+      if (next) next.style.display = imoveis.length > 1 ? 'flex' : 'none';
 
-      iniciarAutoPlay();
+      atualizarCarrossel();
+      if (imoveis.length > 1) iniciarAutoPlay();
     }
 
     function moverCarrossel(direcao) {
@@ -1412,7 +1415,23 @@
       iniciarAutoPlay();
     }
 
-    iniciarCarrossel();
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+      authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+      projectId: "clodoaldofernandes-crm",
+      storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+      messagingSenderId: "219414452",
+      appId: "1:219414452:web:702d6a061bc3d60a3dbce1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    db.collection('imoveis').orderBy('criadoEm', 'desc').onSnapshot(snapshot => {
+      const imoveis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      iniciarCarrossel(imoveis);
+    }, erro => {
+      console.error('Erro ao carregar imoveis:', erro);
+    });
 
   </script>
 
