@@ -109,6 +109,19 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
   white-space: nowrap;
 }
 
+.badge-pagamento-unico {
+  display: inline-block;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: .72rem;
+  font-weight: 800;
+  padding: .3rem .8rem;
+  border-radius: 999px;
+  letter-spacing: .3px;
+  border: 1.5px solid #6ee7b7;
+  margin-bottom: .9rem;
+}
+
 .plano-nome {
   font-size: .82rem;
   font-weight: 700;
@@ -137,6 +150,7 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
   font-size: .82rem;
   color: var(--texto);
   margin-bottom: 1.5rem;
+  font-weight: 600;
 }
 
 .plano-features {
@@ -321,7 +335,7 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
   </div>
   <h1>🏠 Cliente Fácil</h1>
   <p>O sistema de gestão de clientes feito para corretores de imóveis</p>
-  <span class="badge-pro-header">⭐ PLANO PRO — Acesso ilimitado</span>
+  <span class="badge-pro-header">⭐ PLANO PRO — Pagamento único</span>
 </header>
 
 <div class="container">
@@ -331,8 +345,8 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
 
     <div class="plano-card">
       <div class="plano-nome">🎁 Gratuito</div>
-      <div class="plano-preco">R$ 0<span>/mês</span></div>
-      <div class="plano-desc">Para experimentar</div>
+      <div class="plano-preco">R$ 0</div>
+      <div class="plano-desc">Grátis para sempre, para experimentar</div>
       <ul class="plano-features">
         <li><span class="check">✓</span> Até 2 clientes</li>
         <li><span class="check">✓</span> Dashboard</li>
@@ -349,8 +363,9 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
     <div class="plano-card destaque">
       <span class="plano-popular">⭐ MAIS POPULAR</span>
       <div class="plano-nome">🚀 PRO</div>
-      <div class="plano-preco">R$ 49<span>,90/mês</span></div>
-      <div class="plano-desc">Para corretores ativos</div>
+      <div class="badge-pagamento-unico">💳 PAGAMENTO ÚNICO</div>
+      <div class="plano-preco">R$ 49<span>,90</span></div>
+      <div class="plano-desc">Pague uma vez só — acesso vitalício, sem mensalidade</div>
       <ul class="plano-features">
         <li><span class="check">✓</span> Clientes ilimitados</li>
         <li><span class="check">✓</span> Dashboard completo</li>
@@ -361,8 +376,8 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
         <li><span class="check">✓</span> Ficha de visita digital</li>
         <li><span class="check">✓</span> Suporte via WhatsApp</li>
       </ul>
-      <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero assinar o Cliente Fácil PRO por R$ 49,90/mês."
-         target="_blank" class="btn-plano pro">📱 Assinar agora via WhatsApp</a>
+      <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero adquirir o Cliente Fácil PRO (pagamento único de R$ 49,90)."
+         target="_blank" class="btn-plano pro">📱 Desbloquear PRO via WhatsApp</a>
     </div>
 
   </div>
@@ -399,20 +414,20 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
   <div class="faq">
     <h2>❓ Perguntas frequentes</h2>
     <div class="faq-item">
+      <div class="faq-pergunta">É uma assinatura mensal?</div>
+      <div class="faq-resposta">Não. O Cliente Fácil PRO é um pagamento único de R$ 49,90 — você paga uma vez só e tem acesso para sempre, sem mensalidade e sem cobrança recorrente.</div>
+    </div>
+    <div class="faq-item">
       <div class="faq-pergunta">Como funciona o pagamento?</div>
-      <div class="faq-resposta">O pagamento é feito via WhatsApp. Após o contato, você recebe o link de pagamento via PIX ou cartão. O acesso é liberado em até 1 hora após a confirmação.</div>
+      <div class="faq-resposta">O pagamento é feito via WhatsApp. Após o contato, você recebe o link de pagamento único via PIX ou cartão. O acesso é liberado em até 1 hora após a confirmação.</div>
     </div>
     <div class="faq-item">
       <div class="faq-pergunta">Preciso instalar algum aplicativo?</div>
-      <div class="faq-resposta">Não! O Cliente Fácil funciona direto no navegador do celular ou computador, sem instalação. Funciona até sem internet (offline).</div>
+      <div class="faq-resposta">Não! O Cliente Fácil funciona direto no navegador do celular ou computador, sem instalação.</div>
     </div>
     <div class="faq-item">
       <div class="faq-pergunta">Meus dados ficam seguros?</div>
-      <div class="faq-resposta">Sim. Todos os dados ficam salvos apenas no seu próprio dispositivo (localStorage). Ninguém além de você tem acesso.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-pergunta">Posso cancelar quando quiser?</div>
-      <div class="faq-resposta">Sim. Não há fidelidade. Basta avisar via WhatsApp e o cancelamento é feito imediatamente, sem burocracia.</div>
+      <div class="faq-resposta">Sim. Seus clientes e fichas de visita ficam salvos em um banco de dados na nuvem, protegido por um código de acesso exclusivo seu — você consegue acessar do celular, tablet ou computador, sempre com os mesmos dados sincronizados.</div>
     </div>
     <div class="faq-item">
       <div class="faq-pergunta">O sistema funciona no celular?</div>
@@ -423,8 +438,8 @@ header p { opacity: .85; font-size: 1rem; margin-bottom: 1.5rem; }
   <!-- CTA -->
   <div class="cta">
     <h2>Pronto para organizar seus clientes?</h2>
-    <p>Fale comigo agora pelo WhatsApp e comece a usar o PRO hoje mesmo.</p>
-    <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero assinar o Cliente Fácil PRO por R$ 49,90/mês."
+    <p>Fale comigo agora pelo WhatsApp e desbloqueie o PRO com pagamento único.</p>
+    <a href="https://wa.me/5583982001314?text=Olá Clodoaldo! Quero adquirir o Cliente Fácil PRO (pagamento único de R$ 49,90)."
        target="_blank" class="btn-cta-whats">
       📱 Falar no WhatsApp agora
     </a>
