@@ -605,7 +605,7 @@
           <label>Valor do imóvel <span>(R$)</span></label>
           <div class="input-wrap">
             <span class="prefix">R$</span>
-            <input type="text" id="valorImovel" placeholder="300.000,00">
+            <input type="text" id="valorImovel" placeholder="300.000,00" inputmode="numeric">
           </div>
         </div>
 
@@ -613,7 +613,7 @@
           <label>Entrada <span>(R$)</span></label>
           <div class="input-wrap">
             <span class="prefix">R$</span>
-            <input type="text" id="entrada" placeholder="60.000,00">
+            <input type="text" id="entrada" placeholder="60.000,00" inputmode="numeric">
           </div>
           <div class="range-wrap">
             <input type="range" id="entradaRange" min="0" max="90" value="20" step="5">
@@ -655,7 +655,7 @@
           <label>Renda familiar bruta <span>(R$/mês)</span></label>
           <div class="input-wrap">
             <span class="prefix">R$</span>
-            <input type="text" id="renda" placeholder="3.000,00">
+            <input type="text" id="renda" placeholder="3.000,00" inputmode="numeric">
           </div>
         </div>
 
@@ -839,6 +839,17 @@
       return parseFloat(limpo) || 0;
     }
 
+    function mascararMoeda(campo) {
+      let digitos = campo.value.replace(/\D/g, '');
+      if (!digitos) { campo.value = ''; return; }
+      digitos = digitos.replace(/^0+(?=\d)/, '');
+      while (digitos.length < 3) digitos = '0' + digitos;
+      const centavos = digitos.slice(-2);
+      let inteiro = digitos.slice(0, -2);
+      inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      campo.value = `${inteiro},${centavos}`;
+    }
+
     function selecionarRadio(grupo, valor) {
       if (grupo === 'dep') {
         document.getElementById('labelDepSim').classList.toggle('selecionado', valor === 'Sim');
@@ -933,11 +944,20 @@
     });
 
     document.getElementById('valorImovel').addEventListener('input', function() {
+      mascararMoeda(this);
       const pct = +document.getElementById('entradaRange').value;
       const imovel = parseBR(this.value);
       if (imovel > 0) {
         document.getElementById('entrada').value = (imovel * pct / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
+    });
+
+    document.getElementById('entrada').addEventListener('input', function() {
+      mascararMoeda(this);
+    });
+
+    document.getElementById('renda').addEventListener('input', function() {
+      mascararMoeda(this);
     });
 
     document.getElementById('prazoRange').addEventListener('input', function() {
