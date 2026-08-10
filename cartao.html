@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clodoaldo Fernandes | Analista e Desenvolvedor de Sistemas</title>
+<meta name="description" content="Cartão virtual de Clodoaldo Fernandes — Analista e Desenvolvedor de Sistemas.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #1a56db;
+    --azul-escuro: #1340a8;
+    --cinza-borda: #e5e7eb;
+    --texto: #555;
+    --preto: #111;
+    --branco: #fff;
+    --sombra: 0 8px 32px rgba(26,86,219,.14);
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .cartao {
+    background: var(--branco);
+    border-radius: var(--radius);
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 25px 70px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+
+  .topo {
+    background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+    padding: 2.5rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .foto {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,.85);
+    box-shadow: 0 0 0 6px rgba(255,255,255,.15);
+  }
+
+  .corpo {
+    padding: 0 2rem 2rem;
+    margin-top: -3rem;
+    text-align: center;
+  }
+
+  .nome {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--preto);
+    letter-spacing: -.3px;
+    margin-top: .25rem;
+  }
+
+  .cargo {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--azul);
+    margin-top: .2rem;
+  }
+
+  .local {
+    font-size: .8rem;
+    color: var(--texto);
+    margin-top: .3rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: .4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .tag {
+    background: #e8f0fe;
+    color: var(--azul);
+    font-size: .72rem;
+    font-weight: 700;
+    padding: .3rem .8rem;
+    border-radius: 999px;
+  }
+
+  .acoes {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    margin-top: 1.75rem;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    padding: .85rem 1rem;
+    border-radius: 11px;
+    font-size: .92rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .15s, opacity .15s;
+  }
+
+  .btn:hover { transform: translateY(-1px); }
+
+  .btn-salvar {
+    background: var(--azul);
+    color: white;
+    box-shadow: 0 4px 14px rgba(26,86,219,.3);
+  }
+
+  .btn-salvar:hover { background: var(--azul-escuro); }
+
+  .btn-whats {
+    background: #25d366;
+    color: white;
+  }
+
+  .btn-whats:hover { background: #1da851; }
+
+  .btn-email {
+    background: #f1f2f4;
+    color: #333;
+  }
+
+  .btn-email:hover { background: #e5e7eb; }
+
+  .btn-site {
+    background: transparent;
+    color: var(--azul);
+    border: 1.5px solid var(--azul);
+  }
+
+  .btn-site:hover { background: #e8f0fe; }
+
+  .btn-linkedin {
+    background: #0a66c2;
+    color: white;
+  }
+
+  .btn-linkedin:hover { background: #084d92; }
+
+  .btn-github {
+    background: #24292f;
+    color: white;
+  }
+
+  .btn-github:hover { background: #0d1117; }
+
+  .rodape {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: .72rem;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+  <div class="cartao">
+    <div class="topo"></div>
+    <div class="corpo">
+      <img src="foto-perfil.jpeg" alt="Clodoaldo Fernandes" class="foto">
+      <div class="nome">Clodoaldo Fernandes</div>
+      <div class="cargo">Analista e Desenvolvedor de Sistemas</div>
+      <div class="local">📍 João Pessoa/PB</div>
+
+      <div class="tags">
+        <span class="tag">💻 Desenvolvimento Web</span>
+        <span class="tag">🖥️ Sistemas</span>
+        <span class="tag">🚀 PropTech</span>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-salvar" onclick="salvarContato()">📇 Salvar Contato</button>
+        <a href="https://wa.me/5583982001314" target="_blank" class="btn btn-whats">📱 Falar no WhatsApp</a>
+        <a href="mailto:clodoaldo.fernandes@gmail.com" class="btn btn-email">✉️ Enviar E-mail</a>
+        <a href="https://www.linkedin.com/in/clodoaldofernandes/" target="_blank" class="btn btn-linkedin">💼 LinkedIn</a>
+        <a href="https://github.com/clodoaldofernandes-blip" target="_blank" class="btn btn-github">🐙 GitHub</a>
+        <a href="index.html" class="btn btn-site">🌐 Ver Portfólio Completo</a>
+      </div>
+
+      <div class="rodape">clodoaldofernandes.com.br</div>
+    </div>
+  </div>
+
+<script>
+  function salvarContato() {
+    const vcard = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'N:Fernandes;Clodoaldo;;;',
+      'FN:Clodoaldo Fernandes',
+      'TITLE:Analista e Desenvolvedor de Sistemas',
+      'TEL;TYPE=CELL:+5583982001314',
+      'EMAIL:clodoaldo.fernandes@gmail.com',
+      'URL:https://clodoaldofernandes.com.br',
+      'ADR;TYPE=WORK:;;;João Pessoa;PB;;Brasil',
+      'END:VCARD'
+    ].join('\n');
+
+    const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'clodoaldo-fernandes.vcf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+</script>
+
+</body>
+</html>
