@@ -33,12 +33,12 @@ header {
 header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
 header p { opacity: .85; font-size: .95rem; }
 
-.badge-demo {
+.status-conexao {
   display: inline-block;
-  background: #fde68a;
-  color: #92400e;
+  background: rgba(255,255,255,.15);
+  color: white;
   font-size: .72rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: .25rem .8rem;
   border-radius: 999px;
   margin-top: .75rem;
@@ -130,6 +130,21 @@ textarea { min-height: 80px; resize: vertical; }
 
 .btn-salvar:hover { background: var(--rosa-escuro); }
 .btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-cancelar-edicao {
+  width: 100%;
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: 10px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  display: none;
+}
 
 .lista-clientes { display: flex; flex-direction: column; gap: 14px; }
 
@@ -455,7 +470,7 @@ textarea { min-height: 80px; resize: vertical; }
 <header>
   <h1>💅 Estética Fácil</h1>
   <p>Organize clientes, procedimentos e atendimentos direto pelo celular.</p>
-  <span class="badge-demo">🎁 VERSÃO DE TESTE — dados salvos só neste aparelho</span>
+  <span class="status-conexao" id="statusConexao">🔄 Conectando ao banco de dados...</span>
 </header>
 
 <div class="container">
@@ -482,7 +497,7 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="grid">
 
     <div class="card">
-      <h2>➕ Nova Cliente</h2>
+      <h2 id="tituloFormCliente">➕ Nova Cliente</h2>
 
       <label>Nome *</label>
       <input type="text" id="nome" placeholder="Nome completo">
@@ -509,6 +524,7 @@ textarea { min-height: 80px; resize: vertical; }
       <input type="file" id="foto" accept="image/*" multiple>
 
       <button class="btn-salvar" id="btnSalvar" onclick="salvarCliente()">💾 Salvar Cliente</button>
+      <button class="btn-cancelar-edicao" id="btnCancelarEdicao" onclick="cancelarEdicao()">✕ Cancelar edição</button>
     </div>
 
     <div class="card">
@@ -604,11 +620,31 @@ textarea { min-height: 80px; resize: vertical; }
   </div>
 </div>
 
-<script>
-  const CHAVE = 'clientesEsteticaFacil_demo';
-  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, arrayUnion
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Configuração do projeto Firebase (clodoaldofernandes-crm)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1",
+    measurementId: "G-MBJFQR0X9J"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const clientesRef = collection(db, "clientesEsteticaFacil");
+
+  let clientes = [];
+  let clienteEditandoId = null;
   let clienteFichaAtual = null;
-  let fichasEmEdicao = null;
   let fotosAntesSelecionadas = [];
   let fotosDepoisSelecionadas = [];
 
@@ -631,64 +667,109 @@ textarea { min-height: 80px; resize: vertical; }
     });
   }
 
-  async function salvarCliente() {
+  // Escuta o Firestore em tempo real: qualquer mudança (deste ou de outro aparelho) atualiza a tela sozinha
+  const statusEl = document.getElementById('statusConexao');
+  onSnapshot(
+    query(clientesRef, orderBy('dataCadastroTS', 'desc')),
+    (snapshot) => {
+      clientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+      renderizar();
+    },
+    (erro) => {
+      console.error(erro);
+      statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
+    }
+  );
+
+  window.salvarCliente = async function salvarCliente() {
     const nome = document.getElementById('nome').value.trim();
     if (!nome) { alert('Informe o nome da cliente.'); return; }
 
-    const arquivos = Array.from(document.getElementById('foto').files);
-    const fotos = await Promise.all(arquivos.map(toBase64));
+    const btn = document.getElementById('btnSalvar');
+    btn.disabled = true;
+    btn.textContent = '💾 Salvando...';
 
-    const cliente = {
-      nome,
-      telefone: document.getElementById('telefone').value,
-      origem: document.getElementById('origem').value,
-      bairro: document.getElementById('bairro').value,
-      obs: document.getElementById('obs').value,
-      fotos,
-      fichas: fichasEmEdicao || [],
-      dataCadastro: new Date().toLocaleString('pt-BR')
-    };
-    fichasEmEdicao = null;
+    try {
+      const arquivos = Array.from(document.getElementById('foto').files);
+      const fotosNovas = await Promise.all(arquivos.map(toBase64));
 
-    clientes.push(cliente);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+      const dados = {
+        nome,
+        telefone: document.getElementById('telefone').value,
+        origem: document.getElementById('origem').value,
+        bairro: document.getElementById('bairro').value,
+        obs: document.getElementById('obs').value,
+      };
 
-    ['nome', 'telefone', 'bairro', 'obs', 'foto'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
+      if (clienteEditandoId) {
+        const clienteAtual = clientes.find(c => c.id === clienteEditandoId);
+        dados.fotos = [...(clienteAtual?.fotos || []), ...fotosNovas];
+        await updateDoc(doc(db, 'clientesEsteticaFacil', clienteEditandoId), dados);
+        cancelarEdicao();
+      } else {
+        dados.fotos = fotosNovas;
+        dados.fichas = [];
+        dados.dataCadastro = new Date().toLocaleString('pt-BR');
+        dados.dataCadastroTS = Date.now();
+        await addDoc(clientesRef, dados);
+      }
 
-    renderizar();
-  }
+      ['nome', 'telefone', 'bairro', 'obs', 'foto'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar. Verifique sua internet e tente de novo.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = clienteEditandoId ? '💾 Salvar Alterações' : '💾 Salvar Cliente';
+    }
+  };
 
-  function excluirCliente(i) {
+  window.excluirCliente = async function excluirCliente(id) {
     if (!confirm('Excluir esta cliente? As fichas de atendimento dela também serão apagadas.')) return;
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
-  }
+    try {
+      await deleteDoc(doc(db, 'clientesEsteticaFacil', id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
 
-  function editarCliente(i) {
-    const c = clientes[i];
-    document.getElementById('nome').value = c.nome;
-    document.getElementById('telefone').value = c.telefone;
+  window.editarCliente = function editarCliente(id) {
+    const c = clientes.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('nome').value = c.nome || '';
+    document.getElementById('telefone').value = c.telefone || '';
     document.getElementById('origem').value = c.origem || 'Instagram';
-    document.getElementById('bairro').value = c.bairro;
-    document.getElementById('obs').value = c.obs;
-    fichasEmEdicao = c.fichas || [];
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
+    document.getElementById('bairro').value = c.bairro || '';
+    document.getElementById('obs').value = c.obs || '';
+    clienteEditandoId = id;
+    document.getElementById('tituloFormCliente').textContent = '✏️ Editando Cliente';
+    document.getElementById('btnSalvar').textContent = '💾 Salvar Alterações';
+    document.getElementById('btnCancelarEdicao').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  };
 
-  function abrirFicha(indexCliente) {
-    clienteFichaAtual = indexCliente;
-    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + clientes[indexCliente].nome;
+  window.cancelarEdicao = function cancelarEdicao() {
+    clienteEditandoId = null;
+    ['nome', 'telefone', 'bairro', 'obs', 'foto'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('origem').value = 'Instagram';
+    document.getElementById('tituloFormCliente').textContent = '➕ Nova Cliente';
+    document.getElementById('btnSalvar').textContent = '💾 Salvar Cliente';
+    document.getElementById('btnCancelarEdicao').style.display = 'none';
+  };
+
+  window.abrirFicha = function abrirFicha(id) {
+    clienteFichaAtual = id;
+    const c = clientes.find(x => x.id === id);
+    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + (c ? c.nome : '');
     limparFormFicha();
     document.getElementById('fData').valueAsDate = new Date();
     document.getElementById('modalFichaOverlay').classList.add('aberto');
     document.body.style.overflow = 'hidden';
-  }
+  };
 
   function limparFormFicha() {
     ['fData', 'fHorario', 'fProdutos', 'fValor', 'fRetorno', 'fReacoes'].forEach(id => document.getElementById(id).value = '');
@@ -699,15 +780,15 @@ textarea { min-height: 80px; resize: vertical; }
     renderizarThumbsDepois();
   }
 
-  function fecharFicha() {
+  window.fecharFicha = function fecharFicha() {
     document.getElementById('modalFichaOverlay').classList.remove('aberto');
     document.body.style.overflow = '';
     clienteFichaAtual = null;
-  }
+  };
 
-  function fecharFichaSeClicouFora(e) {
+  window.fecharFichaSeClicouFora = function fecharFichaSeClicouFora(e) {
     if (e.target === document.getElementById('modalFichaOverlay')) fecharFicha();
-  }
+  };
 
   function renderizarThumbsAntes() {
     const wrap = document.getElementById('fFotoAntesPreview');
@@ -729,8 +810,8 @@ textarea { min-height: 80px; resize: vertical; }
     `).join('');
   }
 
-  function removerFotoAntes(idx) { fotosAntesSelecionadas.splice(idx, 1); renderizarThumbsAntes(); }
-  function removerFotoDepois(idx) { fotosDepoisSelecionadas.splice(idx, 1); renderizarThumbsDepois(); }
+  window.removerFotoAntes = function removerFotoAntes(idx) { fotosAntesSelecionadas.splice(idx, 1); renderizarThumbsAntes(); };
+  window.removerFotoDepois = function removerFotoDepois(idx) { fotosDepoisSelecionadas.splice(idx, 1); renderizarThumbsDepois(); };
 
   document.getElementById('fFotoAntesArquivo').addEventListener('change', async (e) => {
     const arquivos = Array.from(e.target.files);
@@ -746,7 +827,7 @@ textarea { min-height: 80px; resize: vertical; }
     renderizarThumbsDepois();
   });
 
-  function salvarFicha() {
+  window.salvarFicha = async function salvarFicha() {
     if (clienteFichaAtual === null) return;
 
     const ficha = {
@@ -762,15 +843,18 @@ textarea { min-height: 80px; resize: vertical; }
       dataCriacao: new Date().toLocaleString('pt-BR')
     };
 
-    if (!clientes[clienteFichaAtual].fichas) clientes[clienteFichaAtual].fichas = [];
-    clientes[clienteFichaAtual].fichas.push(ficha);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    try {
+      await updateDoc(doc(db, 'clientesEsteticaFacil', clienteFichaAtual), {
+        fichas: arrayUnion(ficha)
+      });
+      fecharFicha();
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar a ficha. Tente novamente.');
+    }
+  };
 
-    fecharFicha();
-    renderizar();
-  }
-
-  function renderizar() {
+  window.renderizar = function renderizar() {
     const lista = document.getElementById('clientes');
     const busca = document.getElementById('pesquisa').value.toLowerCase();
 
@@ -787,7 +871,7 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('totalFotos').textContent = fotos;
     document.getElementById('totalRetornos').textContent = retornosPendentes;
 
-    const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
+    const filtrados = clientes.filter(c => (c.nome || '').toLowerCase().includes(busca));
 
     if (filtrados.length === 0) {
       lista.innerHTML = '<div class="vazio">Nenhuma cliente cadastrada.</div>';
@@ -795,7 +879,6 @@ textarea { min-height: 80px; resize: vertical; }
     }
 
     lista.innerHTML = filtrados.map((c) => {
-      const i = clientes.indexOf(c);
       const fichas = c.fichas || [];
       return `
       <div class="cliente">
@@ -811,13 +894,13 @@ textarea { min-height: 80px; resize: vertical; }
           </div>` : ''}
         <div class="info">📞 ${c.telefone || '—'}</div>
         <div class="info">📍 ${c.bairro || '—'}</div>
-        <div class="info">📅 ${c.dataCadastro}</div>
+        <div class="info">📅 ${c.dataCadastro || '—'}</div>
         ${c.obs ? `<div class="info">📝 ${c.obs}</div>` : ''}
 
         <div class="secao-fichas">
           <div class="secao-fichas-header">
             <span>💅 Fichas de Atendimento (${fichas.length})</span>
-            <button class="btn-nova-ficha" onclick="abrirFicha(${i})">+ Novo Atendimento</button>
+            <button class="btn-nova-ficha" onclick="abrirFicha('${c.id}')">+ Novo Atendimento</button>
           </div>
           ${fichas.length === 0
             ? '<div class="sem-fichas">Nenhum atendimento registrado ainda.</div>'
@@ -836,19 +919,19 @@ textarea { min-height: 80px; resize: vertical; }
 
         <div class="acoes">
           <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-          <button class="btn-editar" onclick="editarCliente(${i})">✏️ Editar</button>
-          <button class="btn-excluir" onclick="excluirCliente(${i})">🗑️ Excluir</button>
+          <button class="btn-editar" onclick="editarCliente('${c.id}')">✏️ Editar</button>
+          <button class="btn-excluir" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button>
         </div>
       </div>
     `;
     }).join('');
-  }
+  };
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') fecharFicha();
   });
 
-  renderizar();
+  window.mascararPreco = mascararPreco;
 </script>
 </body>
 </html>
