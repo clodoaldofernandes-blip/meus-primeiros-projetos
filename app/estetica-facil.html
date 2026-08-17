@@ -28,6 +28,7 @@ header {
   color: white;
   text-align: center;
   padding: 50px 20px 40px;
+  position: relative;
 }
 
 header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
@@ -44,6 +45,24 @@ header p { opacity: .85; font-size: .95rem; }
   margin-top: .75rem;
   letter-spacing: .5px;
 }
+
+.btn-sair {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255,255,255,.15);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: none;
+}
+
+.btn-sair:hover { background: rgba(255,255,255,.28); }
 
 .container {
   max-width: 1100px;
@@ -252,19 +271,6 @@ textarea { min-height: 80px; resize: vertical; }
   color: #aaa;
 }
 
-.voltar {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 30px;
-  text-decoration: none;
-  color: var(--rosa);
-  font-weight: 600;
-  font-size: .9rem;
-}
-
-.voltar:hover { opacity: .7; }
-
 /* FICHA DE ATENDIMENTO */
 .secao-fichas {
   margin-top: 14px;
@@ -458,10 +464,63 @@ textarea { min-height: 80px; resize: vertical; }
   margin-top: .5rem;
 }
 
+/* TELA DE LOGIN */
+.login-wrap {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.login-card h2 { text-align: center; margin-bottom: 6px; font-size: 1.2rem; }
+.login-card .sub-login { text-align: center; color: var(--texto); font-size: .85rem; margin-bottom: 20px; }
+
+.login-erro {
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.login-alternar {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--texto);
+  margin-top: 10px;
+}
+
+.login-alternar button {
+  background: none;
+  border: none;
+  color: var(--rosa);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+}
+
+.oculto { display: none !important; }
+
 @media (max-width: 768px) {
   .grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   header h1 { font-size: 1.5rem; }
+  .btn-sair { position: static; margin-top: 14px; display: inline-block; }
 }
 </style>
 </head>
@@ -470,10 +529,34 @@ textarea { min-height: 80px; resize: vertical; }
 <header>
   <h1>💅 Estética Fácil</h1>
   <p>Organize clientes, procedimentos e atendimentos direto pelo celular.</p>
-  <span class="status-conexao" id="statusConexao">🔄 Conectando ao banco de dados...</span>
+  <span class="status-conexao" id="statusConexao">🔒 Faça login para começar</span>
+  <button class="btn-sair" id="btnSair" onclick="sair()">🚪 Sair</button>
 </header>
 
-<div class="container">
+<!-- TELA DE LOGIN / CADASTRO -->
+<div class="login-wrap" id="telaLogin">
+  <div class="login-card">
+    <h2 id="tituloLogin">Entrar</h2>
+    <p class="sub-login" id="subLogin">Acesse sua conta para gerenciar suas clientes</p>
+
+    <div class="login-erro" id="loginErro"></div>
+
+    <label>E-mail</label>
+    <input type="email" id="loginEmail" placeholder="seu@email.com">
+
+    <label>Senha</label>
+    <input type="password" id="loginSenha" placeholder="Mínimo 6 caracteres">
+
+    <button class="btn-salvar" id="btnLogin" onclick="fazerLogin()">Entrar</button>
+
+    <div class="login-alternar">
+      <span id="textoAlternar">Ainda não tem conta?</span>
+      <button onclick="alternarModoLogin()" id="btnAlternar">Criar conta</button>
+    </div>
+  </div>
+</div>
+
+<div class="container oculto" id="appConteudo">
 
   <div class="dashboard">
     <div class="dashboard-card">
@@ -623,6 +706,10 @@ textarea { min-height: 80px; resize: vertical; }
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
     getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
     onSnapshot, query, orderBy, arrayUnion
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -639,14 +726,124 @@ textarea { min-height: 80px; resize: vertical; }
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
-  const clientesRef = collection(db, "clientesEsteticaFacil");
 
   let clientes = [];
   let clienteEditandoId = null;
   let clienteFichaAtual = null;
   let fotosAntesSelecionadas = [];
   let fotosDepoisSelecionadas = [];
+  let clientesRef = null;
+  let pararDeEscutar = null;
+  let modoCadastro = false;
+
+  const statusEl = document.getElementById('statusConexao');
+  const telaLogin = document.getElementById('telaLogin');
+  const appConteudo = document.getElementById('appConteudo');
+  const btnSair = document.getElementById('btnSair');
+  const loginErro = document.getElementById('loginErro');
+
+  // ---------- LOGIN / CADASTRO ----------
+
+  window.alternarModoLogin = function alternarModoLogin() {
+    modoCadastro = !modoCadastro;
+    document.getElementById('tituloLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('subLogin').textContent = modoCadastro
+      ? 'Crie sua conta para começar a usar'
+      : 'Acesse sua conta para gerenciar suas clientes';
+    document.getElementById('btnLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('textoAlternar').textContent = modoCadastro ? 'Já tem conta?' : 'Ainda não tem conta?';
+    document.getElementById('btnAlternar').textContent = modoCadastro ? 'Entrar' : 'Criar conta';
+    loginErro.style.display = 'none';
+  };
+
+  function mensagemErroFirebase(codigo) {
+    const mapa = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/missing-password': 'Informe uma senha.',
+      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/wrong-password': 'E-mail ou senha incorretos.',
+      'auth/user-not-found': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente de novo.'
+    };
+    return mapa[codigo] || 'Não foi possível concluir. Tente novamente.';
+  }
+
+  window.fazerLogin = async function fazerLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    loginErro.style.display = 'none';
+
+    if (!email || !senha) {
+      loginErro.textContent = 'Preencha e-mail e senha.';
+      loginErro.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+
+    try {
+      if (modoCadastro) {
+        await createUserWithEmailAndPassword(auth, email, senha);
+      } else {
+        await signInWithEmailAndPassword(auth, email, senha);
+      }
+      // onAuthStateChanged cuida do resto
+    } catch (erro) {
+      console.error(erro);
+      loginErro.textContent = mensagemErroFirebase(erro.code);
+      loginErro.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    }
+  };
+
+  window.sair = async function sair() {
+    await signOut(auth);
+  };
+
+  onAuthStateChanged(auth, (usuario) => {
+    if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
+
+    if (usuario) {
+      telaLogin.classList.add('oculto');
+      appConteudo.classList.remove('oculto');
+      btnSair.style.display = 'inline-block';
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginSenha').value = '';
+
+      clientesRef = collection(db, 'usuarios', usuario.uid, 'clientesEsteticaFacil');
+      statusEl.textContent = '🔄 Carregando seus dados...';
+
+      pararDeEscutar = onSnapshot(
+        query(clientesRef, orderBy('dataCadastroTS', 'desc')),
+        (snapshot) => {
+          clientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+          renderizar();
+        },
+        (erro) => {
+          console.error(erro);
+          statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
+        }
+      );
+    } else {
+      telaLogin.classList.remove('oculto');
+      appConteudo.classList.add('oculto');
+      btnSair.style.display = 'none';
+      statusEl.textContent = '🔒 Faça login para começar';
+      clientesRef = null;
+      clientes = [];
+    }
+  });
+
+  // ---------- FUNÇÕES DO SISTEMA ----------
 
   function mascararPreco(campo) {
     let digitos = campo.value.replace(/\D/g, '');
@@ -658,6 +855,7 @@ textarea { min-height: 80px; resize: vertical; }
     inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     campo.value = `R$ ${inteiro},${centavos}`;
   }
+  window.mascararPreco = mascararPreco;
 
   function toBase64(arquivo) {
     return new Promise((resolve) => {
@@ -667,22 +865,8 @@ textarea { min-height: 80px; resize: vertical; }
     });
   }
 
-  // Escuta o Firestore em tempo real: qualquer mudança (deste ou de outro aparelho) atualiza a tela sozinha
-  const statusEl = document.getElementById('statusConexao');
-  onSnapshot(
-    query(clientesRef, orderBy('dataCadastroTS', 'desc')),
-    (snapshot) => {
-      clientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
-      renderizar();
-    },
-    (erro) => {
-      console.error(erro);
-      statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
-    }
-  );
-
   window.salvarCliente = async function salvarCliente() {
+    if (!clientesRef) return;
     const nome = document.getElementById('nome').value.trim();
     if (!nome) { alert('Informe o nome da cliente.'); return; }
 
@@ -705,7 +889,7 @@ textarea { min-height: 80px; resize: vertical; }
       if (clienteEditandoId) {
         const clienteAtual = clientes.find(c => c.id === clienteEditandoId);
         dados.fotos = [...(clienteAtual?.fotos || []), ...fotosNovas];
-        await updateDoc(doc(db, 'clientesEsteticaFacil', clienteEditandoId), dados);
+        await updateDoc(doc(clientesRef, clienteEditandoId), dados);
         cancelarEdicao();
       } else {
         dados.fotos = fotosNovas;
@@ -728,9 +912,10 @@ textarea { min-height: 80px; resize: vertical; }
   };
 
   window.excluirCliente = async function excluirCliente(id) {
+    if (!clientesRef) return;
     if (!confirm('Excluir esta cliente? As fichas de atendimento dela também serão apagadas.')) return;
     try {
-      await deleteDoc(doc(db, 'clientesEsteticaFacil', id));
+      await deleteDoc(doc(clientesRef, id));
     } catch (erro) {
       console.error(erro);
       alert('Não foi possível excluir. Tente novamente.');
@@ -828,7 +1013,7 @@ textarea { min-height: 80px; resize: vertical; }
   });
 
   window.salvarFicha = async function salvarFicha() {
-    if (clienteFichaAtual === null) return;
+    if (clienteFichaAtual === null || !clientesRef) return;
 
     const ficha = {
       data: document.getElementById('fData').value,
@@ -844,7 +1029,7 @@ textarea { min-height: 80px; resize: vertical; }
     };
 
     try {
-      await updateDoc(doc(db, 'clientesEsteticaFacil', clienteFichaAtual), {
+      await updateDoc(doc(clientesRef, clienteFichaAtual), {
         fichas: arrayUnion(ficha)
       });
       fecharFicha();
@@ -930,8 +1115,6 @@ textarea { min-height: 80px; resize: vertical; }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') fecharFicha();
   });
-
-  window.mascararPreco = mascararPreco;
 </script>
 </body>
 </html>
