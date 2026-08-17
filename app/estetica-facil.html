@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estética Fácil | Gestão de Clientes para Profissionais de Estética</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rosa: #db1a6e;
+  --rosa-escuro: #a8134d;
+  --rosa-claro: #fce8f0;
+  --cinza: #fff8fa;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --branco: #fff;
+  --sombra: 0 8px 32px rgba(219,26,110,.12);
+  --verde: #25d366;
+  --vermelho: #dc2626;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--cinza); }
+
+header {
+  background: linear-gradient(135deg, #4a0e2e 0%, #db1a6e 100%);
+  color: white;
+  text-align: center;
+  padding: 50px 20px 40px;
+}
+
+header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
+header p { opacity: .85; font-size: .95rem; }
+
+.badge-demo {
+  display: inline-block;
+  background: #fde68a;
+  color: #92400e;
+  font-size: .72rem;
+  font-weight: 800;
+  padding: .25rem .8rem;
+  border-radius: 999px;
+  margin-top: .75rem;
+  letter-spacing: .5px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px 60px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  border: 1px solid var(--cinza-borda);
+  box-shadow: var(--sombra);
+}
+
+.dashboard-card h3 { font-size: 2rem; color: var(--rosa); margin-bottom: 4px; }
+.dashboard-card p { font-size: .85rem; color: var(--texto); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: .85rem;
+  color: #333;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .9rem;
+  outline: none;
+  transition: border-color .2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 3px rgba(219,26,110,.1);
+}
+
+textarea { min-height: 80px; resize: vertical; }
+
+.btn-salvar {
+  width: 100%;
+  background: var(--rosa);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+  margin-top: 4px;
+}
+
+.btn-salvar:hover { background: var(--rosa-escuro); }
+.btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.lista-clientes { display: flex; flex-direction: column; gap: 14px; }
+
+.cliente {
+  background: white;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 12px;
+  padding: 16px;
+  transition: box-shadow .2s;
+}
+
+.cliente:hover { box-shadow: var(--sombra); }
+
+.cliente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.cliente h3 { font-size: 1rem; color: var(--preto); }
+
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.badge-tipo {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  background: var(--rosa-claro);
+  color: var(--rosa);
+}
+
+.info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
+
+.galeria { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+
+.foto-cliente {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.acoes { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--verde);
+  color: white;
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  transition: background .2s;
+}
+
+.btn-whatsapp:hover { background: #1da851; }
+
+.btn-editar {
+  background: #f3f4f6;
+  color: #333;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-editar:hover { background: #e5e7eb; }
+
+.btn-excluir {
+  background: #fee2e2;
+  color: var(--vermelho);
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-excluir:hover { background: #fca5a5; }
+
+.vazio { text-align: center; color: #aaa; padding: 2rem 0; font-size: .9rem; }
+
+.pesquisa-wrap { position: relative; margin-bottom: 14px; }
+.pesquisa-wrap input { padding-left: 36px; margin-bottom: 0; }
+.pesquisa-wrap .icone {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 30px;
+  text-decoration: none;
+  color: var(--rosa);
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.voltar:hover { opacity: .7; }
+
+/* FICHA DE ATENDIMENTO */
+.secao-fichas {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--cinza-borda);
+}
+
+.secao-fichas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.secao-fichas-header span { font-size: .8rem; font-weight: 700; color: var(--texto); }
+
+.btn-nova-ficha {
+  background: var(--rosa-claro);
+  color: var(--rosa);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-nova-ficha:hover { background: #f9c9dd; }
+
+.ficha-item {
+  background: var(--cinza);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ficha-info { font-size: .78rem; color: var(--texto); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ficha-info strong { color: var(--preto); }
+
+.sem-fichas { font-size: .78rem; color: #aaa; }
+
+.btn-lembrete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fde68a;
+  color: #92400e;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: .74rem;
+  font-weight: 700;
+  transition: background .2s;
+  white-space: nowrap;
+}
+
+.btn-lembrete:hover { background: #fcd34d; }
+
+/* MODAL FICHA */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-overlay.aberto { display: flex; align-items: flex-start; justify-content: center; padding-top: 2rem; }
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-header .sub { display: block; font-size: .78rem; color: var(--texto); font-weight: 500; margin-top: 2px; }
+
+.btn-fechar-modal {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.modal-body { padding: 1.4rem; max-height: 68vh; overflow-y: auto; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.form-grid .full { grid-column: 1/-1; }
+
+.modal-footer {
+  padding: 1.1rem 1.4rem;
+  border-top: 1px solid var(--cinza-borda);
+  display: flex;
+  justify-content: flex-end;
+  gap: .6rem;
+}
+
+.btn-ficha-cancelar {
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 9px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-ficha-salvar {
+  background: var(--rosa);
+  color: white;
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 9px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-ficha-salvar:hover { background: var(--rosa-escuro); }
+
+.thumbs-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .5rem;
+}
+
+.thumb-item {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--cinza-borda);
+}
+
+.thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.thumb-remover {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.65);
+  color: white;
+  border: none;
+  font-size: .65rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-legenda {
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: .3rem;
+  margin-top: .5rem;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💅 Estética Fácil</h1>
+  <p>Organize clientes, procedimentos e atendimentos direto pelo celular.</p>
+  <span class="badge-demo">🎁 VERSÃO DE TESTE — dados salvos só neste aparelho</span>
+</header>
+
+<div class="container">
+
+  <div class="dashboard">
+    <div class="dashboard-card">
+      <h3 id="totalClientes">0</h3>
+      <p>👥 Clientes</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalAtendimentos">0</h3>
+      <p>💅 Atendimentos</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalFotos">0</h3>
+      <p>📸 Fotos</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalRetornos">0</h3>
+      <p>📅 Retornos Pendentes</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2>➕ Nova Cliente</h2>
+
+      <label>Nome *</label>
+      <input type="text" id="nome" placeholder="Nome completo">
+
+      <label>WhatsApp</label>
+      <input type="text" id="telefone" placeholder="(83) 9 0000-0000">
+
+      <label>Como conheceu</label>
+      <select id="origem">
+        <option>Instagram</option>
+        <option>Indicação</option>
+        <option>Google</option>
+        <option>Passou na rua</option>
+        <option>Outro</option>
+      </select>
+
+      <label>Bairro / Região</label>
+      <input type="text" id="bairro" placeholder="Bairro">
+
+      <label>Observações (alergias, preferências)</label>
+      <textarea id="obs" placeholder="Ex: alérgica a produtos com ácido salicílico..."></textarea>
+
+      <label>Foto do Cliente</label>
+      <input type="file" id="foto" accept="image/*" multiple>
+
+      <button class="btn-salvar" id="btnSalvar" onclick="salvarCliente()">💾 Salvar Cliente</button>
+    </div>
+
+    <div class="card">
+      <h2>👥 Clientes Cadastradas</h2>
+      <div class="pesquisa-wrap">
+        <span class="icone">🔍</span>
+        <input type="text" id="pesquisa" placeholder="Pesquisar cliente..." onkeyup="renderizar()">
+      </div>
+      <div id="clientes" class="lista-clientes"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL FICHA DE ATENDIMENTO -->
+<div class="modal-overlay" id="modalFichaOverlay" onclick="fecharFichaSeClicouFora(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>💅 Ficha de Atendimento</h3>
+        <span class="sub" id="fichaClienteNome"></span>
+      </div>
+      <button class="btn-fechar-modal" onclick="fecharFicha()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div>
+          <label>Data do Atendimento</label>
+          <input type="date" id="fData">
+        </div>
+        <div>
+          <label>Horário</label>
+          <input type="time" id="fHorario">
+        </div>
+        <div class="full">
+          <label>Procedimento Realizado</label>
+          <select id="fProcedimento">
+            <optgroup label="Estética / Corpo e Rosto">
+              <option>Limpeza de Pele</option>
+              <option>Design de Sobrancelha</option>
+              <option>Extensão de Cílios</option>
+              <option>Micropigmentação</option>
+              <option>Manicure/Pedicure</option>
+              <option>Depilação</option>
+              <option>Massagem</option>
+              <option>Drenagem Linfática</option>
+            </optgroup>
+            <optgroup label="Cabelo">
+              <option>Corte</option>
+              <option>Escova</option>
+              <option>Coloração/Tintura</option>
+              <option>Hidratação Capilar</option>
+              <option>Progressiva/Alisamento</option>
+              <option>Penteado</option>
+              <option>Tratamento Capilar</option>
+            </optgroup>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Produtos/Técnicas Utilizados</label>
+          <input type="text" id="fProdutos" placeholder="Ex: ácido hialurônico, técnica X...">
+        </div>
+        <div>
+          <label>Valor Cobrado (R$)</label>
+          <input type="text" id="fValor" placeholder="R$ 0,00" oninput="mascararPreco(this)" inputmode="numeric">
+        </div>
+        <div>
+          <label>Próximo Retorno Recomendado</label>
+          <input type="date" id="fRetorno">
+        </div>
+        <div class="full">
+          <label>Reações / Observações da Pele</label>
+          <textarea id="fReacoes" placeholder="Ex: leve vermelhidão, sem reação alérgica..."></textarea>
+        </div>
+        <div class="full">
+          <div class="thumb-legenda">📷 Foto ANTES</div>
+          <input type="file" id="fFotoAntesArquivo" accept="image/*" multiple>
+          <div id="fFotoAntesPreview" class="thumbs-wrap"></div>
+        </div>
+        <div class="full">
+          <div class="thumb-legenda">📷 Foto DEPOIS</div>
+          <input type="file" id="fFotoDepoisArquivo" accept="image/*" multiple>
+          <div id="fFotoDepoisPreview" class="thumbs-wrap"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ficha-cancelar" onclick="fecharFicha()">Cancelar</button>
+      <button class="btn-ficha-salvar" onclick="salvarFicha()">💾 Salvar Ficha</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CHAVE = 'clientesEsteticaFacil_demo';
+  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
+  let clienteFichaAtual = null;
+  let fichasEmEdicao = null;
+  let fotosAntesSelecionadas = [];
+  let fotosDepoisSelecionadas = [];
+
+  function mascararPreco(campo) {
+    let digitos = campo.value.replace(/\D/g, '');
+    if (!digitos) { campo.value = ''; return; }
+    digitos = digitos.replace(/^0+(?=\d)/, '');
+    while (digitos.length < 3) digitos = '0' + digitos;
+    const centavos = digitos.slice(-2);
+    let inteiro = digitos.slice(0, -2);
+    inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    campo.value = `R$ ${inteiro},${centavos}`;
+  }
+
+  function toBase64(arquivo) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(arquivo);
+    });
+  }
+
+  async function salvarCliente() {
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome) { alert('Informe o nome da cliente.'); return; }
+
+    const arquivos = Array.from(document.getElementById('foto').files);
+    const fotos = await Promise.all(arquivos.map(toBase64));
+
+    const cliente = {
+      nome,
+      telefone: document.getElementById('telefone').value,
+      origem: document.getElementById('origem').value,
+      bairro: document.getElementById('bairro').value,
+      obs: document.getElementById('obs').value,
+      fotos,
+      fichas: fichasEmEdicao || [],
+      dataCadastro: new Date().toLocaleString('pt-BR')
+    };
+    fichasEmEdicao = null;
+
+    clientes.push(cliente);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+
+    ['nome', 'telefone', 'bairro', 'obs', 'foto'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    renderizar();
+  }
+
+  function excluirCliente(i) {
+    if (!confirm('Excluir esta cliente? As fichas de atendimento dela também serão apagadas.')) return;
+    clientes.splice(i, 1);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    renderizar();
+  }
+
+  function editarCliente(i) {
+    const c = clientes[i];
+    document.getElementById('nome').value = c.nome;
+    document.getElementById('telefone').value = c.telefone;
+    document.getElementById('origem').value = c.origem || 'Instagram';
+    document.getElementById('bairro').value = c.bairro;
+    document.getElementById('obs').value = c.obs;
+    fichasEmEdicao = c.fichas || [];
+    clientes.splice(i, 1);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    renderizar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function abrirFicha(indexCliente) {
+    clienteFichaAtual = indexCliente;
+    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + clientes[indexCliente].nome;
+    limparFormFicha();
+    document.getElementById('fData').valueAsDate = new Date();
+    document.getElementById('modalFichaOverlay').classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function limparFormFicha() {
+    ['fData', 'fHorario', 'fProdutos', 'fValor', 'fRetorno', 'fReacoes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fProcedimento').value = 'Limpeza de Pele';
+    fotosAntesSelecionadas = [];
+    fotosDepoisSelecionadas = [];
+    renderizarThumbsAntes();
+    renderizarThumbsDepois();
+  }
+
+  function fecharFicha() {
+    document.getElementById('modalFichaOverlay').classList.remove('aberto');
+    document.body.style.overflow = '';
+    clienteFichaAtual = null;
+  }
+
+  function fecharFichaSeClicouFora(e) {
+    if (e.target === document.getElementById('modalFichaOverlay')) fecharFicha();
+  }
+
+  function renderizarThumbsAntes() {
+    const wrap = document.getElementById('fFotoAntesPreview');
+    wrap.innerHTML = fotosAntesSelecionadas.map((f, idx) => `
+      <div class="thumb-item">
+        <img src="${f}">
+        <button type="button" class="thumb-remover" onclick="removerFotoAntes(${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function renderizarThumbsDepois() {
+    const wrap = document.getElementById('fFotoDepoisPreview');
+    wrap.innerHTML = fotosDepoisSelecionadas.map((f, idx) => `
+      <div class="thumb-item">
+        <img src="${f}">
+        <button type="button" class="thumb-remover" onclick="removerFotoDepois(${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function removerFotoAntes(idx) { fotosAntesSelecionadas.splice(idx, 1); renderizarThumbsAntes(); }
+  function removerFotoDepois(idx) { fotosDepoisSelecionadas.splice(idx, 1); renderizarThumbsDepois(); }
+
+  document.getElementById('fFotoAntesArquivo').addEventListener('change', async (e) => {
+    const arquivos = Array.from(e.target.files);
+    for (const arquivo of arquivos) fotosAntesSelecionadas.push(await toBase64(arquivo));
+    e.target.value = '';
+    renderizarThumbsAntes();
+  });
+
+  document.getElementById('fFotoDepoisArquivo').addEventListener('change', async (e) => {
+    const arquivos = Array.from(e.target.files);
+    for (const arquivo of arquivos) fotosDepoisSelecionadas.push(await toBase64(arquivo));
+    e.target.value = '';
+    renderizarThumbsDepois();
+  });
+
+  function salvarFicha() {
+    if (clienteFichaAtual === null) return;
+
+    const ficha = {
+      data: document.getElementById('fData').value,
+      horario: document.getElementById('fHorario').value,
+      procedimento: document.getElementById('fProcedimento').value,
+      produtos: document.getElementById('fProdutos').value.trim(),
+      valor: document.getElementById('fValor').value.trim(),
+      retorno: document.getElementById('fRetorno').value,
+      reacoes: document.getElementById('fReacoes').value.trim(),
+      fotosAntes: [...fotosAntesSelecionadas],
+      fotosDepois: [...fotosDepoisSelecionadas],
+      dataCriacao: new Date().toLocaleString('pt-BR')
+    };
+
+    if (!clientes[clienteFichaAtual].fichas) clientes[clienteFichaAtual].fichas = [];
+    clientes[clienteFichaAtual].fichas.push(ficha);
+    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+
+    fecharFicha();
+    renderizar();
+  }
+
+  function renderizar() {
+    const lista = document.getElementById('clientes');
+    const busca = document.getElementById('pesquisa').value.toLowerCase();
+
+    const fotos = clientes.reduce((t, c) => t + (c.fotos ? c.fotos.length : 0), 0);
+    const totalFichas = clientes.reduce((t, c) => t + (c.fichas ? c.fichas.length : 0), 0);
+    const hoje = new Date().toISOString().slice(0, 10);
+    const retornosPendentes = clientes.reduce((t, c) => {
+      const fichas = c.fichas || [];
+      return t + fichas.filter(f => f.retorno && f.retorno >= hoje).length;
+    }, 0);
+
+    document.getElementById('totalClientes').textContent = clientes.length;
+    document.getElementById('totalAtendimentos').textContent = totalFichas;
+    document.getElementById('totalFotos').textContent = fotos;
+    document.getElementById('totalRetornos').textContent = retornosPendentes;
+
+    const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
+
+    if (filtrados.length === 0) {
+      lista.innerHTML = '<div class="vazio">Nenhuma cliente cadastrada.</div>';
+      return;
+    }
+
+    lista.innerHTML = filtrados.map((c) => {
+      const i = clientes.indexOf(c);
+      const fichas = c.fichas || [];
+      return `
+      <div class="cliente">
+        <div class="cliente-header">
+          <h3>${c.nome}</h3>
+          <div class="badges">
+            <span class="badge-tipo">${c.origem || '—'}</span>
+          </div>
+        </div>
+        ${c.fotos && c.fotos.length ? `
+          <div class="galeria">
+            ${c.fotos.map(f => `<img src="${f}" class="foto-cliente">`).join('')}
+          </div>` : ''}
+        <div class="info">📞 ${c.telefone || '—'}</div>
+        <div class="info">📍 ${c.bairro || '—'}</div>
+        <div class="info">📅 ${c.dataCadastro}</div>
+        ${c.obs ? `<div class="info">📝 ${c.obs}</div>` : ''}
+
+        <div class="secao-fichas">
+          <div class="secao-fichas-header">
+            <span>💅 Fichas de Atendimento (${fichas.length})</span>
+            <button class="btn-nova-ficha" onclick="abrirFicha(${i})">+ Novo Atendimento</button>
+          </div>
+          ${fichas.length === 0
+            ? '<div class="sem-fichas">Nenhum atendimento registrado ainda.</div>'
+            : fichas.map((f) => `
+              <div class="ficha-item">
+                <div class="ficha-info">
+                  <strong>${f.data ? new Date(f.data + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</strong>
+                  · ${f.procedimento} · ${f.valor || '—'}
+                  ${f.retorno ? `· 🔁 Retorno: ${new Date(f.retorno + 'T00:00:00').toLocaleDateString('pt-BR')}` : ''}
+                </div>
+                ${f.retorno ? `<a href="https://wa.me/55${c.telefone}?text=${encodeURIComponent('Oi ' + c.nome + '! Passando pra lembrar do seu retorno para ' + f.procedimento + ', agendado para ' + new Date(f.retorno + 'T00:00:00').toLocaleDateString('pt-BR') + ' 💅')}" target="_blank" class="btn-lembrete">🔔 Lembrar</a>` : ''}
+              </div>
+            `).join('')
+          }
+        </div>
+
+        <div class="acoes">
+          <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+          <button class="btn-editar" onclick="editarCliente(${i})">✏️ Editar</button>
+          <button class="btn-excluir" onclick="excluirCliente(${i})">🗑️ Excluir</button>
+        </div>
+      </div>
+    `;
+    }).join('');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharFicha();
+  });
+
+  renderizar();
+</script>
+</body>
+</html>
