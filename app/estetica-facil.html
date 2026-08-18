@@ -550,6 +550,204 @@ textarea { min-height: 80px; resize: vertical; }
 
 .oculto { display: none !important; }
 
+/* SEÇÃO EXTRA: RELATÓRIO E AGENDA */
+.secao-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card-full {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.card-full h2 { margin-bottom: 14px; font-size: 1rem; font-weight: 700; color: var(--preto); }
+
+/* Relatório */
+.periodo-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+
+.periodo-tab {
+  flex: 1;
+  background: var(--cinza);
+  border: 1.5px solid var(--cinza-borda);
+  color: var(--texto);
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .82rem;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+.periodo-tab.ativo { background: var(--rosa); border-color: var(--rosa); color: white; }
+
+.relatorio-total {
+  text-align: center;
+  background: var(--rosa-claro);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.relatorio-total .valor { font-size: 1.8rem; font-weight: 800; color: var(--rosa); }
+.relatorio-total .label { font-size: .8rem; color: var(--texto); margin-top: 2px; }
+
+.relatorio-lista { max-height: 260px; overflow-y: auto; margin-bottom: 14px; }
+
+.relatorio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: .83rem;
+}
+
+.relatorio-item .nome-proc { color: var(--preto); font-weight: 600; }
+.relatorio-item .data-proc { color: var(--texto); font-size: .76rem; }
+.relatorio-item .valor-proc { color: var(--rosa); font-weight: 700; }
+
+.btn-exportar-pdf {
+  width: 100%;
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 11px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .88rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-exportar-pdf:hover { background: #1e293b; }
+
+/* Agenda / Calendário */
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.calendario-header span { font-weight: 700; font-size: .9rem; text-transform: capitalize; }
+
+.btn-nav-mes {
+  background: var(--rosa-claro);
+  color: var(--rosa);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.calendario-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 4px;
+}
+
+.calendario-dias-semana span {
+  text-align: center;
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.dia-cel {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  background: var(--cinza);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  cursor: pointer;
+  position: relative;
+  color: var(--preto);
+}
+
+.dia-cel.fora-do-mes { color: #ccc; cursor: default; }
+.dia-cel.hoje { border-color: var(--rosa); font-weight: 800; }
+.dia-cel.selecionado { background: var(--rosa); color: white; }
+.dia-cel.tem-agendamento::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rosa);
+  position: absolute;
+  bottom: 4px;
+}
+
+.dia-cel.selecionado.tem-agendamento::after { background: white; }
+
+.dia-selecionado-label { font-size: .85rem; font-weight: 700; margin-bottom: 8px; }
+
+.agenda-form { display: none; margin-bottom: 14px; }
+.agenda-form.aberto { display: block; }
+
+.agenda-lista { max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
+
+.agenda-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--cinza);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: .8rem;
+  gap: 6px;
+}
+
+.agenda-item .ag-info strong { display: block; color: var(--preto); }
+.agenda-item .ag-acoes { display: flex; gap: 4px; }
+.agenda-item .ag-acoes button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+}
+
+.btn-add-agendamento {
+  width: 100%;
+  background: var(--rosa-claro);
+  color: var(--rosa);
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .secao-extra { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 768px) {
   .grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
@@ -663,6 +861,55 @@ textarea { min-height: 80px; resize: vertical; }
 
   </div>
 
+  <div class="secao-extra">
+
+    <div class="card-full">
+      <h2>📊 Relatório de Faturamento</h2>
+      <div class="periodo-tabs">
+        <button class="periodo-tab ativo" id="tabSemana" onclick="mudarPeriodoRelatorio('semana')">Esta Semana</button>
+        <button class="periodo-tab" id="tabMes" onclick="mudarPeriodoRelatorio('mes')">Este Mês</button>
+      </div>
+      <div class="relatorio-total">
+        <div class="valor" id="relatorioTotal">R$ 0,00</div>
+        <div class="label" id="relatorioLabel">Recebido nesta semana</div>
+      </div>
+      <div class="relatorio-lista" id="relatorioLista"></div>
+      <button class="btn-exportar-pdf" onclick="exportarRelatorioPDF()">📄 Exportar PDF</button>
+    </div>
+
+    <div class="card-full">
+      <h2>📅 Agenda de Atendimentos</h2>
+      <div class="calendario-header">
+        <button class="btn-nav-mes" onclick="mesAnterior()">‹</button>
+        <span id="calendarioMesAno"></span>
+        <button class="btn-nav-mes" onclick="mesProximo()">›</button>
+      </div>
+      <div class="calendario-dias-semana">
+        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+      </div>
+      <div class="calendario-grid" id="calendarioGrid"></div>
+
+      <div class="dia-selecionado-label" id="diaSelecionadoLabel"></div>
+      <div class="agenda-lista" id="agendaLista"></div>
+
+      <button class="btn-add-agendamento" onclick="abrirFormAgendamento()">+ Novo Agendamento</button>
+
+      <div class="agenda-form" id="agendaForm">
+        <label>Nome da Cliente</label>
+        <input type="text" id="agNome" placeholder="Nome completo">
+        <label>Horário</label>
+        <input type="time" id="agHorario">
+        <label>Procedimento</label>
+        <input type="text" id="agProcedimento" placeholder="Ex: Limpeza de Pele">
+        <label>Observações</label>
+        <textarea id="agObs" placeholder="Opcional"></textarea>
+        <button class="btn-salvar" onclick="salvarAgendamento()">💾 Salvar Agendamento</button>
+        <button class="btn-cancelar-edicao" style="display:block;" onclick="fecharFormAgendamento()">✕ Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- MODAL FICHA DE ATENDIMENTO -->
@@ -745,6 +992,7 @@ textarea { min-height: 80px; resize: vertical; }
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
@@ -782,6 +1030,17 @@ textarea { min-height: 80px; resize: vertical; }
   let modoCadastro = false;
   let souPro = false;
   const LIMITE_GRATIS = 2;
+
+  // Agenda
+  let agendamentosRef = null;
+  let pararDeEscutarAgenda = null;
+  let agendamentos = [];
+  let mesCalendario = new Date();
+  let diaSelecionado = new Date().toISOString().slice(0, 10);
+  let agendamentoEditandoId = null;
+
+  // Relatório
+  let periodoRelatorio = 'semana';
 
   const statusEl = document.getElementById('statusConexao');
   const telaLogin = document.getElementById('telaLogin');
@@ -856,6 +1115,7 @@ textarea { min-height: 80px; resize: vertical; }
   onAuthStateChanged(auth, async (usuario) => {
     if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
     if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
+    if (pararDeEscutarAgenda) { pararDeEscutarAgenda(); pararDeEscutarAgenda = null; }
 
     if (usuario) {
       telaLogin.classList.add('oculto');
@@ -865,6 +1125,7 @@ textarea { min-height: 80px; resize: vertical; }
       document.getElementById('loginSenha').value = '';
 
       clientesRef = collection(db, 'usuarios', usuario.uid, 'clientesEsteticaFacil');
+      agendamentosRef = collection(db, 'usuarios', usuario.uid, 'agendamentosEsteticaFacil');
       const perfilRef = doc(db, 'usuarios', usuario.uid);
       statusEl.textContent = '🔄 Carregando seus dados...';
 
@@ -889,11 +1150,22 @@ textarea { min-height: 80px; resize: vertical; }
           clientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
           statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
           renderizar();
+          renderizarRelatorio();
         },
         (erro) => {
           console.error(erro);
           statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
         }
+      );
+
+      pararDeEscutarAgenda = onSnapshot(
+        query(agendamentosRef, orderBy('data', 'asc')),
+        (snapshot) => {
+          agendamentos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizarCalendario();
+          renderizarAgendaDia();
+        },
+        (erro) => console.error(erro)
       );
     } else {
       telaLogin.classList.remove('oculto');
@@ -901,7 +1173,9 @@ textarea { min-height: 80px; resize: vertical; }
       btnSair.style.display = 'none';
       statusEl.textContent = '🔒 Faça login para começar';
       clientesRef = null;
+      agendamentosRef = null;
       clientes = [];
+      agendamentos = [];
       souPro = false;
     }
   });
@@ -1187,6 +1461,277 @@ textarea { min-height: 80px; resize: vertical; }
       </div>
     `;
     }).join('');
+  };
+
+  // ---------- AGENDA / CALENDÁRIO ----------
+
+  function formatarDataISO(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  window.mesAnterior = function mesAnterior() {
+    mesCalendario.setMonth(mesCalendario.getMonth() - 1);
+    renderizarCalendario();
+  };
+
+  window.mesProximo = function mesProximo() {
+    mesCalendario.setMonth(mesCalendario.getMonth() + 1);
+    renderizarCalendario();
+  };
+
+  function renderizarCalendario() {
+    const grid = document.getElementById('calendarioGrid');
+    const rotulo = document.getElementById('calendarioMesAno');
+    if (!grid) return;
+
+    const ano = mesCalendario.getFullYear();
+    const mes = mesCalendario.getMonth();
+    rotulo.textContent = mesCalendario.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+    const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
+    const totalDiasMes = new Date(ano, mes + 1, 0).getDate();
+    const hojeISO = formatarDataISO(new Date());
+
+    const diasComAgendamento = new Set(agendamentos.map(a => a.data));
+
+    let celulas = '';
+    for (let i = 0; i < primeiroDiaSemana; i++) {
+      celulas += `<div class="dia-cel fora-do-mes"></div>`;
+    }
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+      const dataObj = new Date(ano, mes, dia);
+      const dataISO = formatarDataISO(dataObj);
+      const classes = ['dia-cel'];
+      if (dataISO === hojeISO) classes.push('hoje');
+      if (dataISO === diaSelecionado) classes.push('selecionado');
+      if (diasComAgendamento.has(dataISO)) classes.push('tem-agendamento');
+      celulas += `<div class="${classes.join(' ')}" onclick="selecionarDia('${dataISO}')">${dia}</div>`;
+    }
+
+    grid.innerHTML = celulas;
+  }
+
+  window.selecionarDia = function selecionarDia(dataISO) {
+    diaSelecionado = dataISO;
+    renderizarCalendario();
+    renderizarAgendaDia();
+    fecharFormAgendamento();
+  };
+
+  function renderizarAgendaDia() {
+    const lista = document.getElementById('agendaLista');
+    const label = document.getElementById('diaSelecionadoLabel');
+    if (!lista) return;
+
+    const dataFormatada = new Date(diaSelecionado + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+    label.textContent = '📌 ' + dataFormatada;
+
+    const doDia = agendamentos
+      .filter(a => a.data === diaSelecionado)
+      .sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
+
+    if (doDia.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhum agendamento neste dia.</div>';
+      return;
+    }
+
+    lista.innerHTML = doDia.map(a => `
+      <div class="agenda-item">
+        <div class="ag-info">
+          <strong>${a.horario || '--:--'} · ${a.nome}</strong>
+          ${a.procedimento || ''}${a.obs ? ' · ' + a.obs : ''}
+        </div>
+        <div class="ag-acoes">
+          <button onclick="editarAgendamento('${a.id}')" title="Editar">✏️</button>
+          <button onclick="excluirAgendamento('${a.id}')" title="Excluir">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.abrirFormAgendamento = function abrirFormAgendamento() {
+    agendamentoEditandoId = null;
+    document.getElementById('agNome').value = '';
+    document.getElementById('agHorario').value = '';
+    document.getElementById('agProcedimento').value = '';
+    document.getElementById('agObs').value = '';
+    document.getElementById('agendaForm').classList.add('aberto');
+  };
+
+  window.fecharFormAgendamento = function fecharFormAgendamento() {
+    document.getElementById('agendaForm').classList.remove('aberto');
+    agendamentoEditandoId = null;
+  };
+
+  window.editarAgendamento = function editarAgendamento(id) {
+    const a = agendamentos.find(x => x.id === id);
+    if (!a) return;
+    agendamentoEditandoId = id;
+    document.getElementById('agNome').value = a.nome || '';
+    document.getElementById('agHorario').value = a.horario || '';
+    document.getElementById('agProcedimento').value = a.procedimento || '';
+    document.getElementById('agObs').value = a.obs || '';
+    document.getElementById('agendaForm').classList.add('aberto');
+  };
+
+  window.salvarAgendamento = async function salvarAgendamento() {
+    if (!agendamentosRef) return;
+    const nome = document.getElementById('agNome').value.trim();
+    if (!nome) { alert('Informe o nome da cliente.'); return; }
+
+    const dados = {
+      nome,
+      data: diaSelecionado,
+      horario: document.getElementById('agHorario').value,
+      procedimento: document.getElementById('agProcedimento').value.trim(),
+      obs: document.getElementById('agObs').value.trim()
+    };
+
+    try {
+      if (agendamentoEditandoId) {
+        await updateDoc(doc(agendamentosRef, agendamentoEditandoId), dados);
+      } else {
+        await addDoc(agendamentosRef, dados);
+      }
+      fecharFormAgendamento();
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar o agendamento. Tente novamente.');
+    }
+  };
+
+  window.excluirAgendamento = async function excluirAgendamento(id) {
+    if (!agendamentosRef) return;
+    if (!confirm('Excluir este agendamento?')) return;
+    try {
+      await deleteDoc(doc(agendamentosRef, id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
+
+  // ---------- RELATÓRIO DE FATURAMENTO ----------
+
+  function valorParaNumero(str) {
+    if (!str) return 0;
+    const limpo = String(str).replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(limpo);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function numeroParaMoeda(n) {
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function periodoAtual() {
+    const hoje = new Date();
+    if (periodoRelatorio === 'semana') {
+      const diaSemana = hoje.getDay();
+      const inicio = new Date(hoje);
+      inicio.setDate(hoje.getDate() - diaSemana);
+      const fim = new Date(inicio);
+      fim.setDate(inicio.getDate() + 6);
+      return { inicio: formatarDataISO(inicio), fim: formatarDataISO(fim) };
+    } else {
+      const inicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+      const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+      return { inicio: formatarDataISO(inicio), fim: formatarDataISO(fim) };
+    }
+  }
+
+  window.mudarPeriodoRelatorio = function mudarPeriodoRelatorio(periodo) {
+    periodoRelatorio = periodo;
+    document.getElementById('tabSemana').classList.toggle('ativo', periodo === 'semana');
+    document.getElementById('tabMes').classList.toggle('ativo', periodo === 'mes');
+    document.getElementById('relatorioLabel').textContent = periodo === 'semana' ? 'Recebido nesta semana' : 'Recebido neste mês';
+    renderizarRelatorio();
+  };
+
+  function atendimentosDoPeriodo() {
+    const { inicio, fim } = periodoAtual();
+    const itens = [];
+    clientes.forEach(c => {
+      (c.fichas || []).forEach(f => {
+        if (f.data && f.data >= inicio && f.data <= fim) {
+          itens.push({ clienteNome: c.nome, ...f, valorNumero: valorParaNumero(f.valor) });
+        }
+      });
+    });
+    itens.sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+    return itens;
+  }
+
+  window.renderizarRelatorio = function renderizarRelatorio() {
+    const totalEl = document.getElementById('relatorioTotal');
+    const listaEl = document.getElementById('relatorioLista');
+    if (!totalEl) return;
+
+    const itens = atendimentosDoPeriodo();
+    const total = itens.reduce((t, i) => t + i.valorNumero, 0);
+    totalEl.textContent = numeroParaMoeda(total);
+
+    if (itens.length === 0) {
+      listaEl.innerHTML = '<div class="sem-fichas">Nenhum atendimento com valor neste período.</div>';
+      return;
+    }
+
+    listaEl.innerHTML = itens.map(i => `
+      <div class="relatorio-item">
+        <div>
+          <div class="nome-proc">${i.clienteNome} · ${i.procedimento || ''}</div>
+          <div class="data-proc">${i.data ? new Date(i.data + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</div>
+        </div>
+        <div class="valor-proc">${i.valor || 'R$ 0,00'}</div>
+      </div>
+    `).join('');
+  };
+
+  window.exportarRelatorioPDF = function exportarRelatorioPDF() {
+    const itens = atendimentosDoPeriodo();
+    const total = itens.reduce((t, i) => t + i.valorNumero, 0);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFillColor(74, 14, 46);
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text('Relatorio de Faturamento', 14, 14);
+    doc.setFontSize(10);
+    doc.text(periodoRelatorio === 'semana' ? 'Periodo: Esta semana' : 'Periodo: Este mes', 14, 21);
+
+    doc.setTextColor(20, 20, 20);
+    let y = 38;
+    doc.setFontSize(11);
+
+    if (itens.length === 0) {
+      doc.text('Nenhum atendimento com valor neste periodo.', 14, y);
+    } else {
+      itens.forEach((i) => {
+        const dataFmt = i.data ? new Date(i.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+        doc.setFont(undefined, 'normal');
+        doc.text(`${dataFmt}  -  ${i.clienteNome}  -  ${i.procedimento || ''}`, 14, y);
+        doc.setFont(undefined, 'bold');
+        doc.text(i.valor || 'R$ 0,00', 170, y, { align: 'right' });
+        y += 7;
+        if (y > 270) { doc.addPage(); y = 20; }
+      });
+    }
+
+    y += 6;
+    doc.setDrawColor(200);
+    doc.line(14, y, 196, y);
+    y += 8;
+    doc.setFontSize(13);
+    doc.setFont(undefined, 'bold');
+    doc.text('Total: ' + numeroParaMoeda(total), 14, y);
+
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text('Gerado por Estetica Facil . clodoaldofernandes.com.br', 14, 290);
+
+    doc.save(`relatorio-${periodoRelatorio}-${formatarDataISO(new Date())}.pdf`);
   };
 
   document.addEventListener('keydown', e => {
