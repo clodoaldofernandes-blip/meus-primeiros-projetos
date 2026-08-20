@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corretor Fácil | Gestão de Clientes Imobiliários</title>
+<title>Cliente Fácil | Gestão de Clientes Imobiliários</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -28,22 +28,41 @@ header {
   color: white;
   text-align: center;
   padding: 50px 20px 40px;
+  position: relative;
 }
 
 header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
 header p { opacity: .85; font-size: .95rem; }
 
-.badge-demo {
+.status-conexao {
   display: inline-block;
-  background: #fde68a;
-  color: #92400e;
+  background: rgba(255,255,255,.15);
+  color: white;
   font-size: .72rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: .25rem .8rem;
   border-radius: 999px;
   margin-top: .75rem;
   letter-spacing: .5px;
 }
+
+.btn-sair {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255,255,255,.15);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: none;
+}
+
+.btn-sair:hover { background: rgba(255,255,255,.28); }
 
 .container {
   max-width: 1100px;
@@ -88,10 +107,10 @@ header p { opacity: .85; font-size: .95rem; }
 .aviso-limite strong { display: block; font-size: .95rem; margin-bottom: .2rem; }
 
 .btn-upgrade {
-  background: #f4b400;
-  color: #0f172a;
+  background: #25d366;
+  color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 9px 16px;
   border-radius: 8px;
   font-weight: 700;
   font-size: .82rem;
@@ -102,7 +121,7 @@ header p { opacity: .85; font-size: .95rem; }
   display: inline-block;
 }
 
-.btn-upgrade:hover { background: #d4a000; }
+.btn-upgrade:hover { background: #1da851; }
 
 .grid {
   display: grid;
@@ -164,6 +183,21 @@ textarea { min-height: 80px; resize: vertical; }
 
 .btn-salvar:hover { background: var(--azul-escuro); }
 .btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-cancelar-edicao {
+  width: 100%;
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: 10px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  display: none;
+}
 
 .lista-clientes { display: flex; flex-direction: column; gap: 14px; }
 
@@ -280,19 +314,6 @@ textarea { min-height: 80px; resize: vertical; }
   color: #aaa;
 }
 
-.voltar {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 30px;
-  text-decoration: none;
-  color: var(--azul);
-  font-weight: 600;
-  font-size: .9rem;
-}
-
-.voltar:hover { opacity: .7; }
-
 /* FICHA DE VISITA */
 .secao-fichas {
   margin-top: 14px;
@@ -370,6 +391,56 @@ textarea { min-height: 80px; resize: vertical; }
 .btn-pdf.bloqueado:hover { background: #d4a000; }
 
 .sem-fichas { font-size: .78rem; color: #aaa; }
+
+/* TELA DE LOGIN */
+.login-wrap {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.login-card h2 { text-align: center; margin-bottom: 6px; font-size: 1.2rem; }
+.login-card .sub-login { text-align: center; color: var(--texto); font-size: .85rem; margin-bottom: 20px; }
+
+.login-erro {
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.login-alternar {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--texto);
+  margin-top: 10px;
+}
+
+.login-alternar button {
+  background: none;
+  border: none;
+  color: var(--azul);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+}
 
 /* MODAL FICHA */
 .modal-overlay {
@@ -496,6 +567,7 @@ textarea { min-height: 80px; resize: vertical; }
   .grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   header h1 { font-size: 1.5rem; }
+  .btn-sair { position: static; margin-top: 14px; display: inline-block; }
 }
 </style>
 </head>
@@ -504,17 +576,41 @@ textarea { min-height: 80px; resize: vertical; }
 <header>
   <h1>🏠 Cliente Fácil</h1>
   <p>Organize clientes, visitas, contratos e oportunidades imobiliárias pelo celular e computador.</p>
-  <span class="badge-demo">🎁 VERSÃO DEMO — até 2 clientes</span>
+  <span class="status-conexao" id="statusConexao">🔒 Faça login para começar</span>
+  <button class="btn-sair" id="btnSair" onclick="sair()">🚪 Sair</button>
 </header>
 
-<div class="container">
+<!-- TELA DE LOGIN / CADASTRO -->
+<div class="login-wrap" id="telaLogin">
+  <div class="login-card">
+    <h2 id="tituloLogin">Entrar</h2>
+    <p class="sub-login" id="subLogin">Acesse sua conta para gerenciar seus clientes</p>
+
+    <div class="login-erro" id="loginErro"></div>
+
+    <label>E-mail</label>
+    <input type="email" id="loginEmail" placeholder="seu@email.com">
+
+    <label>Senha</label>
+    <input type="password" id="loginSenha" placeholder="Mínimo 6 caracteres">
+
+    <button class="btn-salvar" id="btnLogin" onclick="fazerLogin()">Entrar</button>
+
+    <div class="login-alternar">
+      <span id="textoAlternar">Ainda não tem conta?</span>
+      <button onclick="alternarModoLogin()" id="btnAlternar">Criar conta</button>
+    </div>
+  </div>
+</div>
+
+<div class="container oculto" id="appConteudo">
 
   <div class="aviso-limite" id="avisoLimite">
     <div>
-      <strong>🔒 Limite da versão demo atingido</strong>
-      Você usou 2 de 2 clientes gratuitos. Faça o upgrade para usar sem limites.
+      <strong>🔒 Limite de 2 clientes grátis atingido</strong>
+      Libere clientes ilimitados por R$ 49,90 (pagamento único, sem mensalidade).
     </div>
-    <a href="pro/" class="btn-upgrade">⭐ Ver versão PRO</a>
+    <a href="https://wa.me/5583982001314?text=Oi!%20Quero%20liberar%20o%20acesso%20completo%20do%20Cliente%20F%C3%A1cil" target="_blank" class="btn-upgrade">💬 Liberar no WhatsApp</a>
   </div>
 
   <div class="dashboard">
@@ -543,7 +639,7 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="grid">
 
     <div class="card">
-      <h2>➕ Novo Cliente</h2>
+      <h2 id="tituloFormCliente">➕ Novo Cliente</h2>
 
       <label>Nome *</label>
       <input type="text" id="nome" placeholder="Nome completo">
@@ -588,6 +684,7 @@ textarea { min-height: 80px; resize: vertical; }
       <input type="file" id="foto" accept="image/*" multiple>
 
       <button class="btn-salvar" id="btnSalvar" onclick="salvarCliente()">💾 Salvar Cliente</button>
+      <button class="btn-cancelar-edicao" id="btnCancelarEdicao" onclick="cancelarEdicao()">✕ Cancelar edição</button>
     </div>
 
     <div class="card">
@@ -600,8 +697,6 @@ textarea { min-height: 80px; resize: vertical; }
     </div>
 
   </div>
-
-  <a href="index.html" class="voltar">← Voltar ao site principal</a>
 
 </div>
 
@@ -786,13 +881,161 @@ textarea { min-height: 80px; resize: vertical; }
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-  const CHAVE = 'clientesCF_demo';
-  const LIMITE = 2;
-  const DEMO = true; // versão PRO (/app/): mude para false para liberar exportação em PDF
-  let clientes = JSON.parse(localStorage.getItem(CHAVE)) || [];
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, getDoc, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1",
+    measurementId: "G-MBJFQR0X9J"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let clientes = [];
+  let clienteEditandoId = null;
   let clienteFichaAtual = null;
-  let fichasEmEdicao = null;
+  let clientesRef = null;
+  let pararDeEscutar = null;
+  let pararDeEscutarPerfil = null;
+  let modoCadastro = false;
+  let souPro = false;
+  const LIMITE_GRATIS = 2;
+
+  const statusEl = document.getElementById('statusConexao');
+  const telaLogin = document.getElementById('telaLogin');
+  const appConteudo = document.getElementById('appConteudo');
+  const btnSair = document.getElementById('btnSair');
+  const loginErro = document.getElementById('loginErro');
+
+  window.alternarModoLogin = function alternarModoLogin() {
+    modoCadastro = !modoCadastro;
+    document.getElementById('tituloLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('subLogin').textContent = modoCadastro
+      ? 'Crie sua conta para começar a usar'
+      : 'Acesse sua conta para gerenciar seus clientes';
+    document.getElementById('btnLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('textoAlternar').textContent = modoCadastro ? 'Já tem conta?' : 'Ainda não tem conta?';
+    document.getElementById('btnAlternar').textContent = modoCadastro ? 'Entrar' : 'Criar conta';
+    loginErro.style.display = 'none';
+  };
+
+  function mensagemErroFirebase(codigo) {
+    const mapa = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/missing-password': 'Informe uma senha.',
+      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/wrong-password': 'E-mail ou senha incorretos.',
+      'auth/user-not-found': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente de novo.'
+    };
+    return mapa[codigo] || 'Não foi possível concluir. Tente novamente.';
+  }
+
+  window.fazerLogin = async function fazerLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    loginErro.style.display = 'none';
+
+    if (!email || !senha) {
+      loginErro.textContent = 'Preencha e-mail e senha.';
+      loginErro.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+
+    try {
+      if (modoCadastro) {
+        await createUserWithEmailAndPassword(auth, email, senha);
+      } else {
+        await signInWithEmailAndPassword(auth, email, senha);
+      }
+    } catch (erro) {
+      console.error(erro);
+      loginErro.textContent = mensagemErroFirebase(erro.code);
+      loginErro.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    }
+  };
+
+  window.sair = async function sair() {
+    await signOut(auth);
+  };
+
+  onAuthStateChanged(auth, async (usuario) => {
+    if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
+    if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
+
+    if (usuario) {
+      telaLogin.classList.add('oculto');
+      appConteudo.classList.remove('oculto');
+      btnSair.style.display = 'inline-block';
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginSenha').value = '';
+
+      clientesRef = collection(db, 'usuarios', usuario.uid, 'clientesCF');
+      const perfilRef = doc(db, 'usuarios', usuario.uid);
+      statusEl.textContent = '🔄 Carregando seus dados...';
+
+      try {
+        const perfilSnap = await getDoc(perfilRef);
+        if (!perfilSnap.exists()) {
+          await setDoc(perfilRef, { proClienteFacil: false, email: usuario.email, criadoEm: new Date().toLocaleString('pt-BR') });
+        } else if (!('proClienteFacil' in perfilSnap.data())) {
+          await updateDoc(perfilRef, { proClienteFacil: false });
+        }
+      } catch (erro) {
+        console.error('Erro ao verificar perfil:', erro);
+      }
+
+      pararDeEscutarPerfil = onSnapshot(perfilRef, (snap) => {
+        souPro = snap.exists() && snap.data().proClienteFacil === true;
+        renderizar();
+      });
+
+      pararDeEscutar = onSnapshot(
+        query(clientesRef, orderBy('dataCadastroTS', 'desc')),
+        (snapshot) => {
+          clientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+          renderizar();
+        },
+        (erro) => {
+          console.error(erro);
+          statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
+        }
+      );
+    } else {
+      telaLogin.classList.remove('oculto');
+      appConteudo.classList.add('oculto');
+      btnSair.style.display = 'none';
+      statusEl.textContent = '🔒 Faça login para começar';
+      clientesRef = null;
+      clientes = [];
+      souPro = false;
+    }
+  });
 
   function formatarMoeda(campo) {
     let v = campo.value.replace(/\D/g, '');
@@ -800,6 +1043,7 @@ textarea { min-height: 80px; resize: vertical; }
     v = (Number(v) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     campo.value = v;
   }
+  window.formatarMoeda = formatarMoeda;
 
   function toBase64(arquivo) {
     return new Promise((resolve) => {
@@ -809,86 +1053,120 @@ textarea { min-height: 80px; resize: vertical; }
     });
   }
 
-  async function salvarCliente() {
-    if (clientes.length >= LIMITE) {
-      alert('Limite de ' + LIMITE + ' clientes atingido na versão demo.\nAcesse a versão PRO para usar sem limites!');
-      window.location.href = 'pro/';
+  window.salvarCliente = async function salvarCliente() {
+    if (!clientesRef) return;
+
+    if (!clienteEditandoId && !souPro && clientes.length >= LIMITE_GRATIS) {
+      alert('Limite de ' + LIMITE_GRATIS + ' clientes grátis atingido.\nFale no WhatsApp para liberar clientes ilimitados por R$ 49,90 (pagamento único).');
       return;
     }
 
     const nome = document.getElementById('nome').value.trim();
     if (!nome) { alert('Informe o nome do cliente.'); return; }
 
-    const arquivos = Array.from(document.getElementById('foto').files);
-    const fotos = await Promise.all(arquivos.map(toBase64));
+    const btn = document.getElementById('btnSalvar');
+    btn.disabled = true;
+    btn.textContent = '💾 Salvando...';
 
-    const cliente = {
-      nome,
-      telefone: document.getElementById('telefone').value,
-      tipo: document.getElementById('tipo').value,
-      contrato: document.getElementById('contrato').value,
-      status: document.getElementById('status').value,
-      valor: document.getElementById('valor').value,
-      bairro: document.getElementById('bairro').value,
-      obs: document.getElementById('obs').value,
-      fotos,
-      fichas: fichasEmEdicao || [],
-      dataCadastro: new Date().toLocaleString('pt-BR')
-    };
-    fichasEmEdicao = null;
+    try {
+      const arquivos = Array.from(document.getElementById('foto').files);
+      const fotosNovas = await Promise.all(arquivos.map(toBase64));
 
-    clientes.push(cliente);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+      const dados = {
+        nome,
+        telefone: document.getElementById('telefone').value,
+        tipo: document.getElementById('tipo').value,
+        contrato: document.getElementById('contrato').value,
+        status: document.getElementById('status').value,
+        valor: document.getElementById('valor').value,
+        bairro: document.getElementById('bairro').value,
+        obs: document.getElementById('obs').value,
+      };
 
-    ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
+      if (clienteEditandoId) {
+        const clienteAtual = clientes.find(c => c.id === clienteEditandoId);
+        dados.fotos = [...(clienteAtual?.fotos || []), ...fotosNovas];
+        await updateDoc(doc(clientesRef, clienteEditandoId), dados);
+        cancelarEdicao();
+      } else {
+        dados.fotos = fotosNovas;
+        dados.fichas = [];
+        dados.dataCadastro = new Date().toLocaleString('pt-BR');
+        dados.dataCadastroTS = Date.now();
+        await addDoc(clientesRef, dados);
+      }
 
-    renderizar();
-  }
+      ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar. Verifique sua internet e tente de novo.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = clienteEditandoId ? '💾 Salvar Alterações' : '💾 Salvar Cliente';
+    }
+  };
 
-  function excluirCliente(i) {
+  window.excluirCliente = async function excluirCliente(id) {
+    if (!clientesRef) return;
     if (!confirm('Excluir este cliente? As fichas de visita dele também serão apagadas.')) return;
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
-  }
+    try {
+      await deleteDoc(doc(clientesRef, id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
 
-  function editarCliente(i) {
-    const c = clientes[i];
-    document.getElementById('nome').value = c.nome;
-    document.getElementById('telefone').value = c.telefone;
-    document.getElementById('tipo').value = c.tipo;
+  window.editarCliente = function editarCliente(id) {
+    const c = clientes.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('nome').value = c.nome || '';
+    document.getElementById('telefone').value = c.telefone || '';
+    document.getElementById('tipo').value = c.tipo || 'Comprador';
     document.getElementById('contrato').value = c.contrato || 'Compra';
-    document.getElementById('status').value = c.status;
-    document.getElementById('valor').value = c.valor;
-    document.getElementById('bairro').value = c.bairro;
-    document.getElementById('obs').value = c.obs;
-    fichasEmEdicao = c.fichas || [];
-    clientes.splice(i, 1);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
-    renderizar();
+    document.getElementById('status').value = c.status || '🔴 Lead Frio (Sem Interesse)';
+    document.getElementById('valor').value = c.valor || '';
+    document.getElementById('bairro').value = c.bairro || '';
+    document.getElementById('obs').value = c.obs || '';
+    clienteEditandoId = id;
+    document.getElementById('tituloFormCliente').textContent = '✏️ Editando Cliente';
+    document.getElementById('btnSalvar').textContent = '💾 Salvar Alterações';
+    document.getElementById('btnCancelarEdicao').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  };
 
-  function abrirFicha(indexCliente) {
-    clienteFichaAtual = indexCliente;
-    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + clientes[indexCliente].nome;
+  window.cancelarEdicao = function cancelarEdicao() {
+    clienteEditandoId = null;
+    ['nome', 'telefone', 'valor', 'bairro', 'obs', 'foto'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('tipo').value = 'Comprador';
+    document.getElementById('contrato').value = 'Compra';
+    document.getElementById('status').value = '🔴 Lead Frio (Sem Interesse)';
+    document.getElementById('tituloFormCliente').textContent = '➕ Novo Cliente';
+    document.getElementById('btnSalvar').textContent = '💾 Salvar Cliente';
+    document.getElementById('btnCancelarEdicao').style.display = 'none';
+  };
+
+  window.abrirFicha = function abrirFicha(id) {
+    clienteFichaAtual = id;
+    const c = clientes.find(x => x.id === id);
+    document.getElementById('fichaClienteNome').textContent = 'Cliente: ' + (c ? c.nome : '');
     limparFormFicha();
     document.getElementById('fData').valueAsDate = new Date();
     atualizarVisibilidadePredio();
     document.getElementById('modalFichaOverlay').classList.add('aberto');
     document.body.style.overflow = 'hidden';
-  }
+  };
 
   const TIPOS_SEM_PREDIO = ['Terreno', 'Sítio/Chácara', 'Fazenda', 'Galpão'];
 
-  function atualizarVisibilidadePredio() {
+  window.atualizarVisibilidadePredio = function atualizarVisibilidadePredio() {
     const tipo = document.getElementById('fTipoImovel').value;
     const escondido = TIPOS_SEM_PREDIO.includes(tipo);
     document.getElementById('secaoPredio').classList.toggle('oculto', escondido);
     document.getElementById('tituloSecaoPredio').classList.toggle('oculto', escondido);
-  }
+  };
 
   function limparFormFicha() {
     ['fData', 'fHorario', 'fEndereco', 'fAcompanhantes', 'fPositivos', 'fObjecoes', 'fProximosPassos', 'fObsGerais',
@@ -907,18 +1185,18 @@ textarea { min-height: 80px; resize: vertical; }
     atualizarVisibilidadePredio();
   }
 
-  function fecharFicha() {
+  window.fecharFicha = function fecharFicha() {
     document.getElementById('modalFichaOverlay').classList.remove('aberto');
     document.body.style.overflow = '';
     clienteFichaAtual = null;
-  }
+  };
 
-  function fecharFichaSeClicouFora(e) {
+  window.fecharFichaSeClicouFora = function fecharFichaSeClicouFora(e) {
     if (e.target === document.getElementById('modalFichaOverlay')) fecharFicha();
-  }
+  };
 
-  function salvarFicha() {
-    if (clienteFichaAtual === null) return;
+  window.salvarFicha = async function salvarFicha() {
+    if (clienteFichaAtual === null || !clientesRef) return;
     const endereco = document.getElementById('fEndereco').value.trim();
     if (!endereco) { alert('Informe o endereço do imóvel visitado.'); return; }
 
@@ -960,22 +1238,24 @@ textarea { min-height: 80px; resize: vertical; }
       dataCriacao: new Date().toLocaleString('pt-BR')
     };
 
-    if (!clientes[clienteFichaAtual].fichas) clientes[clienteFichaAtual].fichas = [];
-    clientes[clienteFichaAtual].fichas.push(ficha);
-    localStorage.setItem(CHAVE, JSON.stringify(clientes));
+    try {
+      const clienteAtual = clientes.find(c => c.id === clienteFichaAtual);
+      const fichasAtualizadas = [...(clienteAtual?.fichas || []), ficha];
+      await updateDoc(doc(clientesRef, clienteFichaAtual), { fichas: fichasAtualizadas });
+      fecharFicha();
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar a ficha. Tente novamente.');
+    }
+  };
 
-    fecharFicha();
-    renderizar();
-  }
-
-  function gerarPDFFicha(indexCliente, indexFicha) {
-    if (DEMO) {
-      alert('A exportação em PDF é um recurso exclusivo do plano PRO.\nFaça o upgrade para gerar fichas em PDF prontas para enviar ao cliente!');
-      window.location.href = 'pro/';
+  window.gerarPDFFicha = function gerarPDFFicha(clienteId, indexFicha) {
+    if (!souPro) {
+      alert('A exportação em PDF é um recurso exclusivo do plano PRO.\nFale no WhatsApp para liberar clientes ilimitados e PDF por R$ 49,90 (pagamento único)!');
       return;
     }
 
-    const cliente = clientes[indexCliente];
+    const cliente = clientes.find(c => c.id === clienteId);
     const f = cliente.fichas[indexFicha];
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -1057,9 +1337,9 @@ textarea { min-height: 80px; resize: vertical; }
     doc.text('Gerado por Cliente Facil . clodoaldofernandes.com.br', 14, 290);
 
     doc.save(`ficha-visita-${cliente.nome.replace(/\s+/g, '-').toLowerCase()}.pdf`);
-  }
+  };
 
-  function renderizar() {
+  window.renderizar = function renderizar() {
     const lista = document.getElementById('clientes');
     const busca = document.getElementById('pesquisa').value.toLowerCase();
 
@@ -1074,14 +1354,15 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('totalFotos').textContent = fotos;
     document.getElementById('totalFichas').textContent = totalFichas;
 
-    const atingiu = clientes.length >= LIMITE;
-    document.getElementById('avisoLimite').style.display = atingiu ? 'flex' : 'none';
-    document.getElementById('btnSalvar').disabled = atingiu;
-    document.getElementById('btnSalvar').textContent = atingiu
-      ? '🔒 Limite atingido — Ver PRO'
-      : '💾 Salvar Cliente';
+    const atingiuLimite = !souPro && clientes.length >= LIMITE_GRATIS;
+    document.getElementById('avisoLimite').style.display = atingiuLimite ? 'flex' : 'none';
+    if (!clienteEditandoId) {
+      const btnSalvar = document.getElementById('btnSalvar');
+      btnSalvar.disabled = atingiuLimite;
+      btnSalvar.textContent = atingiuLimite ? '🔒 Limite atingido — Ver acima' : '💾 Salvar Cliente';
+    }
 
-    const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca));
+    const filtrados = clientes.filter(c => (c.nome || '').toLowerCase().includes(busca));
 
     if (filtrados.length === 0) {
       lista.innerHTML = '<div class="vazio">Nenhum cliente cadastrado.</div>';
@@ -1089,7 +1370,6 @@ textarea { min-height: 80px; resize: vertical; }
     }
 
     lista.innerHTML = filtrados.map((c) => {
-      const i = clientes.indexOf(c);
       const fichas = c.fichas || [];
       const interesseClasse = { Alto: 'interesse-alto', Medio: 'interesse-medio', Baixo: 'interesse-baixo' };
       const interesseLabel = { Alto: '🟢 Alto', Medio: '🟡 Médio', Baixo: '🔴 Baixo' };
@@ -1111,13 +1391,13 @@ textarea { min-height: 80px; resize: vertical; }
         <div class="info">📄 ${c.contrato || '—'}</div>
         <div class="info">💰 ${c.valor || '—'}</div>
         <div class="info">📍 ${c.bairro || '—'}</div>
-        <div class="info">📅 ${c.dataCadastro}</div>
+        <div class="info">📅 ${c.dataCadastro || '—'}</div>
         ${c.obs ? `<div class="info">📝 ${c.obs}</div>` : ''}
 
         <div class="secao-fichas">
           <div class="secao-fichas-header">
             <span>📋 Fichas de Visita (${fichas.length})</span>
-            <button class="btn-nova-ficha" onclick="abrirFicha(${i})">+ Nova Ficha</button>
+            <button class="btn-nova-ficha" onclick="abrirFicha('${c.id}')">+ Nova Ficha</button>
           </div>
           ${fichas.length === 0
             ? '<div class="sem-fichas">Nenhuma ficha registrada ainda.</div>'
@@ -1128,7 +1408,7 @@ textarea { min-height: 80px; resize: vertical; }
                   · ${f.tipoImovel || ''} · ${f.enderecoImovel}
                   <span class="interesse-badge ${interesseClasse[f.interesse] || 'interesse-medio'}">${interesseLabel[f.interesse] || f.interesse}</span>
                 </div>
-                <button class="btn-pdf ${DEMO ? 'bloqueado' : ''}" onclick="gerarPDFFicha(${i}, ${fi})">${DEMO ? '🔒 PDF (PRO)' : '📄 Gerar PDF'}</button>
+                <button class="btn-pdf ${souPro ? '' : 'bloqueado'}" onclick="gerarPDFFicha('${c.id}', ${fi})">${souPro ? '📄 Gerar PDF' : '🔒 PDF (PRO)'}</button>
               </div>
             `).join('')
           }
@@ -1136,15 +1416,14 @@ textarea { min-height: 80px; resize: vertical; }
 
         <div class="acoes">
           <a href="https://wa.me/55${c.telefone}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-          <button class="btn-editar" onclick="editarCliente(${i})">✏️ Editar</button>
-          <button class="btn-excluir" onclick="excluirCliente(${i})">🗑️ Excluir</button>
+          <button class="btn-editar" onclick="editarCliente('${c.id}')">✏️ Editar</button>
+          <button class="btn-excluir" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button>
         </div>
       </div>
     `;
     }).join('');
-  }
+  };
 
-  renderizar();
 </script>
 
 </body>
