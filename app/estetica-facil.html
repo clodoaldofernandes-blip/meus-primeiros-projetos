@@ -598,6 +598,29 @@ textarea { min-height: 80px; resize: vertical; }
 .relatorio-total .valor { font-size: 1.8rem; font-weight: 800; color: var(--rosa); }
 .relatorio-total .label { font-size: .8rem; color: var(--texto); margin-top: 2px; }
 
+.resumo-financeiro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.resumo-box {
+  text-align: center;
+  border-radius: 12px;
+  padding: 12px 6px;
+}
+
+.resumo-box.receita { background: #e6f7ef; }
+.resumo-box.despesa { background: #fee2e2; }
+.resumo-box.saldo { background: var(--rosa-claro); }
+
+.resumo-box .valor { font-size: 1.05rem; font-weight: 800; }
+.resumo-box.receita .valor { color: #059669; }
+.resumo-box.despesa .valor { color: var(--vermelho); }
+.resumo-box.saldo .valor { color: var(--rosa); }
+.resumo-box .label { font-size: .66rem; color: var(--texto); margin-top: 2px; }
+
 .relatorio-lista { max-height: 260px; overflow-y: auto; margin-bottom: 14px; }
 
 .relatorio-item {
@@ -607,11 +630,49 @@ textarea { min-height: 80px; resize: vertical; }
   padding: 8px 4px;
   border-bottom: 1px solid var(--cinza-borda);
   font-size: .83rem;
+  gap: 8px;
 }
 
 .relatorio-item .nome-proc { color: var(--preto); font-weight: 600; }
 .relatorio-item .data-proc { color: var(--texto); font-size: .76rem; }
-.relatorio-item .valor-proc { color: var(--rosa); font-weight: 700; }
+.relatorio-item .valor-proc { color: var(--rosa); font-weight: 700; white-space: nowrap; }
+.relatorio-item .valor-proc.receita { color: #059669; }
+.relatorio-item .valor-proc.despesa { color: var(--vermelho); }
+
+.categoria-badge {
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: var(--vermelho);
+  white-space: nowrap;
+}
+
+.despesa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--cinza);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: .82rem;
+  gap: 8px;
+}
+
+.despesa-item .desp-info strong { display: block; color: var(--preto); }
+.despesa-item .desp-info span { color: var(--texto); font-size: .76rem; }
+.despesa-item .desp-valor { color: var(--vermelho); font-weight: 700; white-space: nowrap; }
+
+.btn-excluir-mini {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+  color: var(--vermelho);
+}
 
 .btn-exportar-pdf {
   width: 100%;
@@ -864,17 +925,48 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="secao-extra">
 
     <div class="card-full">
-      <h2>📊 Relatório de Faturamento</h2>
+      <h2>📊 Relatório de Receitas e Despesas</h2>
       <div class="periodo-tabs">
         <button class="periodo-tab ativo" id="tabSemana" onclick="mudarPeriodoRelatorio('semana')">Esta Semana</button>
         <button class="periodo-tab" id="tabMes" onclick="mudarPeriodoRelatorio('mes')">Este Mês</button>
       </div>
-      <div class="relatorio-total">
-        <div class="valor" id="relatorioTotal">R$ 0,00</div>
-        <div class="label" id="relatorioLabel">Recebido nesta semana</div>
+      <div class="resumo-financeiro">
+        <div class="resumo-box receita">
+          <div class="valor" id="resumoReceitas">R$ 0,00</div>
+          <div class="label">Receitas</div>
+        </div>
+        <div class="resumo-box despesa">
+          <div class="valor" id="resumoDespesas">R$ 0,00</div>
+          <div class="label">Despesas</div>
+        </div>
+        <div class="resumo-box saldo">
+          <div class="valor" id="resumoSaldo">R$ 0,00</div>
+          <div class="label">Saldo</div>
+        </div>
       </div>
       <div class="relatorio-lista" id="relatorioLista"></div>
       <button class="btn-exportar-pdf" onclick="exportarRelatorioPDF()">📄 Exportar PDF</button>
+    </div>
+
+    <div class="card-full">
+      <h2>💸 Despesas</h2>
+      <label>Descrição</label>
+      <input type="text" id="dDescricao" placeholder="Ex: Aluguel do salão">
+      <label>Categoria</label>
+      <select id="dCategoria">
+        <option>Aluguel</option>
+        <option>Água</option>
+        <option>Luz</option>
+        <option>Produtos</option>
+        <option>Internet</option>
+        <option>Outro</option>
+      </select>
+      <label>Valor (R$)</label>
+      <input type="text" id="dValor" placeholder="R$ 0,00" oninput="mascararPreco(this)" inputmode="numeric">
+      <label>Data</label>
+      <input type="date" id="dData">
+      <button class="btn-salvar" onclick="salvarDespesa()">💾 Salvar Despesa</button>
+      <div class="relatorio-lista" id="despesasLista" style="margin-top:16px;"></div>
     </div>
 
     <div class="card-full">
@@ -1042,6 +1134,11 @@ textarea { min-height: 80px; resize: vertical; }
   // Relatório
   let periodoRelatorio = 'semana';
 
+  // Despesas
+  let despesasRef = null;
+  let pararDeEscutarDespesas = null;
+  let despesas = [];
+
   const statusEl = document.getElementById('statusConexao');
   const telaLogin = document.getElementById('telaLogin');
   const appConteudo = document.getElementById('appConteudo');
@@ -1116,6 +1213,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
     if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
     if (pararDeEscutarAgenda) { pararDeEscutarAgenda(); pararDeEscutarAgenda = null; }
+    if (pararDeEscutarDespesas) { pararDeEscutarDespesas(); pararDeEscutarDespesas = null; }
 
     if (usuario) {
       telaLogin.classList.add('oculto');
@@ -1126,6 +1224,7 @@ textarea { min-height: 80px; resize: vertical; }
 
       clientesRef = collection(db, 'usuarios', usuario.uid, 'clientesEsteticaFacil');
       agendamentosRef = collection(db, 'usuarios', usuario.uid, 'agendamentosEsteticaFacil');
+      despesasRef = collection(db, 'usuarios', usuario.uid, 'despesasEsteticaFacil');
       const perfilRef = doc(db, 'usuarios', usuario.uid);
       statusEl.textContent = '🔄 Carregando seus dados...';
 
@@ -1167,6 +1266,16 @@ textarea { min-height: 80px; resize: vertical; }
         },
         (erro) => console.error(erro)
       );
+
+      pararDeEscutarDespesas = onSnapshot(
+        query(despesasRef, orderBy('data', 'desc')),
+        (snapshot) => {
+          despesas = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizarDespesasLista();
+          renderizarRelatorio();
+        },
+        (erro) => console.error(erro)
+      );
     } else {
       telaLogin.classList.remove('oculto');
       appConteudo.classList.add('oculto');
@@ -1174,8 +1283,10 @@ textarea { min-height: 80px; resize: vertical; }
       statusEl.textContent = '🔒 Faça login para começar';
       clientesRef = null;
       agendamentosRef = null;
+      despesasRef = null;
       clientes = [];
       agendamentos = [];
+      despesas = [];
       souPro = false;
     }
   });
@@ -1644,52 +1755,134 @@ textarea { min-height: 80px; resize: vertical; }
     periodoRelatorio = periodo;
     document.getElementById('tabSemana').classList.toggle('ativo', periodo === 'semana');
     document.getElementById('tabMes').classList.toggle('ativo', periodo === 'mes');
-    document.getElementById('relatorioLabel').textContent = periodo === 'semana' ? 'Recebido nesta semana' : 'Recebido neste mês';
     renderizarRelatorio();
   };
 
-  function atendimentosDoPeriodo() {
+  function receitasDoPeriodo() {
     const { inicio, fim } = periodoAtual();
     const itens = [];
     clientes.forEach(c => {
       (c.fichas || []).forEach(f => {
         if (f.data && f.data >= inicio && f.data <= fim) {
-          itens.push({ clienteNome: c.nome, ...f, valorNumero: valorParaNumero(f.valor) });
+          itens.push({ tipo: 'receita', descricao: c.nome + ' · ' + (f.procedimento || ''), data: f.data, valor: f.valor, valorNumero: valorParaNumero(f.valor) });
         }
       });
     });
-    itens.sort((a, b) => (a.data || '').localeCompare(b.data || ''));
     return itens;
   }
 
-  window.renderizarRelatorio = function renderizarRelatorio() {
-    const totalEl = document.getElementById('relatorioTotal');
-    const listaEl = document.getElementById('relatorioLista');
-    if (!totalEl) return;
+  function despesasDoPeriodo() {
+    const { inicio, fim } = periodoAtual();
+    return despesas
+      .filter(d => d.data && d.data >= inicio && d.data <= fim)
+      .map(d => ({ tipo: 'despesa', descricao: d.descricao + (d.categoria ? ' · ' + d.categoria : ''), data: d.data, valor: d.valor, valorNumero: valorParaNumero(d.valor) }));
+  }
 
-    const itens = atendimentosDoPeriodo();
-    const total = itens.reduce((t, i) => t + i.valorNumero, 0);
-    totalEl.textContent = numeroParaMoeda(total);
+  window.renderizarRelatorio = function renderizarRelatorio() {
+    const listaEl = document.getElementById('relatorioLista');
+    if (!listaEl) return;
+
+    const receitas = receitasDoPeriodo();
+    const despesasPer = despesasDoPeriodo();
+    const totalReceitas = receitas.reduce((t, i) => t + i.valorNumero, 0);
+    const totalDespesas = despesasPer.reduce((t, i) => t + i.valorNumero, 0);
+    const saldo = totalReceitas - totalDespesas;
+
+    document.getElementById('resumoReceitas').textContent = numeroParaMoeda(totalReceitas);
+    document.getElementById('resumoDespesas').textContent = numeroParaMoeda(totalDespesas);
+    document.getElementById('resumoSaldo').textContent = numeroParaMoeda(saldo);
+
+    const itens = [...receitas, ...despesasPer].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
 
     if (itens.length === 0) {
-      listaEl.innerHTML = '<div class="sem-fichas">Nenhum atendimento com valor neste período.</div>';
+      listaEl.innerHTML = '<div class="sem-fichas">Nenhuma receita ou despesa neste período.</div>';
       return;
     }
 
     listaEl.innerHTML = itens.map(i => `
       <div class="relatorio-item">
         <div>
-          <div class="nome-proc">${i.clienteNome} · ${i.procedimento || ''}</div>
+          <div class="nome-proc">${i.tipo === 'receita' ? '📈' : '📉'} ${i.descricao}</div>
           <div class="data-proc">${i.data ? new Date(i.data + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</div>
         </div>
-        <div class="valor-proc">${i.valor || 'R$ 0,00'}</div>
+        <div class="valor-proc ${i.tipo}">${i.tipo === 'despesa' ? '- ' : ''}${i.valor || 'R$ 0,00'}</div>
       </div>
     `).join('');
   };
 
+  window.salvarDespesa = async function salvarDespesa() {
+    if (!despesasRef) return;
+    const descricao = document.getElementById('dDescricao').value.trim();
+    const valor = document.getElementById('dValor').value.trim();
+    const data = document.getElementById('dData').value;
+
+    if (!descricao || !valor || !data) {
+      alert('Preencha descrição, valor e data da despesa.');
+      return;
+    }
+
+    const dados = {
+      descricao,
+      categoria: document.getElementById('dCategoria').value,
+      valor,
+      data,
+      criadoEm: new Date().toLocaleString('pt-BR')
+    };
+
+    try {
+      await addDoc(despesasRef, dados);
+      document.getElementById('dDescricao').value = '';
+      document.getElementById('dValor').value = '';
+      document.getElementById('dData').value = '';
+      document.getElementById('dCategoria').value = 'Aluguel';
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar a despesa. Tente novamente.');
+    }
+  };
+
+  window.excluirDespesa = async function excluirDespesa(id) {
+    if (!despesasRef) return;
+    if (!confirm('Excluir esta despesa?')) return;
+    try {
+      await deleteDoc(doc(despesasRef, id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
+
+  function renderizarDespesasLista() {
+    const lista = document.getElementById('despesasLista');
+    if (!lista) return;
+
+    if (despesas.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhuma despesa cadastrada ainda.</div>';
+      return;
+    }
+
+    lista.innerHTML = despesas.map(d => `
+      <div class="despesa-item">
+        <div class="desp-info">
+          <strong>${d.descricao}</strong>
+          <span>${d.data ? new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR') : '—'} · <span class="categoria-badge">${d.categoria || 'Outro'}</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="desp-valor">${d.valor || 'R$ 0,00'}</div>
+          <button class="btn-excluir-mini" onclick="excluirDespesa('${d.id}')" title="Excluir">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
   window.exportarRelatorioPDF = function exportarRelatorioPDF() {
-    const itens = atendimentosDoPeriodo();
-    const total = itens.reduce((t, i) => t + i.valorNumero, 0);
+    const receitas = receitasDoPeriodo();
+    const despesasPer = despesasDoPeriodo();
+    const totalReceitas = receitas.reduce((t, i) => t + i.valorNumero, 0);
+    const totalDespesas = despesasPer.reduce((t, i) => t + i.valorNumero, 0);
+    const saldo = totalReceitas - totalDespesas;
+    const itens = [...receitas, ...despesasPer].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -1697,7 +1890,7 @@ textarea { min-height: 80px; resize: vertical; }
     doc.rect(0, 0, 210, 28, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.text('Relatorio de Faturamento', 14, 14);
+    doc.text('Relatorio de Receitas e Despesas', 14, 14);
     doc.setFontSize(10);
     doc.text(periodoRelatorio === 'semana' ? 'Periodo: Esta semana' : 'Periodo: Este mes', 14, 21);
 
@@ -1706,14 +1899,15 @@ textarea { min-height: 80px; resize: vertical; }
     doc.setFontSize(11);
 
     if (itens.length === 0) {
-      doc.text('Nenhum atendimento com valor neste periodo.', 14, y);
+      doc.text('Nenhuma receita ou despesa neste periodo.', 14, y);
     } else {
       itens.forEach((i) => {
         const dataFmt = i.data ? new Date(i.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+        const prefixo = i.tipo === 'receita' ? '[+]' : '[-]';
         doc.setFont(undefined, 'normal');
-        doc.text(`${dataFmt}  -  ${i.clienteNome}  -  ${i.procedimento || ''}`, 14, y);
+        doc.text(`${dataFmt}  ${prefixo}  ${i.descricao}`, 14, y);
         doc.setFont(undefined, 'bold');
-        doc.text(i.valor || 'R$ 0,00', 170, y, { align: 'right' });
+        doc.text((i.tipo === 'despesa' ? '- ' : '') + (i.valor || 'R$ 0,00'), 190, y, { align: 'right' });
         y += 7;
         if (y > 270) { doc.addPage(); y = 20; }
       });
@@ -1723,9 +1917,15 @@ textarea { min-height: 80px; resize: vertical; }
     doc.setDrawColor(200);
     doc.line(14, y, 196, y);
     y += 8;
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
+    doc.text('Total de receitas: ' + numeroParaMoeda(totalReceitas), 14, y);
+    y += 7;
+    doc.text('Total de despesas: ' + numeroParaMoeda(totalDespesas), 14, y);
+    y += 9;
     doc.setFontSize(13);
     doc.setFont(undefined, 'bold');
-    doc.text('Total: ' + numeroParaMoeda(total), 14, y);
+    doc.text('Saldo: ' + numeroParaMoeda(saldo), 14, y);
 
     doc.setFontSize(8);
     doc.setTextColor(150);
