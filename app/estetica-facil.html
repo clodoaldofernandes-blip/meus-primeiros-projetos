@@ -925,6 +925,11 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="secao-extra">
 
     <div class="card-full">
+      <h2>🔔 Lembretes de Hoje</h2>
+      <div class="relatorio-lista" id="lembretesHojeLista"></div>
+    </div>
+
+    <div class="card-full">
       <h2>📊 Relatório de Receitas e Despesas</h2>
       <div class="periodo-tabs">
         <button class="periodo-tab ativo" id="tabSemana" onclick="mudarPeriodoRelatorio('semana')">Esta Semana</button>
@@ -989,6 +994,8 @@ textarea { min-height: 80px; resize: vertical; }
       <div class="agenda-form" id="agendaForm">
         <label>Nome da Cliente</label>
         <input type="text" id="agNome" placeholder="Nome completo">
+        <label>WhatsApp</label>
+        <input type="text" id="agTelefone" placeholder="(83) 9 0000-0000">
         <label>Horário</label>
         <input type="time" id="agHorario">
         <label>Procedimento</label>
@@ -1263,6 +1270,7 @@ textarea { min-height: 80px; resize: vertical; }
           agendamentos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
           renderizarCalendario();
           renderizarAgendaDia();
+          renderizarLembretesHoje();
         },
         (erro) => console.error(erro)
       );
@@ -1660,9 +1668,42 @@ textarea { min-height: 80px; resize: vertical; }
     `).join('');
   }
 
+  function renderizarLembretesHoje() {
+    const lista = document.getElementById('lembretesHojeLista');
+    if (!lista) return;
+
+    const hojeISO = formatarDataISO(new Date());
+    const doDia = agendamentos
+      .filter(a => a.data === hojeISO)
+      .sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
+
+    if (doDia.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhum agendamento para hoje.</div>';
+      return;
+    }
+
+    lista.innerHTML = doDia.map(a => {
+      const mensagem = encodeURIComponent(`Oi ${a.nome}! Passando para confirmar seu horário de hoje, às ${a.horario || '--:--'}${a.procedimento ? ' para ' + a.procedimento : ''}. Você confirma? 💅`);
+      const temTelefone = a.telefone && a.telefone.trim();
+      return `
+      <div class="relatorio-item">
+        <div>
+          <div class="nome-proc">${a.horario || '--:--'} · ${a.nome}</div>
+          <div class="data-proc">${a.procedimento || ''}</div>
+        </div>
+        ${temTelefone
+          ? `<a href="https://wa.me/55${a.telefone}?text=${mensagem}" target="_blank" class="btn-lembrete">🔔 Confirmar</a>`
+          : `<span class="categoria-badge" title="Cadastre o WhatsApp neste agendamento para enviar lembrete">Sem WhatsApp</span>`
+        }
+      </div>
+    `;
+    }).join('');
+  }
+
   window.abrirFormAgendamento = function abrirFormAgendamento() {
     agendamentoEditandoId = null;
     document.getElementById('agNome').value = '';
+    document.getElementById('agTelefone').value = '';
     document.getElementById('agHorario').value = '';
     document.getElementById('agProcedimento').value = '';
     document.getElementById('agObs').value = '';
@@ -1679,6 +1720,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (!a) return;
     agendamentoEditandoId = id;
     document.getElementById('agNome').value = a.nome || '';
+    document.getElementById('agTelefone').value = a.telefone || '';
     document.getElementById('agHorario').value = a.horario || '';
     document.getElementById('agProcedimento').value = a.procedimento || '';
     document.getElementById('agObs').value = a.obs || '';
@@ -1692,6 +1734,7 @@ textarea { min-height: 80px; resize: vertical; }
 
     const dados = {
       nome,
+      telefone: document.getElementById('agTelefone').value.trim(),
       data: diaSelecionado,
       horario: document.getElementById('agHorario').value,
       procedimento: document.getElementById('agProcedimento').value.trim(),
