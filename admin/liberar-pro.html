@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liberar PRO | Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --azul: #1a56db;
+  --azul-escuro: #1340a8;
+  --cinza: #f8faff;
+  --cinza-borda: #e5e7eb;
+  --verde: #059669;
+  --vermelho: #c0392b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cinza);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 1.75rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(26,86,219,.12);
+}
+h1 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; text-align: center; }
+p.sub { font-size: .85rem; color: #777; text-align: center; margin-bottom: 1.75rem; }
+.campo { margin-bottom: 1.1rem; }
+.campo label {
+  display: block; font-size: .8rem; font-weight: 700;
+  color: #555; margin-bottom: .4rem;
+}
+.campo input {
+  width: 100%; padding: .8rem .9rem;
+  border: 1.5px solid var(--cinza-borda); border-radius: 10px;
+  font-size: 1rem; font-family: inherit; outline: none;
+}
+.campo input:focus { border-color: var(--azul); }
+button {
+  width: 100%; background: var(--azul); color: white;
+  border: none; padding: .9rem; border-radius: 10px;
+  font-size: 1rem; font-weight: 700; font-family: inherit;
+  cursor: pointer; margin-top: .5rem;
+}
+button:hover { background: var(--azul-escuro); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.mensagem {
+  margin-top: 1.2rem; padding: .8rem 1rem;
+  border-radius: 10px; font-size: .85rem; font-weight: 600;
+  text-align: center; display: none;
+}
+.mensagem.sucesso { display: block; background: #e6f7ef; color: var(--verde); }
+.mensagem.erro { display: block; background: #fde8e8; color: var(--vermelho); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🔓 Liberar PRO</h1>
+  <p class="sub">Libere o acesso PRO de um cliente manualmente</p>
+
+  <div class="campo">
+    <label>Senha de administrador</label>
+    <input type="password" id="fSenha" placeholder="Sua senha">
+  </div>
+
+  <div class="campo">
+    <label>E-mail do cliente</label>
+    <input type="email" id="fEmail" placeholder="cliente@email.com" autocapitalize="off" autocorrect="off">
+  </div>
+
+  <button id="btnLiberar" onclick="liberarPro()">Liberar PRO</button>
+
+  <div id="mensagem" class="mensagem"></div>
+</div>
+
+<script>
+async function liberarPro() {
+  const senha = document.getElementById('fSenha').value;
+  const email = document.getElementById('fEmail').value.trim();
+  const btn = document.getElementById('btnLiberar');
+  const msg = document.getElementById('mensagem');
+
+  msg.className = 'mensagem';
+  msg.textContent = '';
+
+  if (!senha || !email) {
+    msg.className = 'mensagem erro';
+    msg.textContent = 'Preencha a senha e o e-mail.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Liberando...';
+
+  try {
+    const resposta = await fetch('/api/liberar-pro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+    const dados = await resposta.json();
+
+    if (resposta.ok) {
+      msg.className = 'mensagem sucesso';
+      msg.textContent = `✅ PRO liberado para ${dados.email}`;
+      document.getElementById('fEmail').value = '';
+    } else {
+      msg.className = 'mensagem erro';
+      msg.textContent = '❌ ' + (dados.error || 'Erro ao liberar PRO');
+    }
+  } catch (erro) {
+    msg.className = 'mensagem erro';
+    msg.textContent = '❌ Erro de conexão. Tente novamente.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Liberar PRO';
+}
+</script>
+</body>
+</html>
