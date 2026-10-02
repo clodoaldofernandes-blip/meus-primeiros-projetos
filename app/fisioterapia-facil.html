@@ -668,6 +668,57 @@ textarea { min-height: 80px; resize: vertical; }
   margin-bottom: 10px;
 }
 
+/* JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO */
+.dialogo-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.dialogo-overlay.aberto { display: flex; }
+
+.dialogo {
+  background: white;
+  border-radius: 14px;
+  max-width: 400px;
+  width: 100%;
+  padding: 22px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+
+.dialogo h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--preto); }
+
+.dialogo p {
+  font-size: .88rem;
+  color: var(--texto);
+  line-height: 1.5;
+  white-space: pre-line;
+  margin-bottom: 18px;
+}
+
+.dialogo-botoes { display: flex; gap: 8px; justify-content: flex-end; }
+
+.btn-dialogo-cancelar, .btn-dialogo-ok {
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 9px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-dialogo-cancelar { background: #f1f2f4; color: #555; }
+.btn-dialogo-ok { background: var(--cor); color: white; }
+.btn-dialogo-ok:hover { background: var(--cor-escura); }
+.btn-dialogo-ok.perigo { background: var(--vermelho); }
+.btn-dialogo-ok.perigo:hover { background: #b91c1c; }
+
 @media (max-width: 768px) {
   .grid { grid-template-columns: 1fr; }
   .secao-extra { grid-template-columns: 1fr; }
@@ -958,6 +1009,18 @@ textarea { min-height: 80px; resize: vertical; }
 
 </div>
 
+<!-- JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO -->
+<div class="dialogo-overlay" id="dialogoOverlay">
+  <div class="dialogo" role="dialog" aria-modal="true">
+    <h3 id="dialogoTitulo"></h3>
+    <p id="dialogoMensagem"></p>
+    <div class="dialogo-botoes">
+      <button class="btn-dialogo-cancelar" id="dialogoCancelar">Cancelar</button>
+      <button class="btn-dialogo-ok" id="dialogoOk">OK</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1022,6 +1085,55 @@ textarea { min-height: 80px; resize: vertical; }
   const appConteudo = document.getElementById('appConteudo');
   const btnSair = document.getElementById('btnSair');
   const loginErro = document.getElementById('loginErro');
+
+  // ---------- JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO ----------
+
+  function abrirDialogo({ titulo, mensagem, textoOk = 'OK', textoCancelar = null, perigo = false }) {
+    return new Promise(resolve => {
+      const overlay = document.getElementById('dialogoOverlay');
+      const btnOk = document.getElementById('dialogoOk');
+      const btnCancelar = document.getElementById('dialogoCancelar');
+
+      document.getElementById('dialogoTitulo').textContent = titulo;
+      document.getElementById('dialogoMensagem').textContent = mensagem;
+      btnOk.textContent = textoOk;
+      btnOk.classList.toggle('perigo', perigo);
+      btnCancelar.style.display = textoCancelar ? 'inline-block' : 'none';
+      btnCancelar.textContent = textoCancelar || '';
+
+      function fechar(resultado) {
+        overlay.classList.remove('aberto');
+        btnOk.onclick = null;
+        btnCancelar.onclick = null;
+        overlay.onclick = null;
+        resolve(resultado);
+      }
+
+      btnOk.onclick = () => fechar(true);
+      btnCancelar.onclick = () => fechar(false);
+      overlay.onclick = (e) => { if (e.target === overlay) fechar(false); };
+
+      overlay.classList.add('aberto');
+      btnOk.focus();
+    });
+  }
+
+  function avisar(mensagem, titulo = 'Atenção') {
+    return abrirDialogo({ titulo, mensagem });
+  }
+
+  function confirmar(mensagem, titulo, textoOk = 'Confirmar', perigo = false) {
+    return abrirDialogo({ titulo, mensagem, textoOk, textoCancelar: 'Cancelar', perigo });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const overlay = document.getElementById('dialogoOverlay');
+    if (!overlay.classList.contains('aberto')) return;
+    const btnCancelar = document.getElementById('dialogoCancelar');
+    if (btnCancelar.style.display !== 'none') btnCancelar.click();
+    else document.getElementById('dialogoOk').click();
+  });
 
   // ---------- UTILITÁRIOS ----------
 
@@ -1262,12 +1374,15 @@ textarea { min-height: 80px; resize: vertical; }
     if (!pacientesRef) return;
 
     if (!pacienteEditandoId && !souPro && pacientes.length >= LIMITE_GRATIS) {
-      alert('Limite de ' + LIMITE_GRATIS + ' pacientes grátis atingido.\nFale no WhatsApp para liberar pacientes ilimitados por R$ 69,90 (pagamento único).');
+      await avisar('Você atingiu o limite de ' + LIMITE_GRATIS + ' pacientes do plano grátis.\nFale no WhatsApp para liberar pacientes ilimitados por R$ 69,90 (pagamento único).', '🔒 Limite atingido');
       return;
     }
 
     const dados = lerFormPaciente();
-    if (!dados.nome) { alert('Informe o nome do paciente.'); return; }
+    if (!dados.nome) {
+      await avisar('Informe o nome do paciente.');
+      return;
+    }
 
     const btn = document.getElementById('btnSalvar');
     btn.disabled = true;
@@ -1287,7 +1402,7 @@ textarea { min-height: 80px; resize: vertical; }
       }
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível salvar. Verifique sua internet e tente de novo.');
+      await avisar('Não foi possível salvar. Verifique sua internet e tente de novo.', 'Erro ao salvar');
     } finally {
       btn.disabled = false;
       btn.textContent = pacienteEditandoId ? '💾 Salvar Alterações' : '💾 Salvar Paciente';
@@ -1322,7 +1437,16 @@ textarea { min-height: 80px; resize: vertical; }
 
   window.alternarArquivo = async function alternarArquivo(id, arquivar) {
     if (!pacientesRef) return;
-    if (arquivar && !confirm('Arquivar este paciente?\nO prontuário continua guardado e você pode reativar quando ele voltar.')) return;
+
+    if (arquivar) {
+      const ok = await confirmar(
+        'O paciente sai da lista de ativos, mas o prontuário continua guardado.\nVocê pode reativar quando ele voltar.',
+        '🗄️ Arquivar paciente?',
+        'Arquivar'
+      );
+      if (!ok) return;
+    }
+
     try {
       await updateDoc(doc(pacientesRef, id), {
         arquivado: arquivar,
@@ -1330,7 +1454,7 @@ textarea { min-height: 80px; resize: vertical; }
       });
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível concluir. Tente novamente.');
+      await avisar('Não foi possível concluir. Tente novamente.', 'Erro');
     }
   };
 
@@ -1592,7 +1716,10 @@ textarea { min-height: 80px; resize: vertical; }
   window.salvarAgendamento = async function salvarAgendamento() {
     if (!agendamentosRef) return;
     const pacienteId = document.getElementById('agPaciente').value;
-    if (!pacienteId) { alert('Selecione o paciente.'); return; }
+    if (!pacienteId) {
+      await avisar('Selecione o paciente do agendamento.');
+      return;
+    }
     const p = pacientes.find(x => x.id === pacienteId);
 
     const dados = {
@@ -1619,18 +1746,19 @@ textarea { min-height: 80px; resize: vertical; }
       fecharFormAgendamento();
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível salvar o agendamento. Tente novamente.');
+      await avisar('Não foi possível salvar o agendamento. Tente novamente.', 'Erro ao salvar');
     }
   };
 
   window.excluirAgendamento = async function excluirAgendamento(id) {
     if (!agendamentosRef) return;
-    if (!confirm('Excluir este agendamento?')) return;
+    const ok = await confirmar('Este agendamento será removido da agenda.', '🗑️ Excluir agendamento?', 'Excluir', true);
+    if (!ok) return;
     try {
       await deleteDoc(doc(agendamentosRef, id));
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível excluir. Tente novamente.');
+      await avisar('Não foi possível excluir. Tente novamente.', 'Erro');
     }
   };
 
@@ -1732,7 +1860,7 @@ textarea { min-height: 80px; resize: vertical; }
     const data = document.getElementById('dData').value;
 
     if (!descricao || !valor || !data) {
-      alert('Preencha descrição, valor e data da despesa.');
+      await avisar('Preencha descrição, valor e data da despesa.');
       return;
     }
 
@@ -1750,18 +1878,19 @@ textarea { min-height: 80px; resize: vertical; }
       document.getElementById('dCategoria').value = 'Aluguel';
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível salvar a despesa. Tente novamente.');
+      await avisar('Não foi possível salvar a despesa. Tente novamente.', 'Erro ao salvar');
     }
   };
 
   window.excluirDespesa = async function excluirDespesa(id) {
     if (!despesasRef) return;
-    if (!confirm('Excluir esta despesa?')) return;
+    const ok = await confirmar('Esta despesa será removida do relatório.', '🗑️ Excluir despesa?', 'Excluir', true);
+    if (!ok) return;
     try {
       await deleteDoc(doc(despesasRef, id));
     } catch (erro) {
       console.error(erro);
-      alert('Não foi possível excluir. Tente novamente.');
+      await avisar('Não foi possível excluir. Tente novamente.', 'Erro');
     }
   };
 
