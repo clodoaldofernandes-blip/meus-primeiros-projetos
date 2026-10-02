@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fisioterapia Fácil | Gestão de Pacientes para Fisioterapeutas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cor: #0e7490;
+  --cor-escura: #155e75;
+  --cor-clara: #e0f2f5;
+  --fundo: #f4fafb;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --sombra: 0 8px 32px rgba(14,116,144,.12);
+  --verde: #25d366;
+  --vermelho: #dc2626;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--fundo); }
+
+header {
+  background: linear-gradient(135deg, #083344 0%, #0e7490 100%);
+  color: white;
+  text-align: center;
+  padding: 50px 20px 40px;
+  position: relative;
+}
+
+header h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 800; }
+header p { opacity: .85; font-size: .95rem; }
+
+.status-conexao {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  color: white;
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .25rem .8rem;
+  border-radius: 999px;
+  margin-top: .75rem;
+  letter-spacing: .5px;
+}
+
+.btn-sair {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255,255,255,.15);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: none;
+}
+
+.btn-sair:hover { background: rgba(255,255,255,.28); }
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px 60px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  border: 1px solid var(--cinza-borda);
+  box-shadow: var(--sombra);
+}
+
+.dashboard-card h3 { font-size: 2rem; color: var(--cor); margin-bottom: 4px; }
+.dashboard-card p { font-size: .85rem; color: var(--texto); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.card h2 { margin-bottom: 18px; font-size: 1rem; font-weight: 700; color: var(--preto); }
+
+.subtitulo-form {
+  font-size: .78rem;
+  font-weight: 800;
+  color: var(--cor);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin: 6px 0 10px;
+  grid-column: 1/-1;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: .85rem;
+  color: #333;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .9rem;
+  outline: none;
+  transition: border-color .2s;
+  background: white;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--cor);
+  box-shadow: 0 0 0 3px rgba(14,116,144,.1);
+}
+
+textarea { min-height: 80px; resize: vertical; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.form-grid .full { grid-column: 1/-1; }
+
+.btn-salvar {
+  width: 100%;
+  background: var(--cor);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+  margin-top: 4px;
+}
+
+.btn-salvar:hover { background: var(--cor-escura); }
+.btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-cancelar-edicao {
+  width: 100%;
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: 10px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  display: none;
+}
+
+.aviso-limite {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 20px;
+  font-size: .88rem;
+  color: #92400e;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.aviso-limite strong { display: block; font-size: .95rem; margin-bottom: .2rem; }
+
+.btn-upgrade {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .82rem;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-upgrade:hover { background: #1da851; }
+
+.lista-clientes { display: flex; flex-direction: column; gap: 14px; }
+
+.cliente {
+  background: white;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 12px;
+  padding: 16px;
+  transition: box-shadow .2s;
+}
+
+.cliente:hover { box-shadow: var(--sombra); }
+.cliente.arquivado { background: #fafafa; }
+
+.cliente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.cliente h3 { font-size: 1rem; color: var(--preto); }
+
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.badge-tipo {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  background: var(--cor-clara);
+  color: var(--cor);
+}
+
+.badge-arquivado {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+.info { margin: 4px 0; color: var(--texto); font-size: .87rem; }
+
+.acoes { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--verde);
+  color: white;
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  transition: background .2s;
+}
+
+.btn-whatsapp:hover { background: #1da851; }
+
+.btn-editar, .btn-arquivar, .btn-reativar {
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-editar { background: #f3f4f6; color: #333; }
+.btn-editar:hover { background: #e5e7eb; }
+.btn-arquivar { background: #fef3c7; color: #92400e; }
+.btn-arquivar:hover { background: #fde68a; }
+.btn-reativar { background: #dcfce7; color: #15803d; }
+.btn-reativar:hover { background: #bbf7d0; }
+
+.vazio { text-align: center; color: #aaa; padding: 2rem 0; font-size: .9rem; }
+
+.pesquisa-wrap { position: relative; margin-bottom: 14px; }
+.pesquisa-wrap input { padding-left: 36px; margin-bottom: 0; }
+.pesquisa-wrap .icone {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.secao-fichas {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--cinza-borda);
+}
+
+.secao-fichas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.secao-fichas-header span { font-size: .8rem; font-weight: 700; color: var(--texto); }
+
+.sem-fichas { font-size: .78rem; color: #aaa; }
+
+.btn-lembrete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fde68a;
+  color: #92400e;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: .74rem;
+  font-weight: 700;
+  transition: background .2s;
+  white-space: nowrap;
+}
+
+.btn-lembrete:hover { background: #fcd34d; }
+
+/* TELA DE LOGIN */
+.login-wrap {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.login-card h2 { text-align: center; margin-bottom: 6px; font-size: 1.2rem; }
+.login-card .sub-login { text-align: center; color: var(--texto); font-size: .85rem; margin-bottom: 20px; }
+
+.login-erro {
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.login-alternar {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--texto);
+  margin-top: 10px;
+}
+
+.login-alternar button {
+  background: none;
+  border: none;
+  color: var(--cor);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+}
+
+.oculto { display: none !important; }
+
+/* SEÇÃO EXTRA */
+.secao-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card-full {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.card-full h2 { margin-bottom: 14px; font-size: 1rem; font-weight: 700; color: var(--preto); }
+
+.periodo-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+
+.periodo-tab {
+  flex: 1;
+  background: var(--fundo);
+  border: 1.5px solid var(--cinza-borda);
+  color: var(--texto);
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .82rem;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+.periodo-tab.ativo { background: var(--cor); border-color: var(--cor); color: white; }
+
+.resumo-financeiro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.resumo-box {
+  text-align: center;
+  border-radius: 12px;
+  padding: 12px 6px;
+}
+
+.resumo-box.receita { background: #e6f7ef; }
+.resumo-box.despesa { background: #fee2e2; }
+.resumo-box.saldo { background: var(--cor-clara); }
+
+.resumo-box .valor { font-size: 1.05rem; font-weight: 800; }
+.resumo-box.receita .valor { color: #059669; }
+.resumo-box.despesa .valor { color: var(--vermelho); }
+.resumo-box.saldo .valor { color: var(--cor); }
+.resumo-box .label { font-size: .66rem; color: var(--texto); margin-top: 2px; }
+
+.a-receber {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.relatorio-lista { max-height: 260px; overflow-y: auto; margin-bottom: 14px; }
+
+.relatorio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: .83rem;
+  gap: 8px;
+}
+
+.relatorio-item .nome-proc { color: var(--preto); font-weight: 600; }
+.relatorio-item .data-proc { color: var(--texto); font-size: .76rem; }
+.relatorio-item .valor-proc { color: var(--cor); font-weight: 700; white-space: nowrap; }
+.relatorio-item .valor-proc.receita { color: #059669; }
+.relatorio-item .valor-proc.despesa { color: var(--vermelho); }
+
+.categoria-badge {
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: var(--vermelho);
+  white-space: nowrap;
+}
+
+.despesa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--fundo);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: .82rem;
+  gap: 8px;
+}
+
+.despesa-item .desp-info strong { display: block; color: var(--preto); }
+.despesa-item .desp-info span { color: var(--texto); font-size: .76rem; }
+.despesa-item .desp-valor { color: var(--vermelho); font-weight: 700; white-space: nowrap; }
+
+.btn-excluir-mini {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+  color: var(--vermelho);
+}
+
+.btn-exportar-pdf {
+  width: 100%;
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 11px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .88rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-exportar-pdf:hover { background: #1e293b; }
+
+/* AGENDA */
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.calendario-header span { font-weight: 700; font-size: .9rem; text-transform: capitalize; }
+
+.btn-nav-mes {
+  background: var(--cor-clara);
+  color: var(--cor);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.calendario-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 4px;
+}
+
+.calendario-dias-semana span {
+  text-align: center;
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.dia-cel {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  background: var(--fundo);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  cursor: pointer;
+  position: relative;
+  color: var(--preto);
+}
+
+.dia-cel.fora-do-mes { color: #ccc; cursor: default; }
+.dia-cel.hoje { border-color: var(--cor); font-weight: 800; }
+.dia-cel.selecionado { background: var(--cor); color: white; }
+.dia-cel.tem-agendamento::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cor);
+  position: absolute;
+  bottom: 4px;
+}
+
+.dia-cel.selecionado.tem-agendamento::after { background: white; }
+
+.dia-selecionado-label { font-size: .85rem; font-weight: 700; margin-bottom: 8px; }
+
+.agenda-form { display: none; margin-bottom: 14px; }
+.agenda-form.aberto { display: block; }
+
+.agenda-lista { max-height: 240px; overflow-y: auto; margin-bottom: 10px; }
+
+.agenda-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--fundo);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: .8rem;
+  gap: 6px;
+}
+
+.agenda-item .ag-info strong { display: block; color: var(--preto); }
+.agenda-item .ag-acoes { display: flex; gap: 4px; }
+.agenda-item .ag-acoes button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .12rem .5rem;
+  border-radius: 999px;
+  margin-top: 3px;
+}
+
+.st-agendado { background: #e0f2fe; color: #0369a1; }
+.st-realizado { background: #dcfce7; color: #15803d; }
+.st-faltou { background: #fef3c7; color: #b45309; }
+.st-cancelado { background: #fee2e2; color: #b91c1c; }
+
+.btn-add-agendamento {
+  width: 100%;
+  background: var(--cor-clara);
+  color: var(--cor);
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .secao-extra { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.5rem; }
+  .btn-sair { position: static; margin-top: 14px; display: inline-block; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🩺 Fisioterapia Fácil</h1>
+  <p>Pacientes, agenda e financeiro do seu consultório em um só lugar.</p>
+  <span class="status-conexao" id="statusConexao">🔒 Faça login para começar</span>
+  <button class="btn-sair" id="btnSair" onclick="sair()">🚪 Sair</button>
+</header>
+
+<!-- TELA DE LOGIN / CADASTRO -->
+<div class="login-wrap" id="telaLogin">
+  <div class="login-card">
+    <h2 id="tituloLogin">Entrar</h2>
+    <p class="sub-login" id="subLogin">Acesse sua conta para gerenciar seus pacientes</p>
+
+    <div class="login-erro" id="loginErro"></div>
+
+    <label>E-mail</label>
+    <input type="email" id="loginEmail" placeholder="seu@email.com">
+
+    <label>Senha</label>
+    <input type="password" id="loginSenha" placeholder="Mínimo 6 caracteres">
+
+    <button class="btn-salvar" id="btnLogin" onclick="fazerLogin()">Entrar</button>
+
+    <div class="login-alternar">
+      <span id="textoAlternar">Ainda não tem conta?</span>
+      <button onclick="alternarModoLogin()" id="btnAlternar">Criar conta</button>
+    </div>
+  </div>
+</div>
+
+<div class="container oculto" id="appConteudo">
+
+  <div class="aviso-limite" id="avisoLimite">
+    <div>
+      <strong>🔒 Limite de 2 pacientes grátis atingido</strong>
+      Libere pacientes ilimitados por R$ 69,90 (pagamento único, sem mensalidade).
+    </div>
+    <a href="https://wa.me/5583982001314?text=Oi!%20Quero%20liberar%20o%20acesso%20completo%20do%20Fisioterapia%20F%C3%A1cil" target="_blank" class="btn-upgrade">💬 Liberar no WhatsApp</a>
+  </div>
+
+  <div class="dashboard">
+    <div class="dashboard-card">
+      <h3 id="totalPacientes">0</h3>
+      <p>👥 Pacientes ativos</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="atendimentosHoje">0</h3>
+      <p>📅 Atendimentos hoje</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="realizadosMes">0</h3>
+      <p>✅ Realizados no mês</p>
+    </div>
+    <div class="dashboard-card">
+      <h3 id="totalArquivados">0</h3>
+      <p>🗄️ Arquivados</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2 id="tituloFormPaciente">➕ Novo Paciente</h2>
+
+      <div class="form-grid">
+        <div class="subtitulo-form">Dados pessoais</div>
+
+        <div class="full">
+          <label>Nome completo *</label>
+          <input type="text" id="p_nome" placeholder="Nome completo">
+        </div>
+        <div>
+          <label>Data de nascimento</label>
+          <input type="date" id="p_dataNascimento">
+        </div>
+        <div>
+          <label>WhatsApp</label>
+          <input type="text" id="p_telefone" placeholder="(83) 9 0000-0000">
+        </div>
+        <div>
+          <label>E-mail</label>
+          <input type="email" id="p_email" placeholder="Opcional">
+        </div>
+        <div>
+          <label>Profissão / ocupação</label>
+          <input type="text" id="p_profissao" placeholder="Ex: digitador, pedreiro">
+        </div>
+        <div class="full">
+          <label>Endereço</label>
+          <input type="text" id="p_endereco" placeholder="Opcional">
+        </div>
+
+        <div class="subtitulo-form">Atendimento</div>
+
+        <div>
+          <label>Tipo</label>
+          <select id="p_tipoAtendimento">
+            <option>Particular</option>
+            <option>Convênio</option>
+          </select>
+        </div>
+        <div>
+          <label>Nome do convênio</label>
+          <input type="text" id="p_convenioNome" placeholder="Se for convênio">
+        </div>
+
+        <div class="subtitulo-form">Médico responsável / encaminhamento</div>
+
+        <div>
+          <label>Nome do médico</label>
+          <input type="text" id="p_medicoNome" placeholder="Opcional">
+        </div>
+        <div>
+          <label>Especialidade</label>
+          <input type="text" id="p_medicoEspecialidade" placeholder="Ex: ortopedista">
+        </div>
+        <div class="full">
+          <label>Telefone do médico</label>
+          <input type="text" id="p_medicoTelefone" placeholder="Opcional">
+        </div>
+
+        <div class="subtitulo-form">Contato de emergência</div>
+
+        <div>
+          <label>Nome</label>
+          <input type="text" id="p_emergenciaNome" placeholder="Opcional">
+        </div>
+        <div>
+          <label>Telefone</label>
+          <input type="text" id="p_emergenciaTelefone" placeholder="Opcional">
+        </div>
+
+        <div class="full">
+          <label>Observações</label>
+          <textarea id="p_obs" placeholder="Informações gerais do paciente"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-salvar" id="btnSalvar" onclick="salvarPaciente()">💾 Salvar Paciente</button>
+      <button class="btn-cancelar-edicao" id="btnCancelarEdicao" onclick="cancelarEdicao()">✕ Cancelar edição</button>
+    </div>
+
+    <div class="card">
+      <h2>👥 Pacientes</h2>
+      <div class="periodo-tabs">
+        <button class="periodo-tab ativo" id="tabAtivos" onclick="mudarFiltroPacientes(false)">Ativos (0)</button>
+        <button class="periodo-tab" id="tabArquivados" onclick="mudarFiltroPacientes(true)">Arquivados (0)</button>
+      </div>
+      <div class="pesquisa-wrap">
+        <span class="icone">🔍</span>
+        <input type="text" id="pesquisa" placeholder="Pesquisar paciente..." onkeyup="renderizar()">
+      </div>
+      <div id="pacientes" class="lista-clientes"></div>
+    </div>
+
+  </div>
+
+  <div class="secao-extra">
+
+    <div class="card-full">
+      <h2>🔔 Atendimentos de Hoje</h2>
+      <div class="relatorio-lista" id="lembretesHojeLista"></div>
+    </div>
+
+    <div class="card-full">
+      <h2>📊 Relatório de Receitas e Despesas</h2>
+      <div class="periodo-tabs">
+        <button class="periodo-tab ativo" id="tabSemana" onclick="mudarPeriodoRelatorio('semana')">Esta Semana</button>
+        <button class="periodo-tab" id="tabMes" onclick="mudarPeriodoRelatorio('mes')">Este Mês</button>
+      </div>
+      <div class="resumo-financeiro">
+        <div class="resumo-box receita">
+          <div class="valor" id="resumoReceitas">R$ 0,00</div>
+          <div class="label">Receitas</div>
+        </div>
+        <div class="resumo-box despesa">
+          <div class="valor" id="resumoDespesas">R$ 0,00</div>
+          <div class="label">Despesas</div>
+        </div>
+        <div class="resumo-box saldo">
+          <div class="valor" id="resumoSaldo">R$ 0,00</div>
+          <div class="label">Saldo</div>
+        </div>
+      </div>
+      <div class="a-receber" id="aReceber">⏳ A receber (realizados sem pagamento): R$ 0,00</div>
+      <div class="relatorio-lista" id="relatorioLista"></div>
+      <button class="btn-exportar-pdf" onclick="exportarRelatorioPDF()">📄 Exportar PDF</button>
+    </div>
+
+    <div class="card-full">
+      <h2>💸 Despesas</h2>
+      <label>Descrição</label>
+      <input type="text" id="dDescricao" placeholder="Ex: Aluguel da sala">
+      <label>Categoria</label>
+      <select id="dCategoria">
+        <option>Aluguel</option>
+        <option>Água</option>
+        <option>Luz</option>
+        <option>Equipamentos</option>
+        <option>Materiais</option>
+        <option>Internet</option>
+        <option>Outro</option>
+      </select>
+      <label>Valor (R$)</label>
+      <input type="text" id="dValor" placeholder="R$ 0,00" oninput="mascararPreco(this)" inputmode="numeric">
+      <label>Data</label>
+      <input type="date" id="dData">
+      <button class="btn-salvar" onclick="salvarDespesa()">💾 Salvar Despesa</button>
+      <div class="relatorio-lista" id="despesasLista" style="margin-top:16px;"></div>
+    </div>
+
+    <div class="card-full">
+      <h2>📅 Agenda de Atendimentos</h2>
+      <div class="calendario-header">
+        <button class="btn-nav-mes" onclick="mesAnterior()">‹</button>
+        <span id="calendarioMesAno"></span>
+        <button class="btn-nav-mes" onclick="mesProximo()">›</button>
+      </div>
+      <div class="calendario-dias-semana">
+        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+      </div>
+      <div class="calendario-grid" id="calendarioGrid"></div>
+
+      <div class="dia-selecionado-label" id="diaSelecionadoLabel"></div>
+      <div class="agenda-lista" id="agendaLista"></div>
+
+      <button class="btn-add-agendamento" onclick="abrirFormAgendamento()">+ Novo Agendamento</button>
+
+      <div class="agenda-form" id="agendaForm">
+        <label>Paciente *</label>
+        <select id="agPaciente"></select>
+        <div class="form-grid">
+          <div>
+            <label>Horário</label>
+            <input type="time" id="agHorario">
+          </div>
+          <div>
+            <label>Tipo</label>
+            <select id="agTipo">
+              <option>Avaliação inicial</option>
+              <option selected>Sessão</option>
+              <option>Alta</option>
+            </select>
+          </div>
+          <div>
+            <label>Status</label>
+            <select id="agStatus">
+              <option>Agendado</option>
+              <option>Realizado</option>
+              <option>Faltou</option>
+              <option>Cancelado</option>
+            </select>
+          </div>
+          <div>
+            <label>Valor (R$)</label>
+            <input type="text" id="agValor" placeholder="R$ 0,00" oninput="mascararPreco(this)" inputmode="numeric">
+          </div>
+          <div class="full">
+            <label>Pagamento</label>
+            <select id="agPagamento">
+              <option>Não pago</option>
+              <option>Pix</option>
+              <option>Dinheiro</option>
+              <option>Cartão</option>
+              <option>Convênio</option>
+            </select>
+          </div>
+        </div>
+        <label>Observações</label>
+        <textarea id="agObs" placeholder="Opcional"></textarea>
+        <button class="btn-salvar" onclick="salvarAgendamento()">💾 Salvar Agendamento</button>
+        <button class="btn-cancelar-edicao" style="display:block;" onclick="fecharFormAgendamento()">✕ Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, getDoc, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Configuração do projeto Firebase (clodoaldofernandes-crm)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1",
+    measurementId: "G-MBJFQR0X9J"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ---------- ESTADO ----------
+  let pacientes = [];
+  let pacienteEditandoId = null;
+  let pacientesRef = null;
+  let mostrarArquivados = false;
+
+  let pararDeEscutar = null;
+  let pararDeEscutarPerfil = null;
+  let pararDeEscutarAgenda = null;
+  let pararDeEscutarDespesas = null;
+
+  let modoCadastro = false;
+  let souPro = false;
+  const LIMITE_GRATIS = 2;
+
+  let agendamentosRef = null;
+  let agendamentos = [];
+  let mesCalendario = new Date();
+  let diaSelecionado = formatarDataISO(new Date());
+  let agendamentoEditandoId = null;
+
+  let periodoRelatorio = 'semana';
+
+  let despesasRef = null;
+  let despesas = [];
+
+  const CAMPOS_PACIENTE = [
+    'nome', 'dataNascimento', 'telefone', 'email', 'profissao', 'endereco',
+    'tipoAtendimento', 'convenioNome', 'medicoNome', 'medicoEspecialidade',
+    'medicoTelefone', 'emergenciaNome', 'emergenciaTelefone', 'obs'
+  ];
+
+  const statusEl = document.getElementById('statusConexao');
+  const telaLogin = document.getElementById('telaLogin');
+  const appConteudo = document.getElementById('appConteudo');
+  const btnSair = document.getElementById('btnSair');
+  const loginErro = document.getElementById('loginErro');
+
+  // ---------- UTILITÁRIOS ----------
+
+  function esc(texto) {
+    return String(texto ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function formatarDataISO(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function dataBR(iso) {
+    return iso ? new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR') : '—';
+  }
+
+  function soDigitos(tel) {
+    return String(tel || '').replace(/\D/g, '');
+  }
+
+  function linkWhats(tel, mensagem) {
+    let numero = soDigitos(tel);
+    if (!numero) return '';
+    if (numero.length <= 11) numero = '55' + numero;
+    return 'https://wa.me/' + numero + (mensagem ? '?text=' + encodeURIComponent(mensagem) : '');
+  }
+
+  function calcularIdade(dataISO) {
+    if (!dataISO) return null;
+    const nasc = new Date(dataISO + 'T00:00:00');
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - nasc.getFullYear();
+    const m = hoje.getMonth() - nasc.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+    return idade >= 0 ? idade : null;
+  }
+
+  function mascararPreco(campo) {
+    let digitos = campo.value.replace(/\D/g, '');
+    if (!digitos) { campo.value = ''; return; }
+    digitos = digitos.replace(/^0+(?=\d)/, '');
+    while (digitos.length < 3) digitos = '0' + digitos;
+    const centavos = digitos.slice(-2);
+    let inteiro = digitos.slice(0, -2);
+    inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    campo.value = `R$ ${inteiro},${centavos}`;
+  }
+  window.mascararPreco = mascararPreco;
+
+  function valorParaNumero(str) {
+    if (!str) return 0;
+    const limpo = String(str).replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(limpo);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function numeroParaMoeda(n) {
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function classeStatus(status) {
+    const mapa = { 'Agendado': 'st-agendado', 'Realizado': 'st-realizado', 'Faltou': 'st-faltou', 'Cancelado': 'st-cancelado' };
+    return mapa[status] || 'st-agendado';
+  }
+
+  function telefoneDoAgendamento(a) {
+    const p = pacientes.find(x => x.id === a.pacienteId);
+    return (p && p.telefone) ? p.telefone : (a.telefone || '');
+  }
+
+  // ---------- LOGIN / CADASTRO ----------
+
+  window.alternarModoLogin = function alternarModoLogin() {
+    modoCadastro = !modoCadastro;
+    document.getElementById('tituloLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('subLogin').textContent = modoCadastro
+      ? 'Crie sua conta para começar a usar'
+      : 'Acesse sua conta para gerenciar seus pacientes';
+    document.getElementById('btnLogin').textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    document.getElementById('textoAlternar').textContent = modoCadastro ? 'Já tem conta?' : 'Ainda não tem conta?';
+    document.getElementById('btnAlternar').textContent = modoCadastro ? 'Entrar' : 'Criar conta';
+    loginErro.style.display = 'none';
+  };
+
+  function mensagemErroFirebase(codigo) {
+    const mapa = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/missing-password': 'Informe uma senha.',
+      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/wrong-password': 'E-mail ou senha incorretos.',
+      'auth/user-not-found': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente de novo.'
+    };
+    return mapa[codigo] || 'Não foi possível concluir. Tente novamente.';
+  }
+
+  window.fazerLogin = async function fazerLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    loginErro.style.display = 'none';
+
+    if (!email || !senha) {
+      loginErro.textContent = 'Preencha e-mail e senha.';
+      loginErro.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+
+    try {
+      if (modoCadastro) {
+        await createUserWithEmailAndPassword(auth, email, senha);
+      } else {
+        await signInWithEmailAndPassword(auth, email, senha);
+      }
+    } catch (erro) {
+      console.error(erro);
+      loginErro.textContent = mensagemErroFirebase(erro.code);
+      loginErro.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoCadastro ? 'Criar Conta' : 'Entrar';
+    }
+  };
+
+  window.sair = async function sair() {
+    await signOut(auth);
+  };
+
+  onAuthStateChanged(auth, async (usuario) => {
+    if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
+    if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
+    if (pararDeEscutarAgenda) { pararDeEscutarAgenda(); pararDeEscutarAgenda = null; }
+    if (pararDeEscutarDespesas) { pararDeEscutarDespesas(); pararDeEscutarDespesas = null; }
+
+    if (usuario) {
+      telaLogin.classList.add('oculto');
+      appConteudo.classList.remove('oculto');
+      btnSair.style.display = 'inline-block';
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginSenha').value = '';
+
+      pacientesRef = collection(db, 'usuarios', usuario.uid, 'pacientesFisio');
+      agendamentosRef = collection(db, 'usuarios', usuario.uid, 'agendamentosFisio');
+      despesasRef = collection(db, 'usuarios', usuario.uid, 'despesasFisio');
+      const perfilRef = doc(db, 'usuarios', usuario.uid);
+      statusEl.textContent = '🔄 Carregando seus dados...';
+
+      // Cria o perfil só se ainda não existir (nunca sobrescreve)
+      try {
+        const perfilSnap = await getDoc(perfilRef);
+        if (!perfilSnap.exists()) {
+          await setDoc(perfilRef, { proFisioterapia: false, email: usuario.email, criadoEm: new Date().toLocaleString('pt-BR') });
+        }
+      } catch (erro) {
+        console.error('Erro ao verificar perfil:', erro);
+      }
+
+      pararDeEscutarPerfil = onSnapshot(perfilRef, (snap) => {
+        souPro = snap.exists() && snap.data().proFisioterapia === true;
+        renderizar();
+      });
+
+      pararDeEscutar = onSnapshot(
+        query(pacientesRef, orderBy('dataCadastroTS', 'desc')),
+        (snapshot) => {
+          pacientes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+          renderizar();
+          renderizarLembretesHoje();
+        },
+        (erro) => {
+          console.error(erro);
+          statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
+        }
+      );
+
+      pararDeEscutarAgenda = onSnapshot(
+        query(agendamentosRef, orderBy('data', 'asc')),
+        (snapshot) => {
+          agendamentos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizarCalendario();
+          renderizarAgendaDia();
+          renderizarLembretesHoje();
+          renderizarRelatorio();
+          renderizar();
+        },
+        (erro) => console.error(erro)
+      );
+
+      pararDeEscutarDespesas = onSnapshot(
+        query(despesasRef, orderBy('data', 'desc')),
+        (snapshot) => {
+          despesas = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizarDespesasLista();
+          renderizarRelatorio();
+        },
+        (erro) => console.error(erro)
+      );
+    } else {
+      telaLogin.classList.remove('oculto');
+      appConteudo.classList.add('oculto');
+      btnSair.style.display = 'none';
+      statusEl.textContent = '🔒 Faça login para começar';
+      pacientesRef = null;
+      agendamentosRef = null;
+      despesasRef = null;
+      pacientes = [];
+      agendamentos = [];
+      despesas = [];
+      souPro = false;
+    }
+  });
+
+  // ---------- PACIENTES ----------
+
+  function lerFormPaciente() {
+    const dados = {};
+    CAMPOS_PACIENTE.forEach(campo => {
+      dados[campo] = document.getElementById('p_' + campo).value.trim();
+    });
+    return dados;
+  }
+
+  function limparFormPaciente() {
+    CAMPOS_PACIENTE.forEach(campo => {
+      document.getElementById('p_' + campo).value = '';
+    });
+    document.getElementById('p_tipoAtendimento').value = 'Particular';
+  }
+
+  window.salvarPaciente = async function salvarPaciente() {
+    if (!pacientesRef) return;
+
+    if (!pacienteEditandoId && !souPro && pacientes.length >= LIMITE_GRATIS) {
+      alert('Limite de ' + LIMITE_GRATIS + ' pacientes grátis atingido.\nFale no WhatsApp para liberar pacientes ilimitados por R$ 69,90 (pagamento único).');
+      return;
+    }
+
+    const dados = lerFormPaciente();
+    if (!dados.nome) { alert('Informe o nome do paciente.'); return; }
+
+    const btn = document.getElementById('btnSalvar');
+    btn.disabled = true;
+    btn.textContent = '💾 Salvando...';
+
+    try {
+      if (pacienteEditandoId) {
+        dados.atualizadoEm = new Date().toLocaleString('pt-BR');
+        await updateDoc(doc(pacientesRef, pacienteEditandoId), dados);
+        cancelarEdicao();
+      } else {
+        dados.arquivado = false;
+        dados.dataCadastro = new Date().toLocaleString('pt-BR');
+        dados.dataCadastroTS = Date.now();
+        await addDoc(pacientesRef, dados);
+        limparFormPaciente();
+      }
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar. Verifique sua internet e tente de novo.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = pacienteEditandoId ? '💾 Salvar Alterações' : '💾 Salvar Paciente';
+      renderizar();
+    }
+  };
+
+  window.editarPaciente = function editarPaciente(id) {
+    const p = pacientes.find(x => x.id === id);
+    if (!p) return;
+    CAMPOS_PACIENTE.forEach(campo => {
+      document.getElementById('p_' + campo).value = p[campo] || '';
+    });
+    if (!p.tipoAtendimento) document.getElementById('p_tipoAtendimento').value = 'Particular';
+    pacienteEditandoId = id;
+    document.getElementById('tituloFormPaciente').textContent = '✏️ Editando Paciente';
+    const btn = document.getElementById('btnSalvar');
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar Alterações';
+    document.getElementById('btnCancelarEdicao').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.cancelarEdicao = function cancelarEdicao() {
+    pacienteEditandoId = null;
+    limparFormPaciente();
+    document.getElementById('tituloFormPaciente').textContent = '➕ Novo Paciente';
+    document.getElementById('btnSalvar').textContent = '💾 Salvar Paciente';
+    document.getElementById('btnCancelarEdicao').style.display = 'none';
+    renderizar();
+  };
+
+  window.alternarArquivo = async function alternarArquivo(id, arquivar) {
+    if (!pacientesRef) return;
+    if (arquivar && !confirm('Arquivar este paciente?\nO prontuário continua guardado e você pode reativar quando ele voltar.')) return;
+    try {
+      await updateDoc(doc(pacientesRef, id), {
+        arquivado: arquivar,
+        ultimaMudancaArquivo: new Date().toLocaleString('pt-BR')
+      });
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível concluir. Tente novamente.');
+    }
+  };
+
+  window.mudarFiltroPacientes = function mudarFiltroPacientes(arquivados) {
+    mostrarArquivados = arquivados;
+    document.getElementById('tabAtivos').classList.toggle('ativo', !arquivados);
+    document.getElementById('tabArquivados').classList.toggle('ativo', arquivados);
+    renderizar();
+  };
+
+  function atualizarSelectPacientes() {
+    const sel = document.getElementById('agPaciente');
+    if (!sel) return;
+    const atual = sel.value;
+    const ordenar = (a, b) => (a.nome || '').localeCompare(b.nome || '');
+    const ativos = pacientes.filter(p => !p.arquivado).sort(ordenar);
+    const arquivados = pacientes.filter(p => p.arquivado).sort(ordenar);
+
+    sel.innerHTML = '<option value="">Selecione o paciente</option>'
+      + ativos.map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')
+      + arquivados.map(p => `<option value="${p.id}">${esc(p.nome)} (arquivado)</option>`).join('');
+
+    if (atual && pacientes.some(p => p.id === atual)) sel.value = atual;
+  }
+
+  window.renderizar = function renderizar() {
+    const lista = document.getElementById('pacientes');
+    const busca = document.getElementById('pesquisa').value.toLowerCase();
+
+    const ativos = pacientes.filter(p => !p.arquivado);
+    const arquivados = pacientes.filter(p => p.arquivado);
+    const hojeISO = formatarDataISO(new Date());
+    const mesISO = hojeISO.slice(0, 7);
+
+    document.getElementById('totalPacientes').textContent = ativos.length;
+    document.getElementById('totalArquivados').textContent = arquivados.length;
+    document.getElementById('atendimentosHoje').textContent =
+      agendamentos.filter(a => a.data === hojeISO && a.status !== 'Cancelado').length;
+    document.getElementById('realizadosMes').textContent =
+      agendamentos.filter(a => (a.data || '').startsWith(mesISO) && a.status === 'Realizado').length;
+
+    document.getElementById('tabAtivos').textContent = `Ativos (${ativos.length})`;
+    document.getElementById('tabArquivados').textContent = `Arquivados (${arquivados.length})`;
+
+    const atingiuLimite = !souPro && pacientes.length >= LIMITE_GRATIS;
+    document.getElementById('avisoLimite').style.display = atingiuLimite ? 'flex' : 'none';
+    if (!pacienteEditandoId) {
+      const btnSalvar = document.getElementById('btnSalvar');
+      btnSalvar.disabled = atingiuLimite;
+      btnSalvar.textContent = atingiuLimite ? '🔒 Limite atingido — Ver acima' : '💾 Salvar Paciente';
+    }
+
+    atualizarSelectPacientes();
+
+    const base = mostrarArquivados ? arquivados : ativos;
+    const filtrados = base.filter(p => (p.nome || '').toLowerCase().includes(busca));
+
+    if (filtrados.length === 0) {
+      lista.innerHTML = `<div class="vazio">${mostrarArquivados ? 'Nenhum paciente arquivado.' : 'Nenhum paciente cadastrado.'}</div>`;
+      return;
+    }
+
+    lista.innerHTML = filtrados.map(p => {
+      const idade = calcularIdade(p.dataNascimento);
+      const tipo = p.tipoAtendimento === 'Convênio'
+        ? 'Convênio' + (p.convenioNome ? ' · ' + p.convenioNome : '')
+        : 'Particular';
+      const whats = linkWhats(p.telefone);
+
+      return `
+      <div class="cliente${p.arquivado ? ' arquivado' : ''}">
+        <div class="cliente-header">
+          <h3>${esc(p.nome)}</h3>
+          <div class="badges">
+            <span class="badge-tipo">${esc(tipo)}</span>
+            ${p.arquivado ? '<span class="badge-arquivado">Arquivado</span>' : ''}
+          </div>
+        </div>
+        ${idade !== null ? `<div class="info">🎂 ${idade} anos (${dataBR(p.dataNascimento)})</div>` : ''}
+        <div class="info">📞 ${esc(p.telefone) || '—'}</div>
+        ${p.profissao ? `<div class="info">💼 ${esc(p.profissao)}</div>` : ''}
+        ${p.medicoNome ? `<div class="info">🩺 Dr(a). ${esc(p.medicoNome)}${p.medicoEspecialidade ? ' · ' + esc(p.medicoEspecialidade) : ''}${p.medicoTelefone ? ' · ' + esc(p.medicoTelefone) : ''}</div>` : ''}
+        ${p.emergenciaNome ? `<div class="info">🚨 Emergência: ${esc(p.emergenciaNome)}${p.emergenciaTelefone ? ' · ' + esc(p.emergenciaTelefone) : ''}</div>` : ''}
+        <div class="info">📅 Cadastro: ${esc(p.dataCadastro) || '—'}</div>
+        ${p.obs ? `<div class="info">📝 ${esc(p.obs)}</div>` : ''}
+
+        <div class="secao-fichas">
+          <div class="secao-fichas-header">
+            <span>📋 Prontuário</span>
+          </div>
+          <div class="sem-fichas">Avaliação inicial e sessões serão adicionadas na próxima etapa.</div>
+        </div>
+
+        <div class="acoes">
+          ${whats ? `<a href="${whats}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>` : ''}
+          <button class="btn-editar" onclick="editarPaciente('${p.id}')">✏️ Editar</button>
+          ${p.arquivado
+            ? `<button class="btn-reativar" onclick="alternarArquivo('${p.id}', false)">♻️ Reativar</button>`
+            : `<button class="btn-arquivar" onclick="alternarArquivo('${p.id}', true)">🗄️ Arquivar</button>`}
+        </div>
+      </div>
+    `;
+    }).join('');
+  };
+
+  // ---------- AGENDA / CALENDÁRIO ----------
+
+  window.mesAnterior = function mesAnterior() {
+    mesCalendario.setMonth(mesCalendario.getMonth() - 1);
+    renderizarCalendario();
+  };
+
+  window.mesProximo = function mesProximo() {
+    mesCalendario.setMonth(mesCalendario.getMonth() + 1);
+    renderizarCalendario();
+  };
+
+  function renderizarCalendario() {
+    const grid = document.getElementById('calendarioGrid');
+    const rotulo = document.getElementById('calendarioMesAno');
+    if (!grid) return;
+
+    const ano = mesCalendario.getFullYear();
+    const mes = mesCalendario.getMonth();
+    rotulo.textContent = mesCalendario.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+    const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
+    const totalDiasMes = new Date(ano, mes + 1, 0).getDate();
+    const hojeISO = formatarDataISO(new Date());
+    const diasComAgendamento = new Set(agendamentos.filter(a => a.status !== 'Cancelado').map(a => a.data));
+
+    let celulas = '';
+    for (let i = 0; i < primeiroDiaSemana; i++) {
+      celulas += `<div class="dia-cel fora-do-mes"></div>`;
+    }
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+      const dataISO = formatarDataISO(new Date(ano, mes, dia));
+      const classes = ['dia-cel'];
+      if (dataISO === hojeISO) classes.push('hoje');
+      if (dataISO === diaSelecionado) classes.push('selecionado');
+      if (diasComAgendamento.has(dataISO)) classes.push('tem-agendamento');
+      celulas += `<div class="${classes.join(' ')}" onclick="selecionarDia('${dataISO}')">${dia}</div>`;
+    }
+
+    grid.innerHTML = celulas;
+  }
+
+  window.selecionarDia = function selecionarDia(dataISO) {
+    diaSelecionado = dataISO;
+    renderizarCalendario();
+    renderizarAgendaDia();
+    fecharFormAgendamento();
+  };
+
+  function renderizarAgendaDia() {
+    const lista = document.getElementById('agendaLista');
+    const label = document.getElementById('diaSelecionadoLabel');
+    if (!lista) return;
+
+    const dataFormatada = new Date(diaSelecionado + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+    label.textContent = '📌 ' + dataFormatada;
+
+    const doDia = agendamentos
+      .filter(a => a.data === diaSelecionado)
+      .sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
+
+    if (doDia.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhum agendamento neste dia.</div>';
+      return;
+    }
+
+    lista.innerHTML = doDia.map(a => `
+      <div class="agenda-item">
+        <div class="ag-info">
+          <strong>${esc(a.horario) || '--:--'} · ${esc(a.nome)}</strong>
+          ${esc(a.tipo || 'Sessão')}${a.valor ? ' · ' + esc(a.valor) : ''}${a.pagamento && a.pagamento !== 'Não pago' ? ' · ' + esc(a.pagamento) : ''}${a.obs ? ' · ' + esc(a.obs) : ''}
+          <br><span class="status-badge ${classeStatus(a.status)}">${esc(a.status || 'Agendado')}</span>
+        </div>
+        <div class="ag-acoes">
+          <button onclick="editarAgendamento('${a.id}')" title="Editar">✏️</button>
+          <button onclick="excluirAgendamento('${a.id}')" title="Excluir">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderizarLembretesHoje() {
+    const lista = document.getElementById('lembretesHojeLista');
+    if (!lista) return;
+
+    const hojeISO = formatarDataISO(new Date());
+    const doDia = agendamentos
+      .filter(a => a.data === hojeISO && a.status !== 'Cancelado')
+      .sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
+
+    if (doDia.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhum atendimento para hoje.</div>';
+      return;
+    }
+
+    lista.innerHTML = doDia.map(a => {
+      const mensagem = `Olá, ${a.nome}! Passando para confirmar seu atendimento de fisioterapia hoje, às ${a.horario || '--:--'}. Você confirma? 🩺`;
+      const link = linkWhats(telefoneDoAgendamento(a), mensagem);
+      let acao;
+      if (a.status !== 'Agendado' && a.status) {
+        acao = `<span class="status-badge ${classeStatus(a.status)}">${esc(a.status)}</span>`;
+      } else if (link) {
+        acao = `<a href="${link}" target="_blank" class="btn-lembrete">🔔 Confirmar</a>`;
+      } else {
+        acao = `<span class="categoria-badge" title="Cadastre o WhatsApp do paciente para enviar lembrete">Sem WhatsApp</span>`;
+      }
+      return `
+      <div class="relatorio-item">
+        <div>
+          <div class="nome-proc">${esc(a.horario) || '--:--'} · ${esc(a.nome)}</div>
+          <div class="data-proc">${esc(a.tipo || 'Sessão')}</div>
+        </div>
+        ${acao}
+      </div>
+    `;
+    }).join('');
+  }
+
+  function limparFormAgendamento() {
+    document.getElementById('agPaciente').value = '';
+    document.getElementById('agHorario').value = '';
+    document.getElementById('agTipo').value = 'Sessão';
+    document.getElementById('agStatus').value = 'Agendado';
+    document.getElementById('agValor').value = '';
+    document.getElementById('agPagamento').value = 'Não pago';
+    document.getElementById('agObs').value = '';
+  }
+
+  window.abrirFormAgendamento = function abrirFormAgendamento() {
+    agendamentoEditandoId = null;
+    limparFormAgendamento();
+    document.getElementById('agendaForm').classList.add('aberto');
+  };
+
+  window.fecharFormAgendamento = function fecharFormAgendamento() {
+    document.getElementById('agendaForm').classList.remove('aberto');
+    agendamentoEditandoId = null;
+  };
+
+  window.editarAgendamento = function editarAgendamento(id) {
+    const a = agendamentos.find(x => x.id === id);
+    if (!a) return;
+    agendamentoEditandoId = id;
+    document.getElementById('agPaciente').value = a.pacienteId || '';
+    document.getElementById('agHorario').value = a.horario || '';
+    document.getElementById('agTipo').value = a.tipo || 'Sessão';
+    document.getElementById('agStatus').value = a.status || 'Agendado';
+    document.getElementById('agValor').value = a.valor || '';
+    document.getElementById('agPagamento').value = a.pagamento || 'Não pago';
+    document.getElementById('agObs').value = a.obs || '';
+    document.getElementById('agendaForm').classList.add('aberto');
+  };
+
+  window.salvarAgendamento = async function salvarAgendamento() {
+    if (!agendamentosRef) return;
+    const pacienteId = document.getElementById('agPaciente').value;
+    if (!pacienteId) { alert('Selecione o paciente.'); return; }
+    const p = pacientes.find(x => x.id === pacienteId);
+
+    const dados = {
+      pacienteId,
+      nome: p ? p.nome : '',
+      telefone: p ? (p.telefone || '') : '',
+      data: diaSelecionado,
+      horario: document.getElementById('agHorario').value,
+      tipo: document.getElementById('agTipo').value,
+      status: document.getElementById('agStatus').value,
+      valor: document.getElementById('agValor').value.trim(),
+      pagamento: document.getElementById('agPagamento').value,
+      obs: document.getElementById('agObs').value.trim(),
+      atualizadoEm: new Date().toLocaleString('pt-BR')
+    };
+
+    try {
+      if (agendamentoEditandoId) {
+        await updateDoc(doc(agendamentosRef, agendamentoEditandoId), dados);
+      } else {
+        dados.criadoEm = new Date().toLocaleString('pt-BR');
+        await addDoc(agendamentosRef, dados);
+      }
+      fecharFormAgendamento();
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar o agendamento. Tente novamente.');
+    }
+  };
+
+  window.excluirAgendamento = async function excluirAgendamento(id) {
+    if (!agendamentosRef) return;
+    if (!confirm('Excluir este agendamento?')) return;
+    try {
+      await deleteDoc(doc(agendamentosRef, id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
+
+  // ---------- RELATÓRIO FINANCEIRO ----------
+
+  function periodoAtual() {
+    const hoje = new Date();
+    if (periodoRelatorio === 'semana') {
+      const inicio = new Date(hoje);
+      inicio.setDate(hoje.getDate() - hoje.getDay());
+      const fim = new Date(inicio);
+      fim.setDate(inicio.getDate() + 6);
+      return { inicio: formatarDataISO(inicio), fim: formatarDataISO(fim) };
+    }
+    const inicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+    return { inicio: formatarDataISO(inicio), fim: formatarDataISO(fim) };
+  }
+
+  window.mudarPeriodoRelatorio = function mudarPeriodoRelatorio(periodo) {
+    periodoRelatorio = periodo;
+    document.getElementById('tabSemana').classList.toggle('ativo', periodo === 'semana');
+    document.getElementById('tabMes').classList.toggle('ativo', periodo === 'mes');
+    renderizarRelatorio();
+  };
+
+  function realizadosDoPeriodo() {
+    const { inicio, fim } = periodoAtual();
+    return agendamentos.filter(a => a.status === 'Realizado' && a.data && a.data >= inicio && a.data <= fim);
+  }
+
+  function receitasDoPeriodo() {
+    return realizadosDoPeriodo()
+      .filter(a => a.pagamento && a.pagamento !== 'Não pago')
+      .map(a => ({
+        tipo: 'receita',
+        descricao: a.nome + ' · ' + (a.tipo || 'Sessão') + ' · ' + a.pagamento,
+        data: a.data,
+        valor: a.valor,
+        valorNumero: valorParaNumero(a.valor)
+      }));
+  }
+
+  function aReceberDoPeriodo() {
+    return realizadosDoPeriodo()
+      .filter(a => !a.pagamento || a.pagamento === 'Não pago')
+      .reduce((t, a) => t + valorParaNumero(a.valor), 0);
+  }
+
+  function despesasDoPeriodo() {
+    const { inicio, fim } = periodoAtual();
+    return despesas
+      .filter(d => d.data && d.data >= inicio && d.data <= fim)
+      .map(d => ({
+        tipo: 'despesa',
+        descricao: d.descricao + (d.categoria ? ' · ' + d.categoria : ''),
+        data: d.data,
+        valor: d.valor,
+        valorNumero: valorParaNumero(d.valor)
+      }));
+  }
+
+  window.renderizarRelatorio = function renderizarRelatorio() {
+    const listaEl = document.getElementById('relatorioLista');
+    if (!listaEl) return;
+
+    const receitas = receitasDoPeriodo();
+    const despesasPer = despesasDoPeriodo();
+    const totalReceitas = receitas.reduce((t, i) => t + i.valorNumero, 0);
+    const totalDespesas = despesasPer.reduce((t, i) => t + i.valorNumero, 0);
+
+    document.getElementById('resumoReceitas').textContent = numeroParaMoeda(totalReceitas);
+    document.getElementById('resumoDespesas').textContent = numeroParaMoeda(totalDespesas);
+    document.getElementById('resumoSaldo').textContent = numeroParaMoeda(totalReceitas - totalDespesas);
+    document.getElementById('aReceber').textContent = '⏳ A receber (realizados sem pagamento): ' + numeroParaMoeda(aReceberDoPeriodo());
+
+    const itens = [...receitas, ...despesasPer].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+
+    if (itens.length === 0) {
+      listaEl.innerHTML = '<div class="sem-fichas">Nenhuma receita ou despesa neste período.</div>';
+      return;
+    }
+
+    listaEl.innerHTML = itens.map(i => `
+      <div class="relatorio-item">
+        <div>
+          <div class="nome-proc">${i.tipo === 'receita' ? '📈' : '📉'} ${esc(i.descricao)}</div>
+          <div class="data-proc">${dataBR(i.data)}</div>
+        </div>
+        <div class="valor-proc ${i.tipo}">${i.tipo === 'despesa' ? '- ' : ''}${esc(i.valor) || 'R$ 0,00'}</div>
+      </div>
+    `).join('');
+  };
+
+  window.salvarDespesa = async function salvarDespesa() {
+    if (!despesasRef) return;
+    const descricao = document.getElementById('dDescricao').value.trim();
+    const valor = document.getElementById('dValor').value.trim();
+    const data = document.getElementById('dData').value;
+
+    if (!descricao || !valor || !data) {
+      alert('Preencha descrição, valor e data da despesa.');
+      return;
+    }
+
+    try {
+      await addDoc(despesasRef, {
+        descricao,
+        categoria: document.getElementById('dCategoria').value,
+        valor,
+        data,
+        criadoEm: new Date().toLocaleString('pt-BR')
+      });
+      document.getElementById('dDescricao').value = '';
+      document.getElementById('dValor').value = '';
+      document.getElementById('dData').value = '';
+      document.getElementById('dCategoria').value = 'Aluguel';
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível salvar a despesa. Tente novamente.');
+    }
+  };
+
+  window.excluirDespesa = async function excluirDespesa(id) {
+    if (!despesasRef) return;
+    if (!confirm('Excluir esta despesa?')) return;
+    try {
+      await deleteDoc(doc(despesasRef, id));
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível excluir. Tente novamente.');
+    }
+  };
+
+  function renderizarDespesasLista() {
+    const lista = document.getElementById('despesasLista');
+    if (!lista) return;
+
+    if (despesas.length === 0) {
+      lista.innerHTML = '<div class="sem-fichas">Nenhuma despesa cadastrada ainda.</div>';
+      return;
+    }
+
+    lista.innerHTML = despesas.map(d => `
+      <div class="despesa-item">
+        <div class="desp-info">
+          <strong>${esc(d.descricao)}</strong>
+          <span>${dataBR(d.data)} · <span class="categoria-badge">${esc(d.categoria || 'Outro')}</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="desp-valor">${esc(d.valor) || 'R$ 0,00'}</div>
+          <button class="btn-excluir-mini" onclick="excluirDespesa('${d.id}')" title="Excluir">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.exportarRelatorioPDF = function exportarRelatorioPDF() {
+    const receitas = receitasDoPeriodo();
+    const despesasPer = despesasDoPeriodo();
+    const totalReceitas = receitas.reduce((t, i) => t + i.valorNumero, 0);
+    const totalDespesas = despesasPer.reduce((t, i) => t + i.valorNumero, 0);
+    const saldo = totalReceitas - totalDespesas;
+    const aReceber = aReceberDoPeriodo();
+    const itens = [...receitas, ...despesasPer].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    pdf.setFillColor(8, 51, 68);
+    pdf.rect(0, 0, 210, 28, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(16);
+    pdf.text('Relatorio de Receitas e Despesas', 14, 14);
+    pdf.setFontSize(10);
+    pdf.text(periodoRelatorio === 'semana' ? 'Periodo: Esta semana' : 'Periodo: Este mes', 14, 21);
+
+    pdf.setTextColor(20, 20, 20);
+    let y = 38;
+    pdf.setFontSize(11);
+
+    if (itens.length === 0) {
+      pdf.text('Nenhuma receita ou despesa neste periodo.', 14, y);
+    } else {
+      itens.forEach((i) => {
+        const prefixo = i.tipo === 'receita' ? '[+]' : '[-]';
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`${dataBR(i.data)}  ${prefixo}  ${i.descricao}`, 14, y);
+        pdf.setFont(undefined, 'bold');
+        pdf.text((i.tipo === 'despesa' ? '- ' : '') + (i.valor || 'R$ 0,00'), 190, y, { align: 'right' });
+        y += 7;
+        if (y > 270) { pdf.addPage(); y = 20; }
+      });
+    }
+
+    y += 6;
+    pdf.setDrawColor(200);
+    pdf.line(14, y, 196, y);
+    y += 8;
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, 'normal');
+    pdf.text('Total de receitas: ' + numeroParaMoeda(totalReceitas), 14, y);
+    y += 7;
+    pdf.text('Total de despesas: ' + numeroParaMoeda(totalDespesas), 14, y);
+    y += 7;
+    pdf.text('A receber: ' + numeroParaMoeda(aReceber), 14, y);
+    y += 9;
+    pdf.setFontSize(13);
+    pdf.setFont(undefined, 'bold');
+    pdf.text('Saldo: ' + numeroParaMoeda(saldo), 14, y);
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(150);
+    pdf.text('Gerado por Fisioterapia Facil . clodoaldofernandes.com.br', 14, 290);
+
+    pdf.save(`relatorio-${periodoRelatorio}-${formatarDataISO(new Date())}.pdf`);
+  };
+</script>
+</body>
+</html>
