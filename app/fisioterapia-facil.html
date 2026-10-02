@@ -410,6 +410,32 @@ textarea { min-height: 80px; resize: vertical; }
   color: #92400e;
 }
 
+.sessoes-bloco { margin-top: 10px; }
+
+.sessoes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.sessoes-header span { font-size: .78rem; font-weight: 700; color: var(--texto); }
+.sessoes-botoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.sessoes-lista { max-height: 230px; overflow-y: auto; }
+
+.resp-badge {
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .12rem .5rem;
+  border-radius: 999px;
+}
+
+.resp-melhora { background: #dcfce7; color: #15803d; }
+.resp-igual { background: #e5e7eb; color: #4b5563; }
+.resp-piora { background: #fee2e2; color: #b91c1c; }
+
 /* TELA DE LOGIN */
 .login-wrap {
   min-height: 70vh;
@@ -731,7 +757,7 @@ textarea { min-height: 80px; resize: vertical; }
   margin-bottom: 10px;
 }
 
-/* MODAIS (AVALIAÇÃO) */
+/* MODAIS */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -820,8 +846,6 @@ textarea { min-height: 80px; resize: vertical; }
   border-top: 1px solid var(--cinza-borda);
 }
 
-.secao-modal-titulo.primeira { border-top: none; padding-top: 0; margin-top: 4px; }
-
 .eva-wrap {
   background: var(--fundo);
   border: 1px solid var(--cinza-borda);
@@ -843,6 +867,8 @@ textarea { min-height: 80px; resize: vertical; }
 }
 
 .eva-escala { display: flex; justify-content: space-between; font-size: .7rem; color: #888; }
+
+.comparativo { font-size: .8rem; font-weight: 700; text-align: center; margin-top: 10px; line-height: 1.6; }
 
 .checks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 
@@ -892,10 +918,10 @@ textarea { min-height: 80px; resize: vertical; }
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  margin: 2px 0 6px;
+  margin: 2px 0 10px;
 }
 
-.legenda-oxford { font-size: .72rem; color: #888; line-height: 1.5; margin-bottom: 6px; }
+.legenda-oxford { font-size: .72rem; color: #888; line-height: 1.5; margin-bottom: 8px; }
 
 .thumbs-wrap { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
 
@@ -978,6 +1004,17 @@ textarea { min-height: 80px; resize: vertical; }
 .ver-eva .texto strong { display: block; font-size: .95rem; }
 .ver-eva .texto span { font-size: .8rem; color: var(--texto); }
 
+.decisao-box {
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  font-size: .86rem;
+}
+
+.decisao-box.manter { background: #dcfce7; color: #14532d; }
+.decisao-box.alterar { background: #fef3c7; color: #78350f; }
+.decisao-box strong { display: block; margin-bottom: 2px; }
+
 .tabela-wrap { overflow-x: auto; margin-bottom: 14px; }
 .tabela-wrap table { width: 100%; border-collapse: collapse; font-size: .84rem; }
 .tabela-wrap th {
@@ -999,6 +1036,34 @@ textarea { min-height: 80px; resize: vertical; }
 }
 
 .registro-info { font-size: .74rem; color: #888; margin-top: 6px; line-height: 1.6; }
+
+.grafico-wrap {
+  background: white;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+
+.grafico-wrap svg { display: block; width: 100%; height: auto; }
+
+.resumo-evolucao {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.resumo-evolucao div {
+  background: var(--fundo);
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.resumo-evolucao strong { display: block; font-size: 1.25rem; }
+.resumo-evolucao span { font-size: .7rem; color: var(--texto); }
 
 /* JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO */
 .dialogo-overlay {
@@ -1423,12 +1488,105 @@ textarea { min-height: 80px; resize: vertical; }
   </div>
 </div>
 
-<!-- MODAL: VISUALIZAR AVALIAÇÃO -->
+<!-- MODAL: FORMULÁRIO DA SESSÃO -->
+<div class="modal-overlay" id="modalSessao">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="tituloModalSessao">🗓️ Registrar Sessão</h3>
+        <span class="sub" id="seSub"></span>
+      </div>
+      <button class="btn-fechar-modal" onclick="fecharModalSessao()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="aviso-versao oculto" id="seAvisoCorrecao">✏️ Você está corrigindo esta sessão. A versão atual será guardada no histórico.</div>
+
+      <div class="form-grid">
+        <div>
+          <label>Data da sessão</label>
+          <input type="date" id="se_data">
+        </div>
+        <div>
+          <label>Sessões previstas</label>
+          <input type="number" id="se_previstas" min="1" max="300" placeholder="Ex: 10 (opcional)">
+        </div>
+      </div>
+
+      <div class="secao-modal-titulo">Dor no dia</div>
+      <label>EVA — intensidade da dor hoje *</label>
+      <div class="eva-wrap">
+        <div class="eva-valor" id="seEvaValor">—</div>
+        <div class="eva-desc" id="seEvaDesc">Arraste a barra para marcar</div>
+        <input type="range" id="se_eva" min="0" max="10" step="1" value="0" oninput="atualizarEvaSessao(true)" onchange="atualizarEvaSessao(true)">
+        <div class="eva-escala"><span>0 · Sem dor</span><span>5</span><span>10 · Pior dor</span></div>
+        <div class="comparativo" id="seComparativo"></div>
+      </div>
+
+      <div class="secao-modal-titulo">Condutas realizadas</div>
+      <div class="checks" id="seCondutas"></div>
+      <label>Outras condutas</label>
+      <input type="text" id="se_outrasCondutas" placeholder="Opcional">
+
+      <div class="secao-modal-titulo">Resposta ao tratamento</div>
+      <div class="form-grid">
+        <div>
+          <label>Resposta do paciente</label>
+          <select id="se_resposta">
+            <option>Melhora</option>
+            <option>Sem alteração</option>
+            <option>Piora</option>
+          </select>
+        </div>
+        <div>
+          <label>Observação</label>
+          <input type="text" id="se_respostaObs" placeholder="Opcional">
+        </div>
+      </div>
+      <label>Intercorrências</label>
+      <textarea id="se_intercorrencias" placeholder="Dor durante o exercício, mal-estar etc. (opcional)"></textarea>
+
+      <div class="secao-modal-titulo">Reavaliação (opcional)</div>
+      <div class="legenda-oxford">Preencha só o que reavaliou hoje. Os nomes vêm da avaliação inicial, com o valor inicial como referência.</div>
+      <label>Amplitude de movimento (ADM)</label>
+      <div class="linhas-dinamicas" id="linhasReavAdm"></div>
+      <button type="button" class="btn-add-linha" onclick="adicionarLinha('adm', { reav: true }, 'linhasReavAdm')">+ Adicionar medida</button>
+      <label>Força muscular (Oxford)</label>
+      <div class="linhas-dinamicas" id="linhasReavForca"></div>
+      <button type="button" class="btn-add-linha" onclick="adicionarLinha('forca', { reav: true }, 'linhasReavForca')">+ Adicionar grupo muscular</button>
+
+      <div class="secao-modal-titulo">Decisão de conduta</div>
+      <select id="se_decisao" onchange="atualizarDecisao()">
+        <option value="Manter">✅ Manter a conduta</option>
+        <option value="Alterar">🔄 Alterar a conduta</option>
+      </select>
+      <div id="seBlocoJustificativa" class="oculto">
+        <label>Motivo da alteração *</label>
+        <textarea id="se_justificativa" placeholder="Por que a conduta será alterada e o que muda"></textarea>
+      </div>
+      <label>Plano para a próxima sessão</label>
+      <textarea id="se_plano" placeholder="Opcional"></textarea>
+
+      <div id="seBlocoFotos">
+        <div class="secao-modal-titulo">Fotos (até 2)</div>
+        <input type="file" id="seFotosArquivo" accept="image/*" multiple>
+        <div class="thumbs-wrap" id="seFotosPreview"></div>
+      </div>
+
+      <div class="selo-legal">🔒 Depois de salva, a sessão não pode ser apagada. Correções ficam registradas no histórico, com data e hora.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancelar" onclick="fecharModalSessao()">Cancelar</button>
+      <button class="btn-modal-salvar" id="btnSalvarSessao" onclick="salvarSessao()">💾 Salvar Sessão</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: VISUALIZAR (AVALIAÇÃO, SESSÃO E EVOLUÇÃO) -->
 <div class="modal-overlay" id="modalVerAvaliacao">
   <div class="modal">
     <div class="modal-header">
       <div>
-        <h3>📋 Avaliação Inicial</h3>
+        <h3 id="verTitulo">📋 Avaliação Inicial</h3>
         <span class="sub" id="verSub"></span>
       </div>
       <button class="btn-fechar-modal" onclick="fecharVerAvaliacao()">✕</button>
@@ -1488,6 +1646,7 @@ textarea { min-height: 80px; resize: vertical; }
   let pararDeEscutarAgenda = null;
   let pararDeEscutarDespesas = null;
   let pararDeEscutarAvaliacoes = null;
+  let pararDeEscutarSessoes = null;
 
   let modoCadastro = false;
   let souPro = false;
@@ -1513,6 +1672,17 @@ textarea { min-height: 80px; resize: vertical; }
   let fotosAvaliacao = [];
   const LIMITE_FOTOS_AVALIACAO = 4;
 
+  // Sessões
+  let sessoesRef = null;
+  let sessoes = [];
+  let sePacienteAtual = null;
+  let seAvaliacaoAtual = null;
+  let seEditandoId = null;
+  let seNumeroAtual = 1;
+  let seEvaTocada = false;
+  let fotosSessao = [];
+  const LIMITE_FOTOS_SESSAO = 2;
+
   const CAMPOS_PACIENTE = [
     'nome', 'dataNascimento', 'telefone', 'email', 'profissao', 'endereco',
     'tipoAtendimento', 'convenioNome', 'medicoNome', 'medicoEspecialidade',
@@ -1524,9 +1694,18 @@ textarea { min-height: 80px; resize: vertical; }
     'diagnostico', 'localizacaoDor', 'outrasCaracteristicas', 'postura', 'objetivos'
   ];
 
+  const CAMPOS_SE_TEXTO = [
+    'data', 'outrasCondutas', 'respostaObs', 'intercorrencias', 'justificativa', 'plano'
+  ];
+
   const CARACTERISTICAS_DOR = [
     'Queimação', 'Pontada', 'Latejante', 'Formigamento', 'Choque',
     'Peso / pressão', 'Cãibra / aperto', 'Rigidez'
+  ];
+
+  const CONDUTAS = [
+    'Cinesioterapia', 'Eletroterapia / TENS', 'Terapia manual', 'Liberação miofascial',
+    'Alongamento', 'Fortalecimento', 'Crioterapia', 'Termoterapia', 'Ultrassom', 'Kinesio taping'
   ];
 
   const statusEl = document.getElementById('statusConexao');
@@ -1605,6 +1784,10 @@ textarea { min-height: 80px; resize: vertical; }
     return iso ? new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR') : '—';
   }
 
+  function dataCurta(iso) {
+    return iso ? iso.slice(8, 10) + '/' + iso.slice(5, 7) : '';
+  }
+
   function soDigitos(tel) {
     return String(tel || '').replace(/\D/g, '');
   }
@@ -1678,6 +1861,21 @@ textarea { min-height: 80px; resize: vertical; }
     return `<span class="eva-badge" style="background:${corEva(n)}">EVA ${n}/10</span>`;
   }
 
+  function badgeResposta(r) {
+    if (!r) return '';
+    const classe = r === 'Melhora' ? 'resp-melhora' : (r === 'Piora' ? 'resp-piora' : 'resp-igual');
+    return `<span class="resp-badge ${classe}">${esc(r)}</span>`;
+  }
+
+  function textoComparacao(atual, ref, rotulo) {
+    if (ref === undefined || ref === null) return '';
+    const diff = atual - ref;
+    const pontos = Math.abs(diff) === 1 ? 'ponto' : 'pontos';
+    if (diff < 0) return `<span style="color:#16a34a">↓ ${Math.abs(diff)} ${pontos} ${rotulo} (era ${ref})</span>`;
+    if (diff > 0) return `<span style="color:#dc2626">↑ ${diff} ${pontos} ${rotulo} (era ${ref})</span>`;
+    return `<span style="color:#6b7280">= Igual ${rotulo} (${ref})</span>`;
+  }
+
   function comprimirImagem(arquivo, maxLado = 800, qualidade = 0.6) {
     return new Promise((resolve, reject) => {
       const leitor = new FileReader();
@@ -1699,6 +1897,29 @@ textarea { min-height: 80px; resize: vertical; }
       leitor.onerror = reject;
       leitor.readAsDataURL(arquivo);
     });
+  }
+
+  function montarChecks(containerId, lista, selecionadas) {
+    const sel = selecionadas || [];
+    document.getElementById(containerId).innerHTML = lista.map(c => `
+      <label class="check-chip">
+        <input type="checkbox" value="${esc(c)}" ${sel.includes(c) ? 'checked' : ''}> ${esc(c)}
+      </label>
+    `).join('');
+  }
+
+  function lerChecks(containerId) {
+    return Array.from(document.querySelectorAll('#' + containerId + ' input:checked')).map(i => i.value);
+  }
+
+  function avaliacaoAtualDoPaciente(pacienteId) {
+    return avaliacoes.find(a => a.pacienteId === pacienteId) || null;
+  }
+
+  function sessoesDoTratamento(avaliacaoId) {
+    return sessoes
+      .filter(s => s.avaliacaoId === avaliacaoId)
+      .sort((a, b) => (a.numero || 0) - (b.numero || 0));
   }
 
   // ---------- LOGIN / CADASTRO ----------
@@ -1770,6 +1991,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (pararDeEscutarAgenda) { pararDeEscutarAgenda(); pararDeEscutarAgenda = null; }
     if (pararDeEscutarDespesas) { pararDeEscutarDespesas(); pararDeEscutarDespesas = null; }
     if (pararDeEscutarAvaliacoes) { pararDeEscutarAvaliacoes(); pararDeEscutarAvaliacoes = null; }
+    if (pararDeEscutarSessoes) { pararDeEscutarSessoes(); pararDeEscutarSessoes = null; }
 
     if (usuario) {
       telaLogin.classList.add('oculto');
@@ -1782,6 +2004,7 @@ textarea { min-height: 80px; resize: vertical; }
       agendamentosRef = collection(db, 'usuarios', usuario.uid, 'agendamentosFisio');
       despesasRef = collection(db, 'usuarios', usuario.uid, 'despesasFisio');
       avaliacoesRef = collection(db, 'usuarios', usuario.uid, 'avaliacoesFisio');
+      sessoesRef = collection(db, 'usuarios', usuario.uid, 'sessoesFisio');
       const perfilRef = doc(db, 'usuarios', usuario.uid);
       statusEl.textContent = '🔄 Carregando seus dados...';
 
@@ -1845,6 +2068,15 @@ textarea { min-height: 80px; resize: vertical; }
         },
         (erro) => console.error(erro)
       );
+
+      pararDeEscutarSessoes = onSnapshot(
+        query(sessoesRef, orderBy('criadoEmTS', 'desc')),
+        (snapshot) => {
+          sessoes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizar();
+        },
+        (erro) => console.error(erro)
+      );
     } else {
       telaLogin.classList.remove('oculto');
       appConteudo.classList.add('oculto');
@@ -1854,10 +2086,12 @@ textarea { min-height: 80px; resize: vertical; }
       agendamentosRef = null;
       despesasRef = null;
       avaliacoesRef = null;
+      sessoesRef = null;
       pacientes = [];
       agendamentos = [];
       despesas = [];
       avaliacoes = [];
+      sessoes = [];
       souPro = false;
     }
   });
@@ -1989,6 +2223,42 @@ textarea { min-height: 80px; resize: vertical; }
     if (atual && pacientes.some(p => p.id === atual)) sel.value = atual;
   }
 
+  function htmlSessoes(p, avAtual) {
+    const sess = sessoesDoTratamento(avAtual.id).slice().reverse();
+
+    const botoes = `
+      <div class="sessoes-botoes">
+        ${sess.length ? `<button class="btn-ver" onclick="verEvolucao('${avAtual.id}')">📈 Evolução</button>` : ''}
+        ${!p.arquivado ? `<button class="btn-nova-avaliacao" onclick="abrirNovaSessao('${p.id}')">➕ Registrar sessão</button>` : ''}
+      </div>
+    `;
+
+    const lista = sess.length === 0
+      ? '<div class="sem-fichas">Nenhuma sessão registrada neste tratamento.</div>'
+      : `<div class="sessoes-lista">${sess.map(s => `
+          <div class="avaliacao-item">
+            <div class="ficha-info">
+              <strong>Sessão ${s.numero}${s.previstas ? ' de ' + s.previstas : ''} · ${dataBR(s.data)}</strong>
+              ${badgeEva(s.eva)}
+              ${badgeResposta(s.resposta)}
+              ${s.decisao === 'Alterar' ? '<span class="badge-corrigida">conduta alterada</span>' : ''}
+              ${s.historico && s.historico.length ? '<span class="badge-corrigida">corrigida</span>' : ''}
+            </div>
+            <button class="btn-ver" onclick="verSessao('${s.id}')">Ver</button>
+          </div>
+        `).join('')}</div>`;
+
+    return `
+      <div class="sessoes-bloco">
+        <div class="sessoes-header">
+          <span>🗓️ Sessões do tratamento atual (${sess.length})</span>
+          ${botoes}
+        </div>
+        ${lista}
+      </div>
+    `;
+  }
+
   function htmlProntuario(p) {
     const avs = avaliacoes.filter(a => a.pacienteId === p.id);
     const botao = p.arquivado
@@ -1999,16 +2269,21 @@ textarea { min-height: 80px; resize: vertical; }
     if (avs.length === 0) {
       conteudo = `<div class="sem-fichas">${p.arquivado ? 'Nenhuma avaliação registrada.' : 'Nenhuma avaliação registrada ainda.'}</div>`;
     } else {
-      conteudo = avs.map(a => `
+      conteudo = avs.map(a => {
+        const qtd = sessoes.filter(s => s.avaliacaoId === a.id).length;
+        return `
         <div class="avaliacao-item">
           <div class="ficha-info">
             <strong>📝 Avaliação · ${dataBR(a.dataAvaliacao)}</strong>
             ${badgeEva(a.eva)}
+            ${qtd ? `<span>· ${qtd} ${qtd === 1 ? 'sessão' : 'sessões'}</span>` : ''}
             ${a.historico && a.historico.length ? '<span class="badge-corrigida">corrigida</span>' : ''}
           </div>
           <button class="btn-ver" onclick="verAvaliacao('${a.id}')">Ver</button>
         </div>
-      `).join('');
+      `;
+      }).join('');
+      conteudo += htmlSessoes(p, avs[0]);
     }
 
     return `
@@ -2102,6 +2377,73 @@ textarea { min-height: 80px; resize: vertical; }
     }).join('');
   };
 
+  // ---------- MODAIS (ABRIR / FECHAR) ----------
+
+  function abrirModal(id) {
+    document.getElementById(id).classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModal(id) {
+    document.getElementById(id).classList.remove('aberto');
+    const algumAberto = document.querySelector('.modal-overlay.aberto');
+    if (!algumAberto) document.body.style.overflow = '';
+  }
+
+  // ---------- LINHAS DINÂMICAS (ADM, FORÇA, TESTES) ----------
+
+  const CONTAINER_LINHAS = { adm: 'linhasAdm', forca: 'linhasForca', testes: 'linhasTestes' };
+
+  window.adicionarLinha = function adicionarLinha(tipo, dados = {}, containerId = null) {
+    const cont = document.getElementById(containerId || CONTAINER_LINHAS[tipo]);
+    const div = document.createElement('div');
+    div.className = 'linha';
+    const nome = esc(dados.nome || '');
+    const valor = dados.valor ?? '';
+    const reav = !!dados.reav;
+    const temDica = dados.dica !== undefined && dados.dica !== null && dados.dica !== '';
+
+    if (tipo === 'adm') {
+      const dica = reav && temDica ? `Ini: ${esc(dados.dica)}°` : 'Graus';
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Articulação e movimento (ex: Ombro D · flexão)" value="${nome}">
+        <input type="number" class="l-valor" placeholder="${dica}" min="0" max="360" value="${esc(valor)}">
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+    } else if (tipo === 'forca') {
+      let opcoes = reav ? `<option value="">${temDica ? '— (ini. ' + esc(dados.dica) + ')' : '—'}</option>` : '';
+      opcoes += ['0', '1', '2', '3', '4', '5']
+        .map(g => `<option value="${g}" ${String(valor) === g ? 'selected' : ''}>Grau ${g}</option>`).join('');
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Grupo muscular (ex: Quadríceps D)" value="${nome}">
+        <select class="l-valor">${opcoes}</select>
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+      if (valor === '') div.querySelector('.l-valor').value = reav ? '' : '5';
+    } else {
+      const opcoes = ['Positivo', 'Negativo', 'Inconclusivo']
+        .map(r => `<option ${valor === r ? 'selected' : ''}>${r}</option>`).join('');
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Nome do teste (ex: Lasègue)" value="${nome}">
+        <select class="l-valor">${opcoes}</select>
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+    }
+
+    div.querySelector('.btn-remover-linha').onclick = () => div.remove();
+    cont.appendChild(div);
+  };
+
+  function lerLinhas(tipo, containerId = null, exigirValor = false) {
+    const cont = document.getElementById(containerId || CONTAINER_LINHAS[tipo]);
+    return Array.from(cont.querySelectorAll('.linha'))
+      .map(l => ({
+        nome: l.querySelector('.l-nome').value.trim(),
+        valor: l.querySelector('.l-valor').value
+      }))
+      .filter(x => x.nome && (!exigirValor || x.valor !== ''));
+  }
+
   // ---------- AVALIAÇÃO INICIAL: FORMULÁRIO ----------
 
   window.atualizarEva = function atualizarEva(tocou) {
@@ -2121,67 +2463,6 @@ textarea { min-height: 80px; resize: vertical; }
     elDesc.textContent = descricaoEva(valor);
     elDesc.style.color = corEva(valor);
   };
-
-  function montarCaracteristicas(selecionadas) {
-    const sel = selecionadas || [];
-    document.getElementById('avCaracteristicas').innerHTML = CARACTERISTICAS_DOR.map(c => `
-      <label class="check-chip">
-        <input type="checkbox" value="${esc(c)}" ${sel.includes(c) ? 'checked' : ''}> ${esc(c)}
-      </label>
-    `).join('');
-  }
-
-  const CONTAINER_LINHAS = { adm: 'linhasAdm', forca: 'linhasForca', testes: 'linhasTestes' };
-
-  window.adicionarLinha = function adicionarLinha(tipo, dados = {}) {
-    const cont = document.getElementById(CONTAINER_LINHAS[tipo]);
-    const div = document.createElement('div');
-    div.className = 'linha';
-    const nome = esc(dados.nome || '');
-    const valor = dados.valor ?? '';
-
-    if (tipo === 'adm') {
-      div.innerHTML = `
-        <input type="text" class="l-nome" placeholder="Articulação e movimento (ex: Ombro D · flexão)" value="${nome}">
-        <input type="number" class="l-valor" placeholder="Graus" min="0" max="360" value="${esc(valor)}">
-        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
-      `;
-    } else if (tipo === 'forca') {
-      const opcoes = ['0', '1', '2', '3', '4', '5']
-        .map(g => `<option value="${g}" ${String(valor) === g ? 'selected' : ''}>Grau ${g}</option>`).join('');
-      div.innerHTML = `
-        <input type="text" class="l-nome" placeholder="Grupo muscular (ex: Quadríceps D)" value="${nome}">
-        <select class="l-valor">${opcoes}</select>
-        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
-      `;
-      if (valor === '') div.querySelector('.l-valor').value = '5';
-    } else {
-      const opcoes = ['Positivo', 'Negativo', 'Inconclusivo']
-        .map(r => `<option ${valor === r ? 'selected' : ''}>${r}</option>`).join('');
-      div.innerHTML = `
-        <input type="text" class="l-nome" placeholder="Nome do teste (ex: Lasègue)" value="${nome}">
-        <select class="l-valor">${opcoes}</select>
-        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
-      `;
-    }
-
-    div.querySelector('.btn-remover-linha').onclick = () => div.remove();
-    cont.appendChild(div);
-  };
-
-  function lerLinhas(tipo) {
-    const cont = document.getElementById(CONTAINER_LINHAS[tipo]);
-    return Array.from(cont.querySelectorAll('.linha'))
-      .map(l => ({
-        nome: l.querySelector('.l-nome').value.trim(),
-        valor: l.querySelector('.l-valor').value
-      }))
-      .filter(x => x.nome);
-  }
-
-  function limparLinhas() {
-    Object.values(CONTAINER_LINHAS).forEach(id => { document.getElementById(id).innerHTML = ''; });
-  }
 
   function renderizarFotosAvaliacao() {
     document.getElementById('avFotosPreview').innerHTML = fotosAvaliacao.map((f, i) => `
@@ -2220,23 +2501,12 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('av_eva').value = 0;
     evaTocada = false;
     atualizarEva(false);
-    montarCaracteristicas([]);
-    limparLinhas();
+    montarChecks('avCaracteristicas', CARACTERISTICAS_DOR, []);
+    Object.values(CONTAINER_LINHAS).forEach(id => { document.getElementById(id).innerHTML = ''; });
     adicionarLinha('adm');
     adicionarLinha('forca');
     fotosAvaliacao = [];
     renderizarFotosAvaliacao();
-  }
-
-  function abrirModal(id) {
-    document.getElementById(id).classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function fecharModal(id) {
-    document.getElementById(id).classList.remove('aberto');
-    const algumAberto = document.querySelector('.modal-overlay.aberto');
-    if (!algumAberto) document.body.style.overflow = '';
   }
 
   window.abrirNovaAvaliacao = function abrirNovaAvaliacao(pacienteId) {
@@ -2265,8 +2535,8 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('av_eva').value = a.eva ?? 0;
     evaTocada = true;
     atualizarEva(false);
-    montarCaracteristicas(a.caracteristicas);
-    limparLinhas();
+    montarChecks('avCaracteristicas', CARACTERISTICAS_DOR, a.caracteristicas);
+    Object.values(CONTAINER_LINHAS).forEach(cid => { document.getElementById(cid).innerHTML = ''; });
     (a.adm || []).forEach(l => adicionarLinha('adm', l));
     (a.forca || []).forEach(l => adicionarLinha('forca', l));
     (a.testes || []).forEach(l => adicionarLinha('testes', l));
@@ -2306,7 +2576,7 @@ textarea { min-height: 80px; resize: vertical; }
     }
 
     dados.eva = Number(document.getElementById('av_eva').value);
-    dados.caracteristicas = Array.from(document.querySelectorAll('#avCaracteristicas input:checked')).map(i => i.value);
+    dados.caracteristicas = lerChecks('avCaracteristicas');
     dados.adm = lerLinhas('adm');
     dados.forca = lerLinhas('forca');
     dados.testes = lerLinhas('testes');
@@ -2359,7 +2629,273 @@ textarea { min-height: 80px; resize: vertical; }
     }
   };
 
-  // ---------- AVALIAÇÃO INICIAL: VISUALIZAÇÃO ----------
+  // ---------- SESSÕES: FORMULÁRIO ----------
+
+  window.atualizarEvaSessao = function atualizarEvaSessao(tocou) {
+    if (tocou) seEvaTocada = true;
+    const valor = Number(document.getElementById('se_eva').value);
+    const elValor = document.getElementById('seEvaValor');
+    const elDesc = document.getElementById('seEvaDesc');
+    const elComp = document.getElementById('seComparativo');
+
+    if (!seEvaTocada) {
+      elValor.textContent = '—';
+      elValor.style.color = '#aaa';
+      elDesc.textContent = 'Arraste a barra para marcar';
+      elDesc.style.color = '#aaa';
+      elComp.innerHTML = '';
+      return;
+    }
+
+    elValor.textContent = valor;
+    elValor.style.color = corEva(valor);
+    elDesc.textContent = descricaoEva(valor);
+    elDesc.style.color = corEva(valor);
+
+    const av = avaliacoes.find(a => a.id === seAvaliacaoAtual);
+    const anteriores = sessoesDoTratamento(seAvaliacaoAtual).filter(s => (s.numero || 0) < seNumeroAtual);
+    const ultima = anteriores[anteriores.length - 1];
+    const partes = [];
+    if (av) partes.push(textoComparacao(valor, av.eva, 'desde a avaliação inicial'));
+    if (ultima) partes.push(textoComparacao(valor, ultima.eva, 'desde a última sessão'));
+    elComp.innerHTML = partes.filter(Boolean).join('<br>');
+  };
+
+  window.atualizarDecisao = function atualizarDecisao() {
+    const alterar = document.getElementById('se_decisao').value === 'Alterar';
+    document.getElementById('seBlocoJustificativa').classList.toggle('oculto', !alterar);
+  };
+
+  function renderizarFotosSessao() {
+    document.getElementById('seFotosPreview').innerHTML = fotosSessao.map((f, i) => `
+      <div class="thumb-item">
+        <img src="${f}">
+        <button type="button" class="thumb-remover" onclick="removerFotoSessao(${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  window.removerFotoSessao = function removerFotoSessao(i) {
+    fotosSessao.splice(i, 1);
+    renderizarFotosSessao();
+  };
+
+  document.getElementById('seFotosArquivo').addEventListener('change', async (e) => {
+    const arquivos = Array.from(e.target.files);
+    e.target.value = '';
+    for (const arquivo of arquivos) {
+      if (fotosSessao.length >= LIMITE_FOTOS_SESSAO) {
+        await avisar('Cada sessão pode ter no máximo ' + LIMITE_FOTOS_SESSAO + ' fotos.');
+        break;
+      }
+      try {
+        fotosSessao.push(await comprimirImagem(arquivo));
+      } catch (erro) {
+        console.error(erro);
+        await avisar('Não foi possível ler uma das fotos. Use imagens em JPG ou PNG.');
+      }
+    }
+    renderizarFotosSessao();
+  });
+
+  function limparFormSessao() {
+    CAMPOS_SE_TEXTO.forEach(c => { document.getElementById('se_' + c).value = ''; });
+    document.getElementById('se_previstas').value = '';
+    document.getElementById('se_eva').value = 0;
+    seEvaTocada = false;
+    atualizarEvaSessao(false);
+    montarChecks('seCondutas', CONDUTAS, []);
+    document.getElementById('se_resposta').value = 'Melhora';
+    document.getElementById('se_decisao').value = 'Manter';
+    atualizarDecisao();
+    document.getElementById('linhasReavAdm').innerHTML = '';
+    document.getElementById('linhasReavForca').innerHTML = '';
+    fotosSessao = [];
+    renderizarFotosSessao();
+  }
+
+  window.abrirNovaSessao = async function abrirNovaSessao(pacienteId) {
+    const p = pacientes.find(x => x.id === pacienteId);
+    if (!p) return;
+    const av = avaliacaoAtualDoPaciente(pacienteId);
+    if (!av) {
+      await avisar('Faça a avaliação inicial deste paciente antes de registrar sessões.');
+      return;
+    }
+
+    const anteriores = sessoesDoTratamento(av.id);
+    const ultima = anteriores[anteriores.length - 1];
+
+    sePacienteAtual = pacienteId;
+    seAvaliacaoAtual = av.id;
+    seEditandoId = null;
+    seNumeroAtual = anteriores.length + 1;
+
+    limparFormSessao();
+    document.getElementById('se_data').value = formatarDataISO(new Date());
+    if (ultima && ultima.previstas) document.getElementById('se_previstas').value = ultima.previstas;
+
+    (av.adm || []).forEach(l => adicionarLinha('adm', { nome: l.nome, dica: l.valor, reav: true }, 'linhasReavAdm'));
+    (av.forca || []).forEach(l => adicionarLinha('forca', { nome: l.nome, dica: l.valor, reav: true }, 'linhasReavForca'));
+
+    document.getElementById('tituloModalSessao').textContent = '🗓️ Registrar Sessão ' + seNumeroAtual;
+    document.getElementById('seSub').textContent = 'Paciente: ' + p.nome;
+    document.getElementById('seAvisoCorrecao').classList.add('oculto');
+    document.getElementById('seBlocoFotos').classList.remove('oculto');
+    document.getElementById('btnSalvarSessao').textContent = '💾 Salvar Sessão';
+    abrirModal('modalSessao');
+  };
+
+  window.abrirCorrecaoSessao = function abrirCorrecaoSessao(id) {
+    const s = sessoes.find(x => x.id === id);
+    if (!s) return;
+    const p = pacientes.find(x => x.id === s.pacienteId);
+
+    sePacienteAtual = s.pacienteId;
+    seAvaliacaoAtual = s.avaliacaoId;
+    seEditandoId = id;
+    seNumeroAtual = s.numero || 1;
+
+    limparFormSessao();
+    CAMPOS_SE_TEXTO.forEach(c => { document.getElementById('se_' + c).value = s[c] || ''; });
+    document.getElementById('se_previstas').value = s.previstas || '';
+    document.getElementById('se_eva').value = s.eva ?? 0;
+    seEvaTocada = true;
+    atualizarEvaSessao(false);
+    montarChecks('seCondutas', CONDUTAS, s.condutas);
+    document.getElementById('se_resposta').value = s.resposta || 'Melhora';
+    document.getElementById('se_decisao').value = s.decisao || 'Manter';
+    atualizarDecisao();
+    (s.admReav || []).forEach(l => adicionarLinha('adm', { ...l, reav: true }, 'linhasReavAdm'));
+    (s.forcaReav || []).forEach(l => adicionarLinha('forca', { ...l, reav: true }, 'linhasReavForca'));
+
+    document.getElementById('tituloModalSessao').textContent = '✏️ Corrigir Sessão ' + seNumeroAtual;
+    document.getElementById('seSub').textContent = 'Paciente: ' + (p ? p.nome : (s.pacienteNome || ''));
+    document.getElementById('seAvisoCorrecao').classList.remove('oculto');
+    document.getElementById('seBlocoFotos').classList.add('oculto');
+    document.getElementById('btnSalvarSessao').textContent = '💾 Salvar Correção';
+
+    fecharModal('modalVerAvaliacao');
+    abrirModal('modalSessao');
+  };
+
+  window.fecharModalSessao = async function fecharModalSessao() {
+    const ok = await confirmar('O que você digitou nesta sessão será perdido.', 'Fechar sem salvar?', 'Fechar sem salvar', true);
+    if (!ok) return;
+    fecharModal('modalSessao');
+    sePacienteAtual = null;
+    seEditandoId = null;
+  };
+
+  async function oferecerAtualizarAgenda(pacienteId) {
+    const hoje = formatarDataISO(new Date());
+    const ag = agendamentos.find(a =>
+      a.pacienteId === pacienteId && a.data === hoje && (a.status || 'Agendado') === 'Agendado'
+    );
+    if (!ag || !agendamentosRef) return;
+
+    const ok = await confirmar(
+      `${ag.nome} tem atendimento agendado hoje${ag.horario ? ' às ' + ag.horario : ''}.\nDeseja marcá-lo como realizado na agenda?`,
+      '✅ Atualizar a agenda?',
+      'Marcar como realizado'
+    );
+    if (!ok) return;
+
+    try {
+      await updateDoc(doc(agendamentosRef, ag.id), {
+        status: 'Realizado',
+        atualizadoEm: new Date().toLocaleString('pt-BR')
+      });
+    } catch (erro) {
+      console.error(erro);
+      await avisar('Não foi possível atualizar a agenda. Altere o status manualmente.', 'Erro');
+    }
+  }
+
+  window.salvarSessao = async function salvarSessao() {
+    if (!sessoesRef || !sePacienteAtual || !seAvaliacaoAtual) return;
+
+    if (!seEvaTocada) {
+      await avisar('Marque a intensidade da dor de hoje (EVA) na barra, mesmo que seja 0.');
+      return;
+    }
+
+    const dados = {};
+    CAMPOS_SE_TEXTO.forEach(c => { dados[c] = document.getElementById('se_' + c).value.trim(); });
+    dados.decisao = document.getElementById('se_decisao').value;
+
+    if (dados.decisao === 'Alterar' && !dados.justificativa) {
+      await avisar('Informe o motivo da alteração de conduta.');
+      return;
+    }
+    if (dados.decisao === 'Manter') dados.justificativa = '';
+
+    const previstas = document.getElementById('se_previstas').value;
+    dados.previstas = previstas ? Number(previstas) : null;
+    dados.eva = Number(document.getElementById('se_eva').value);
+    dados.condutas = lerChecks('seCondutas');
+    dados.resposta = document.getElementById('se_resposta').value;
+    dados.admReav = lerLinhas('adm', 'linhasReavAdm', true);
+    dados.forcaReav = lerLinhas('forca', 'linhasReavForca', true);
+    if (!dados.data) dados.data = formatarDataISO(new Date());
+
+    const btn = document.getElementById('btnSalvarSessao');
+    const textoOriginal = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '💾 Salvando...';
+
+    const ehNova = !seEditandoId;
+    const pacienteId = sePacienteAtual;
+
+    try {
+      const agora = new Date().toLocaleString('pt-BR');
+
+      if (seEditandoId) {
+        const atual = sessoes.find(s => s.id === seEditandoId);
+        const versaoAnterior = {};
+        [...CAMPOS_SE_TEXTO, 'previstas', 'eva', 'condutas', 'resposta', 'decisao', 'admReav', 'forcaReav'].forEach(c => {
+          versaoAnterior[c] = atual[c] ?? null;
+        });
+        versaoAnterior.salvaEm = atual.corrigidoEm || atual.criadoEm || '';
+        dados.historico = [...(atual.historico || []), versaoAnterior];
+        dados.corrigidoEm = agora;
+        dados.corrigidoEmTS = Date.now();
+        await updateDoc(doc(sessoesRef, seEditandoId), dados);
+      } else {
+        const p = pacientes.find(x => x.id === sePacienteAtual);
+        dados.pacienteId = sePacienteAtual;
+        dados.pacienteNome = p ? p.nome : '';
+        dados.avaliacaoId = seAvaliacaoAtual;
+        dados.numero = seNumeroAtual;
+        dados.fotos = [...fotosSessao];
+        dados.historico = [];
+        dados.criadoEm = agora;
+        dados.criadoEmTS = Date.now();
+
+        if (JSON.stringify(dados).length > 900000) {
+          await avisar('As fotos ficaram grandes demais para salvar juntas. Remova uma foto e tente de novo.');
+          return;
+        }
+        await addDoc(sessoesRef, dados);
+      }
+
+      fecharModal('modalSessao');
+      sePacienteAtual = null;
+      seEditandoId = null;
+
+      if (ehNova && dados.data === formatarDataISO(new Date())) {
+        await oferecerAtualizarAgenda(pacienteId);
+      }
+    } catch (erro) {
+      console.error(erro);
+      await avisar('Não foi possível salvar a sessão. Verifique sua internet e tente de novo.', 'Erro ao salvar');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = textoOriginal;
+    }
+  };
+
+  // ---------- VISUALIZAÇÃO ----------
 
   function blocoTexto(titulo, texto) {
     if (!texto) return '';
@@ -2381,6 +2917,16 @@ textarea { min-height: 80px; resize: vertical; }
     `;
   }
 
+  function htmlHistorico(itens, funcaoVer, id) {
+    if (!itens || !itens.length) return '';
+    return `<div class="secao-modal-titulo">Histórico de correções</div>` + itens.map((h, i) => `
+      <div class="avaliacao-item">
+        <div class="ficha-info"><strong>Versão ${i + 1}</strong> · salva em ${esc(h.salvaEm || '—')} ${badgeEva(h.eva)}</div>
+        <button class="btn-ver" onclick="${funcaoVer}('${id}', ${i})">Ver</button>
+      </div>
+    `).join('');
+  }
+
   window.verAvaliacao = function verAvaliacao(id, indiceVersao = null) {
     const a = avaliacoes.find(x => x.id === id);
     if (!a) return;
@@ -2389,6 +2935,7 @@ textarea { min-height: 80px; resize: vertical; }
     const d = vendoAntiga ? a.historico[indiceVersao] : a;
     if (!d) return;
 
+    document.getElementById('verTitulo').textContent = '📋 Avaliação Inicial';
     document.getElementById('verSub').textContent =
       (p ? p.nome : (a.pacienteNome || '')) + ' · ' + dataBR(d.dataAvaliacao);
 
@@ -2435,16 +2982,7 @@ textarea { min-height: 80px; resize: vertical; }
 
     if (!vendoAntiga) {
       html += `<div class="registro-info">🔒 Registrada em ${esc(a.criadoEm || '—')}${a.corrigidoEm ? '<br>✏️ Última correção em ' + esc(a.corrigidoEm) : ''}</div>`;
-
-      if (a.historico && a.historico.length) {
-        html += `<div class="secao-modal-titulo">Histórico de correções</div>`;
-        html += a.historico.map((h, i) => `
-          <div class="avaliacao-item">
-            <div class="ficha-info"><strong>Versão ${i + 1}</strong> · salva em ${esc(h.salvaEm || '—')} ${badgeEva(h.eva)}</div>
-            <button class="btn-ver" onclick="verAvaliacao('${a.id}', ${i})">Ver</button>
-          </div>
-        `).join('');
-      }
+      html += htmlHistorico(a.historico, 'verAvaliacao', a.id);
     }
 
     document.getElementById('verCorpo').innerHTML = html;
@@ -2461,6 +2999,195 @@ textarea { min-height: 80px; resize: vertical; }
       rodape = `<button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>`;
     }
     document.getElementById('verRodape').innerHTML = rodape;
+
+    document.querySelector('#modalVerAvaliacao .modal-body').scrollTop = 0;
+    abrirModal('modalVerAvaliacao');
+  };
+
+  window.verSessao = function verSessao(id, indiceVersao = null) {
+    const s = sessoes.find(x => x.id === id);
+    if (!s) return;
+    const p = pacientes.find(x => x.id === s.pacienteId);
+    const av = avaliacoes.find(a => a.id === s.avaliacaoId);
+    const vendoAntiga = indiceVersao !== null;
+    const d = vendoAntiga ? s.historico[indiceVersao] : s;
+    if (!d) return;
+
+    document.getElementById('verTitulo').textContent =
+      '🗓️ Sessão ' + s.numero + (d.previstas ? ' de ' + d.previstas : '');
+    document.getElementById('verSub').textContent =
+      (p ? p.nome : (s.pacienteNome || '')) + ' · ' + dataBR(d.data);
+
+    const eva = d.eva ?? 0;
+    const anteriores = sessoesDoTratamento(s.avaliacaoId).filter(x => (x.numero || 0) < s.numero);
+    const ultima = anteriores[anteriores.length - 1];
+    const comparacoes = [];
+    if (av) comparacoes.push(textoComparacao(eva, av.eva, 'desde a avaliação inicial'));
+    if (ultima) comparacoes.push(textoComparacao(eva, ultima.eva, 'desde a sessão anterior'));
+
+    const condutas = [...(d.condutas || [])];
+    if (d.outrasCondutas) condutas.push(d.outrasCondutas);
+
+    let html = '';
+
+    if (vendoAntiga) {
+      html += `<div class="aviso-versao">🕓 Você está vendo a versão ${indiceVersao + 1}, anterior à correção. Salva em ${esc(d.salvaEm || '—')}.</div>`;
+    }
+
+    html += `
+      <div class="ver-eva">
+        <div class="numero" style="background:${corEva(eva)}">${eva}</div>
+        <div class="texto">
+          <strong>EVA ${eva}/10 · ${descricaoEva(eva)}</strong>
+          <span>${comparacoes.filter(Boolean).join('<br>') || 'Sem comparação disponível'}</span>
+        </div>
+      </div>
+    `;
+
+    if (condutas.length) html += blocoTexto('Condutas realizadas', condutas.join(', '));
+
+    html += `<div class="ver-bloco"><h4>Resposta ao tratamento</h4><p>${badgeResposta(d.resposta)}${d.respostaObs ? ' ' + esc(d.respostaObs) : ''}</p></div>`;
+    html += blocoTexto('Intercorrências', d.intercorrencias);
+
+    html += blocoTabela('Reavaliação de ADM', d.admReav, 'Articulação / movimento', 'Graus hoje', v => (v !== '' && v !== null ? v + '°' : '—'));
+    html += blocoTabela('Reavaliação de força (Oxford)', d.forcaReav, 'Grupo muscular', 'Grau hoje', v => 'Grau ' + v);
+
+    if (d.decisao === 'Alterar') {
+      html += `<div class="decisao-box alterar"><strong>🔄 Conduta alterada</strong>${esc(d.justificativa || '')}</div>`;
+    } else {
+      html += `<div class="decisao-box manter"><strong>✅ Conduta mantida</strong>O tratamento segue com a mesma conduta.</div>`;
+    }
+
+    html += blocoTexto('Plano para a próxima sessão', d.plano);
+
+    if (!vendoAntiga && s.fotos && s.fotos.length) {
+      html += `<div class="ver-bloco"><h4>Fotos</h4></div><div class="thumbs-wrap" style="margin-bottom:14px;">${s.fotos.map(f => `<img src="${f}" class="foto-ver">`).join('')}</div>`;
+    }
+
+    if (!vendoAntiga) {
+      html += `<div class="registro-info">🔒 Registrada em ${esc(s.criadoEm || '—')}${s.corrigidoEm ? '<br>✏️ Última correção em ' + esc(s.corrigidoEm) : ''}</div>`;
+      html += htmlHistorico(s.historico, 'verSessao', s.id);
+    }
+
+    document.getElementById('verCorpo').innerHTML = html;
+
+    let rodape;
+    if (vendoAntiga) {
+      rodape = `<button class="btn-modal-salvar" onclick="verSessao('${s.id}')">← Voltar à versão atual</button>`;
+    } else if (p && !p.arquivado) {
+      rodape = `
+        <button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>
+        <button class="btn-modal-salvar" onclick="abrirCorrecaoSessao('${s.id}')">✏️ Corrigir</button>
+      `;
+    } else {
+      rodape = `<button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>`;
+    }
+    document.getElementById('verRodape').innerHTML = rodape;
+
+    document.querySelector('#modalVerAvaliacao .modal-body').scrollTop = 0;
+    abrirModal('modalVerAvaliacao');
+  };
+
+  function graficoEvaSVG(pontos) {
+    const L = 640, A = 280, mE = 40, mD = 24, mT = 26, mB = 50;
+    const w = L - mE - mD;
+    const h = A - mT - mB;
+    const n = pontos.length;
+    const x = i => mE + (n === 1 ? w / 2 : (i * w) / (n - 1));
+    const y = v => mT + h - (v / 10) * h;
+    const larguraMin = Math.max(420, n * 52);
+
+    let svg = `<svg viewBox="0 0 ${L} ${A}" xmlns="http://www.w3.org/2000/svg" style="min-width:${larguraMin}px" font-family="Inter, sans-serif">`;
+
+    svg += `<rect x="${mE}" y="${y(10)}" width="${w}" height="${y(6.5) - y(10)}" fill="#fee2e2" opacity=".55"/>`;
+    svg += `<rect x="${mE}" y="${y(6.5)}" width="${w}" height="${y(3.5) - y(6.5)}" fill="#fef3c7" opacity=".55"/>`;
+    svg += `<rect x="${mE}" y="${y(3.5)}" width="${w}" height="${y(0) - y(3.5)}" fill="#dcfce7" opacity=".55"/>`;
+
+    [0, 2, 4, 6, 8, 10].forEach(v => {
+      svg += `<line x1="${mE}" y1="${y(v)}" x2="${L - mD}" y2="${y(v)}" stroke="#e5e7eb" stroke-width="1"/>`;
+      svg += `<text x="${mE - 10}" y="${y(v) + 4}" font-size="11" fill="#6b7280" text-anchor="end">${v}</text>`;
+    });
+
+    if (n > 1) {
+      const linha = pontos.map((p, i) => `${x(i)},${y(p.eva)}`).join(' ');
+      svg += `<polyline points="${linha}" fill="none" stroke="#0e7490" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }
+
+    pontos.forEach((p, i) => {
+      svg += `<circle cx="${x(i)}" cy="${y(p.eva)}" r="7" fill="${corEva(p.eva)}" stroke="white" stroke-width="2.5"/>`;
+      svg += `<text x="${x(i)}" y="${y(p.eva) - 13}" font-size="12" font-weight="700" fill="#111" text-anchor="middle">${p.eva}</text>`;
+      svg += `<text x="${x(i)}" y="${A - mB + 20}" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">${esc(p.rotulo)}</text>`;
+      svg += `<text x="${x(i)}" y="${A - mB + 35}" font-size="9.5" fill="#6b7280" text-anchor="middle">${esc(p.data)}</text>`;
+    });
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  window.verEvolucao = function verEvolucao(avaliacaoId) {
+    const av = avaliacoes.find(a => a.id === avaliacaoId);
+    if (!av) return;
+    const p = pacientes.find(x => x.id === av.pacienteId);
+    const sess = sessoesDoTratamento(avaliacaoId);
+
+    const pontos = [{ rotulo: 'Aval.', data: dataCurta(av.dataAvaliacao), eva: av.eva ?? 0 }]
+      .concat(sess.map(s => ({ rotulo: 'S' + s.numero, data: dataCurta(s.data), eva: s.eva ?? 0 })));
+
+    const inicial = av.eva ?? 0;
+    const atual = pontos[pontos.length - 1].eva;
+    const diff = atual - inicial;
+    let variacaoTexto, variacaoCor, percentualTexto;
+    if (diff < 0) {
+      variacaoTexto = '↓ ' + Math.abs(diff);
+      variacaoCor = '#16a34a';
+      percentualTexto = inicial > 0 ? Math.round((Math.abs(diff) / inicial) * 100) + '% de melhora' : 'melhora';
+    } else if (diff > 0) {
+      variacaoTexto = '↑ ' + diff;
+      variacaoCor = '#dc2626';
+      percentualTexto = 'piora da dor';
+    } else {
+      variacaoTexto = '=';
+      variacaoCor = '#6b7280';
+      percentualTexto = 'sem alteração';
+    }
+
+    document.getElementById('verTitulo').textContent = '📈 Evolução da dor';
+    document.getElementById('verSub').textContent =
+      (p ? p.nome : (av.pacienteNome || '')) + ' · tratamento iniciado em ' + dataBR(av.dataAvaliacao);
+
+    let html = `
+      <div class="resumo-evolucao">
+        <div><strong style="color:${corEva(inicial)}">${inicial}</strong><span>EVA inicial</span></div>
+        <div><strong style="color:${corEva(atual)}">${atual}</strong><span>EVA atual</span></div>
+        <div><strong style="color:${variacaoCor}">${variacaoTexto}</strong><span>${percentualTexto}</span></div>
+      </div>
+      <div class="grafico-wrap">${graficoEvaSVG(pontos)}</div>
+    `;
+
+    html += `
+      <div class="ver-bloco"><h4>Sessões (${sess.length})</h4></div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Sessão</th><th>Data</th><th>EVA</th><th>Resposta</th><th>Conduta</th></tr></thead>
+          <tbody>
+            <tr><td>Avaliação</td><td>${dataBR(av.dataAvaliacao)}</td><td>${badgeEva(av.eva)}</td><td>—</td><td>—</td></tr>
+            ${sess.map(s => `
+              <tr>
+                <td>${s.numero}${s.previstas ? '/' + s.previstas : ''}</td>
+                <td>${dataBR(s.data)}</td>
+                <td>${badgeEva(s.eva)}</td>
+                <td>${badgeResposta(s.resposta)}</td>
+                <td>${s.decisao === 'Alterar' ? '🔄 Alterada' : '✅ Mantida'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    document.getElementById('verCorpo').innerHTML = html;
+    document.getElementById('verRodape').innerHTML =
+      `<button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>`;
 
     document.querySelector('#modalVerAvaliacao .modal-body').scrollTop = 0;
     abrirModal('modalVerAvaliacao');
