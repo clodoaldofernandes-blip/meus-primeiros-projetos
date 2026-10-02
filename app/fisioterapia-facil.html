@@ -330,6 +330,9 @@ textarea { min-height: 80px; resize: vertical; }
 
 .sem-fichas { font-size: .78rem; color: #aaa; }
 
+.ficha-info { font-size: .78rem; color: var(--texto); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ficha-info strong { color: var(--preto); }
+
 .btn-lembrete {
   display: inline-flex;
   align-items: center;
@@ -346,6 +349,66 @@ textarea { min-height: 80px; resize: vertical; }
 }
 
 .btn-lembrete:hover { background: #fcd34d; }
+
+/* PRONTUÁRIO NO CARTÃO */
+.btn-nova-avaliacao {
+  background: var(--cor-clara);
+  color: var(--cor);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-nova-avaliacao:hover { background: #c7e8ee; }
+
+.avaliacao-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--fundo);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-ver {
+  background: white;
+  border: 1.5px solid var(--cor);
+  color: var(--cor);
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: .75rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-ver:hover { background: var(--cor-clara); }
+
+.eva-badge {
+  display: inline-block;
+  padding: .12rem .55rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 800;
+  color: white;
+}
+
+.badge-corrigida {
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .12rem .5rem;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+}
 
 /* TELA DE LOGIN */
 .login-wrap {
@@ -668,6 +731,275 @@ textarea { min-height: 80px; resize: vertical; }
   margin-bottom: 10px;
 }
 
+/* MODAIS (AVALIAÇÃO) */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-overlay.aberto { display: flex; align-items: flex-start; justify-content: center; padding-top: 2rem; }
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  max-width: 680px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-header .sub { display: block; font-size: .78rem; color: var(--texto); font-weight: 500; margin-top: 2px; }
+
+.btn-fechar-modal {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.modal-body { padding: 1.4rem; max-height: 70vh; overflow-y: auto; }
+
+.modal-footer {
+  padding: 1.1rem 1.4rem;
+  border-top: 1px solid var(--cinza-borda);
+  display: flex;
+  justify-content: flex-end;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.btn-modal-cancelar {
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 9px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-modal-salvar {
+  background: var(--cor);
+  color: white;
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 9px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-modal-salvar:hover { background: var(--cor-escura); }
+.btn-modal-salvar:disabled { opacity: .5; cursor: not-allowed; }
+
+.secao-modal-titulo {
+  font-size: .78rem;
+  font-weight: 800;
+  color: var(--cor);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin: 16px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--cinza-borda);
+}
+
+.secao-modal-titulo.primeira { border-top: none; padding-top: 0; margin-top: 4px; }
+
+.eva-wrap {
+  background: var(--fundo);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.eva-valor { font-size: 2.2rem; font-weight: 800; text-align: center; line-height: 1; color: #aaa; }
+.eva-desc { text-align: center; font-size: .8rem; font-weight: 700; margin-top: 4px; color: #aaa; }
+
+.eva-wrap input[type="range"] {
+  padding: 0;
+  margin: 12px 0 4px;
+  border: none;
+  box-shadow: none;
+  accent-color: var(--cor);
+  cursor: pointer;
+}
+
+.eva-escala { display: flex; justify-content: space-between; font-size: .7rem; color: #888; }
+
+.checks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.check-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--fundo);
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0;
+}
+
+.check-chip input { width: auto; margin: 0; }
+
+.linhas-dinamicas .linha {
+  display: grid;
+  grid-template-columns: 1fr 120px 40px;
+  gap: 6px;
+  align-items: start;
+}
+
+.linhas-dinamicas .linha input,
+.linhas-dinamicas .linha select { margin-bottom: 6px; }
+
+.btn-remover-linha {
+  background: #fee2e2;
+  color: var(--vermelho);
+  border: none;
+  border-radius: 8px;
+  height: 41px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-add-linha {
+  background: var(--cor-clara);
+  color: var(--cor);
+  border: none;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  margin: 2px 0 6px;
+}
+
+.legenda-oxford { font-size: .72rem; color: #888; line-height: 1.5; margin-bottom: 6px; }
+
+.thumbs-wrap { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+
+.thumb-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--cinza-borda);
+}
+
+.thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.thumb-remover {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.65);
+  color: white;
+  border: none;
+  font-size: .7rem;
+  cursor: pointer;
+}
+
+.aviso-versao {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.selo-legal {
+  font-size: .74rem;
+  color: #777;
+  background: var(--fundo);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 14px;
+}
+
+.ver-bloco { margin-bottom: 14px; }
+.ver-bloco h4 {
+  font-size: .72rem;
+  color: var(--cor);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 4px;
+}
+.ver-bloco p { font-size: .88rem; color: #333; white-space: pre-line; line-height: 1.5; }
+
+.ver-eva {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--fundo);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.ver-eva .numero {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  border-radius: 12px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ver-eva .texto strong { display: block; font-size: .95rem; }
+.ver-eva .texto span { font-size: .8rem; color: var(--texto); }
+
+.tabela-wrap { overflow-x: auto; margin-bottom: 14px; }
+.tabela-wrap table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.tabela-wrap th {
+  text-align: left;
+  font-size: .72rem;
+  color: var(--texto);
+  text-transform: uppercase;
+  padding: 6px 4px;
+  border-bottom: 1.5px solid var(--cinza-borda);
+}
+.tabela-wrap td { padding: 7px 4px; border-bottom: 1px solid var(--cinza-borda); color: #333; }
+
+.foto-ver {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.registro-info { font-size: .74rem; color: #888; margin-top: 6px; line-height: 1.6; }
+
 /* JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO */
 .dialogo-overlay {
   display: none;
@@ -725,6 +1057,7 @@ textarea { min-height: 80px; resize: vertical; }
   .form-grid { grid-template-columns: 1fr; }
   header h1 { font-size: 1.5rem; }
   .btn-sair { position: static; margin-top: 14px; display: inline-block; }
+  .linhas-dinamicas .linha { grid-template-columns: 1fr 100px 40px; }
 }
 </style>
 </head>
@@ -1009,6 +1342,102 @@ textarea { min-height: 80px; resize: vertical; }
 
 </div>
 
+<!-- MODAL: FORMULÁRIO DA AVALIAÇÃO INICIAL -->
+<div class="modal-overlay" id="modalAvaliacao">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="tituloModalAvaliacao">📝 Avaliação Inicial</h3>
+        <span class="sub" id="avPacienteNome"></span>
+      </div>
+      <button class="btn-fechar-modal" onclick="fecharModalAvaliacao()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="aviso-versao oculto" id="avAvisoCorrecao">✏️ Você está corrigindo esta avaliação. A versão atual será guardada no histórico.</div>
+
+      <label>Data da avaliação</label>
+      <input type="date" id="av_dataAvaliacao">
+
+      <div class="secao-modal-titulo">Queixa e história</div>
+      <label>Queixa principal *</label>
+      <textarea id="av_queixa" placeholder="O que levou o paciente a procurar a fisioterapia"></textarea>
+      <label>História da doença atual</label>
+      <textarea id="av_hda" placeholder="Quando começou, o que piora ou melhora, tratamentos já feitos"></textarea>
+
+      <div class="secao-modal-titulo">Histórico médico</div>
+      <label>Cirurgias prévias</label>
+      <input type="text" id="av_cirurgias" placeholder="Opcional">
+      <label>Doenças crônicas</label>
+      <input type="text" id="av_doencasCronicas" placeholder="Opcional">
+      <label>Medicamentos em uso</label>
+      <input type="text" id="av_medicamentos" placeholder="Opcional">
+      <label>Diagnóstico clínico / CID</label>
+      <input type="text" id="av_diagnostico" placeholder="Se houver">
+
+      <div class="secao-modal-titulo">Dor</div>
+      <label>EVA — intensidade da dor *</label>
+      <div class="eva-wrap">
+        <div class="eva-valor" id="evaValor">—</div>
+        <div class="eva-desc" id="evaDesc">Arraste a barra para marcar</div>
+        <input type="range" id="av_eva" min="0" max="10" step="1" value="0" oninput="atualizarEva(true)" onchange="atualizarEva(true)">
+        <div class="eva-escala"><span>0 · Sem dor</span><span>5</span><span>10 · Pior dor</span></div>
+      </div>
+      <label>Localização da dor</label>
+      <input type="text" id="av_localizacaoDor" placeholder="Ex: lombar, irradiando para a perna esquerda">
+      <label>Características da dor</label>
+      <div class="checks" id="avCaracteristicas"></div>
+      <label>Outras características</label>
+      <input type="text" id="av_outrasCaracteristicas" placeholder="Opcional">
+
+      <div class="secao-modal-titulo">Amplitude de movimento (ADM)</div>
+      <div class="linhas-dinamicas" id="linhasAdm"></div>
+      <button type="button" class="btn-add-linha" onclick="adicionarLinha('adm')">+ Adicionar medida</button>
+
+      <div class="secao-modal-titulo">Força muscular (escala de Oxford)</div>
+      <div class="legenda-oxford">0 sem contração · 1 contração sem movimento · 2 movimento sem gravidade · 3 vence a gravidade · 4 vence alguma resistência · 5 normal</div>
+      <div class="linhas-dinamicas" id="linhasForca"></div>
+      <button type="button" class="btn-add-linha" onclick="adicionarLinha('forca')">+ Adicionar grupo muscular</button>
+
+      <div class="secao-modal-titulo">Testes especiais</div>
+      <div class="linhas-dinamicas" id="linhasTestes"></div>
+      <button type="button" class="btn-add-linha" onclick="adicionarLinha('testes')">+ Adicionar teste</button>
+
+      <div class="secao-modal-titulo">Postura e objetivos</div>
+      <label>Observações posturais</label>
+      <textarea id="av_postura" placeholder="Opcional"></textarea>
+      <label>Objetivos do tratamento</label>
+      <textarea id="av_objetivos" placeholder="Combinados com o paciente"></textarea>
+
+      <div id="avBlocoFotos">
+        <div class="secao-modal-titulo">Fotos (até 4)</div>
+        <input type="file" id="avFotosArquivo" accept="image/*" multiple>
+        <div class="thumbs-wrap" id="avFotosPreview"></div>
+      </div>
+
+      <div class="selo-legal">🔒 Depois de salva, a avaliação não pode ser apagada. Correções ficam registradas no histórico, com data e hora.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancelar" onclick="fecharModalAvaliacao()">Cancelar</button>
+      <button class="btn-modal-salvar" id="btnSalvarAvaliacao" onclick="salvarAvaliacao()">💾 Salvar Avaliação</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: VISUALIZAR AVALIAÇÃO -->
+<div class="modal-overlay" id="modalVerAvaliacao">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>📋 Avaliação Inicial</h3>
+        <span class="sub" id="verSub"></span>
+      </div>
+      <button class="btn-fechar-modal" onclick="fecharVerAvaliacao()">✕</button>
+    </div>
+    <div class="modal-body" id="verCorpo"></div>
+    <div class="modal-footer" id="verRodape"></div>
+  </div>
+</div>
+
 <!-- JANELA PRÓPRIA DE AVISO / CONFIRMAÇÃO -->
 <div class="dialogo-overlay" id="dialogoOverlay">
   <div class="dialogo" role="dialog" aria-modal="true">
@@ -1058,6 +1487,7 @@ textarea { min-height: 80px; resize: vertical; }
   let pararDeEscutarPerfil = null;
   let pararDeEscutarAgenda = null;
   let pararDeEscutarDespesas = null;
+  let pararDeEscutarAvaliacoes = null;
 
   let modoCadastro = false;
   let souPro = false;
@@ -1074,10 +1504,29 @@ textarea { min-height: 80px; resize: vertical; }
   let despesasRef = null;
   let despesas = [];
 
+  // Avaliação inicial
+  let avaliacoesRef = null;
+  let avaliacoes = [];
+  let avPacienteAtual = null;
+  let avEditandoId = null;
+  let evaTocada = false;
+  let fotosAvaliacao = [];
+  const LIMITE_FOTOS_AVALIACAO = 4;
+
   const CAMPOS_PACIENTE = [
     'nome', 'dataNascimento', 'telefone', 'email', 'profissao', 'endereco',
     'tipoAtendimento', 'convenioNome', 'medicoNome', 'medicoEspecialidade',
     'medicoTelefone', 'emergenciaNome', 'emergenciaTelefone', 'obs'
+  ];
+
+  const CAMPOS_AV_TEXTO = [
+    'dataAvaliacao', 'queixa', 'hda', 'cirurgias', 'doencasCronicas', 'medicamentos',
+    'diagnostico', 'localizacaoDor', 'outrasCaracteristicas', 'postura', 'objetivos'
+  ];
+
+  const CARACTERISTICAS_DOR = [
+    'Queimação', 'Pontada', 'Latejante', 'Formigamento', 'Choque',
+    'Peso / pressão', 'Cãibra / aperto', 'Rigidez'
   ];
 
   const statusEl = document.getElementById('statusConexao');
@@ -1129,10 +1578,15 @@ textarea { min-height: 80px; resize: vertical; }
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const overlay = document.getElementById('dialogoOverlay');
-    if (!overlay.classList.contains('aberto')) return;
-    const btnCancelar = document.getElementById('dialogoCancelar');
-    if (btnCancelar.style.display !== 'none') btnCancelar.click();
-    else document.getElementById('dialogoOk').click();
+    if (overlay.classList.contains('aberto')) {
+      const btnCancelar = document.getElementById('dialogoCancelar');
+      if (btnCancelar.style.display !== 'none') btnCancelar.click();
+      else document.getElementById('dialogoOk').click();
+      return;
+    }
+    if (document.getElementById('modalVerAvaliacao').classList.contains('aberto')) {
+      fecharVerAvaliacao();
+    }
   });
 
   // ---------- UTILITÁRIOS ----------
@@ -1205,6 +1659,48 @@ textarea { min-height: 80px; resize: vertical; }
     return (p && p.telefone) ? p.telefone : (a.telefone || '');
   }
 
+  function corEva(n) {
+    if (n <= 3) return '#16a34a';
+    if (n <= 6) return '#f59e0b';
+    return '#dc2626';
+  }
+
+  function descricaoEva(n) {
+    if (n === 0) return 'Sem dor';
+    if (n <= 3) return 'Dor leve';
+    if (n <= 6) return 'Dor moderada';
+    if (n <= 9) return 'Dor intensa';
+    return 'Pior dor possível';
+  }
+
+  function badgeEva(n) {
+    if (n === undefined || n === null) return '';
+    return `<span class="eva-badge" style="background:${corEva(n)}">EVA ${n}/10</span>`;
+  }
+
+  function comprimirImagem(arquivo, maxLado = 800, qualidade = 0.6) {
+    return new Promise((resolve, reject) => {
+      const leitor = new FileReader();
+      leitor.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const escala = Math.min(1, maxLado / Math.max(img.width, img.height));
+          const largura = Math.round(img.width * escala);
+          const altura = Math.round(img.height * escala);
+          const canvas = document.createElement('canvas');
+          canvas.width = largura;
+          canvas.height = altura;
+          canvas.getContext('2d').drawImage(img, 0, 0, largura, altura);
+          resolve(canvas.toDataURL('image/jpeg', qualidade));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      leitor.onerror = reject;
+      leitor.readAsDataURL(arquivo);
+    });
+  }
+
   // ---------- LOGIN / CADASTRO ----------
 
   window.alternarModoLogin = function alternarModoLogin() {
@@ -1273,6 +1769,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
     if (pararDeEscutarAgenda) { pararDeEscutarAgenda(); pararDeEscutarAgenda = null; }
     if (pararDeEscutarDespesas) { pararDeEscutarDespesas(); pararDeEscutarDespesas = null; }
+    if (pararDeEscutarAvaliacoes) { pararDeEscutarAvaliacoes(); pararDeEscutarAvaliacoes = null; }
 
     if (usuario) {
       telaLogin.classList.add('oculto');
@@ -1284,6 +1781,7 @@ textarea { min-height: 80px; resize: vertical; }
       pacientesRef = collection(db, 'usuarios', usuario.uid, 'pacientesFisio');
       agendamentosRef = collection(db, 'usuarios', usuario.uid, 'agendamentosFisio');
       despesasRef = collection(db, 'usuarios', usuario.uid, 'despesasFisio');
+      avaliacoesRef = collection(db, 'usuarios', usuario.uid, 'avaliacoesFisio');
       const perfilRef = doc(db, 'usuarios', usuario.uid);
       statusEl.textContent = '🔄 Carregando seus dados...';
 
@@ -1338,6 +1836,15 @@ textarea { min-height: 80px; resize: vertical; }
         },
         (erro) => console.error(erro)
       );
+
+      pararDeEscutarAvaliacoes = onSnapshot(
+        query(avaliacoesRef, orderBy('criadoEmTS', 'desc')),
+        (snapshot) => {
+          avaliacoes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderizar();
+        },
+        (erro) => console.error(erro)
+      );
     } else {
       telaLogin.classList.remove('oculto');
       appConteudo.classList.add('oculto');
@@ -1346,9 +1853,11 @@ textarea { min-height: 80px; resize: vertical; }
       pacientesRef = null;
       agendamentosRef = null;
       despesasRef = null;
+      avaliacoesRef = null;
       pacientes = [];
       agendamentos = [];
       despesas = [];
+      avaliacoes = [];
       souPro = false;
     }
   });
@@ -1480,6 +1989,39 @@ textarea { min-height: 80px; resize: vertical; }
     if (atual && pacientes.some(p => p.id === atual)) sel.value = atual;
   }
 
+  function htmlProntuario(p) {
+    const avs = avaliacoes.filter(a => a.pacienteId === p.id);
+    const botao = p.arquivado
+      ? ''
+      : `<button class="btn-nova-avaliacao" onclick="abrirNovaAvaliacao('${p.id}')">${avs.length ? '+ Nova avaliação' : '📝 Fazer avaliação inicial'}</button>`;
+
+    let conteudo;
+    if (avs.length === 0) {
+      conteudo = `<div class="sem-fichas">${p.arquivado ? 'Nenhuma avaliação registrada.' : 'Nenhuma avaliação registrada ainda.'}</div>`;
+    } else {
+      conteudo = avs.map(a => `
+        <div class="avaliacao-item">
+          <div class="ficha-info">
+            <strong>📝 Avaliação · ${dataBR(a.dataAvaliacao)}</strong>
+            ${badgeEva(a.eva)}
+            ${a.historico && a.historico.length ? '<span class="badge-corrigida">corrigida</span>' : ''}
+          </div>
+          <button class="btn-ver" onclick="verAvaliacao('${a.id}')">Ver</button>
+        </div>
+      `).join('');
+    }
+
+    return `
+      <div class="secao-fichas">
+        <div class="secao-fichas-header">
+          <span>📋 Prontuário</span>
+          ${botao}
+        </div>
+        ${conteudo}
+      </div>
+    `;
+  }
+
   window.renderizar = function renderizar() {
     const lista = document.getElementById('pacientes');
     const busca = document.getElementById('pesquisa').value.toLowerCase();
@@ -1513,7 +2055,12 @@ textarea { min-height: 80px; resize: vertical; }
     const filtrados = base.filter(p => (p.nome || '').toLowerCase().includes(busca));
 
     if (filtrados.length === 0) {
-      lista.innerHTML = `<div class="vazio">${mostrarArquivados ? 'Nenhum paciente arquivado.' : 'Nenhum paciente cadastrado.'}</div>`;
+      let mensagem;
+      if (busca) mensagem = 'Nenhum paciente encontrado nessa pesquisa.';
+      else if (mostrarArquivados) mensagem = 'Nenhum paciente arquivado.';
+      else if (pacientes.length > 0) mensagem = 'Nenhum paciente ativo.';
+      else mensagem = 'Nenhum paciente cadastrado.';
+      lista.innerHTML = `<div class="vazio">${mensagem}</div>`;
       return;
     }
 
@@ -1541,12 +2088,7 @@ textarea { min-height: 80px; resize: vertical; }
         <div class="info">📅 Cadastro: ${esc(p.dataCadastro) || '—'}</div>
         ${p.obs ? `<div class="info">📝 ${esc(p.obs)}</div>` : ''}
 
-        <div class="secao-fichas">
-          <div class="secao-fichas-header">
-            <span>📋 Prontuário</span>
-          </div>
-          <div class="sem-fichas">Avaliação inicial e sessões serão adicionadas na próxima etapa.</div>
-        </div>
+        ${htmlProntuario(p)}
 
         <div class="acoes">
           ${whats ? `<a href="${whats}" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>` : ''}
@@ -1559,6 +2101,378 @@ textarea { min-height: 80px; resize: vertical; }
     `;
     }).join('');
   };
+
+  // ---------- AVALIAÇÃO INICIAL: FORMULÁRIO ----------
+
+  window.atualizarEva = function atualizarEva(tocou) {
+    if (tocou) evaTocada = true;
+    const valor = Number(document.getElementById('av_eva').value);
+    const elValor = document.getElementById('evaValor');
+    const elDesc = document.getElementById('evaDesc');
+    if (!evaTocada) {
+      elValor.textContent = '—';
+      elValor.style.color = '#aaa';
+      elDesc.textContent = 'Arraste a barra para marcar';
+      elDesc.style.color = '#aaa';
+      return;
+    }
+    elValor.textContent = valor;
+    elValor.style.color = corEva(valor);
+    elDesc.textContent = descricaoEva(valor);
+    elDesc.style.color = corEva(valor);
+  };
+
+  function montarCaracteristicas(selecionadas) {
+    const sel = selecionadas || [];
+    document.getElementById('avCaracteristicas').innerHTML = CARACTERISTICAS_DOR.map(c => `
+      <label class="check-chip">
+        <input type="checkbox" value="${esc(c)}" ${sel.includes(c) ? 'checked' : ''}> ${esc(c)}
+      </label>
+    `).join('');
+  }
+
+  const CONTAINER_LINHAS = { adm: 'linhasAdm', forca: 'linhasForca', testes: 'linhasTestes' };
+
+  window.adicionarLinha = function adicionarLinha(tipo, dados = {}) {
+    const cont = document.getElementById(CONTAINER_LINHAS[tipo]);
+    const div = document.createElement('div');
+    div.className = 'linha';
+    const nome = esc(dados.nome || '');
+    const valor = dados.valor ?? '';
+
+    if (tipo === 'adm') {
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Articulação e movimento (ex: Ombro D · flexão)" value="${nome}">
+        <input type="number" class="l-valor" placeholder="Graus" min="0" max="360" value="${esc(valor)}">
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+    } else if (tipo === 'forca') {
+      const opcoes = ['0', '1', '2', '3', '4', '5']
+        .map(g => `<option value="${g}" ${String(valor) === g ? 'selected' : ''}>Grau ${g}</option>`).join('');
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Grupo muscular (ex: Quadríceps D)" value="${nome}">
+        <select class="l-valor">${opcoes}</select>
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+      if (valor === '') div.querySelector('.l-valor').value = '5';
+    } else {
+      const opcoes = ['Positivo', 'Negativo', 'Inconclusivo']
+        .map(r => `<option ${valor === r ? 'selected' : ''}>${r}</option>`).join('');
+      div.innerHTML = `
+        <input type="text" class="l-nome" placeholder="Nome do teste (ex: Lasègue)" value="${nome}">
+        <select class="l-valor">${opcoes}</select>
+        <button type="button" class="btn-remover-linha" title="Remover">✕</button>
+      `;
+    }
+
+    div.querySelector('.btn-remover-linha').onclick = () => div.remove();
+    cont.appendChild(div);
+  };
+
+  function lerLinhas(tipo) {
+    const cont = document.getElementById(CONTAINER_LINHAS[tipo]);
+    return Array.from(cont.querySelectorAll('.linha'))
+      .map(l => ({
+        nome: l.querySelector('.l-nome').value.trim(),
+        valor: l.querySelector('.l-valor').value
+      }))
+      .filter(x => x.nome);
+  }
+
+  function limparLinhas() {
+    Object.values(CONTAINER_LINHAS).forEach(id => { document.getElementById(id).innerHTML = ''; });
+  }
+
+  function renderizarFotosAvaliacao() {
+    document.getElementById('avFotosPreview').innerHTML = fotosAvaliacao.map((f, i) => `
+      <div class="thumb-item">
+        <img src="${f}">
+        <button type="button" class="thumb-remover" onclick="removerFotoAvaliacao(${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  window.removerFotoAvaliacao = function removerFotoAvaliacao(i) {
+    fotosAvaliacao.splice(i, 1);
+    renderizarFotosAvaliacao();
+  };
+
+  document.getElementById('avFotosArquivo').addEventListener('change', async (e) => {
+    const arquivos = Array.from(e.target.files);
+    e.target.value = '';
+    for (const arquivo of arquivos) {
+      if (fotosAvaliacao.length >= LIMITE_FOTOS_AVALIACAO) {
+        await avisar('Cada avaliação pode ter no máximo ' + LIMITE_FOTOS_AVALIACAO + ' fotos.');
+        break;
+      }
+      try {
+        fotosAvaliacao.push(await comprimirImagem(arquivo));
+      } catch (erro) {
+        console.error(erro);
+        await avisar('Não foi possível ler uma das fotos. Use imagens em JPG ou PNG.');
+      }
+    }
+    renderizarFotosAvaliacao();
+  });
+
+  function limparFormAvaliacao() {
+    CAMPOS_AV_TEXTO.forEach(c => { document.getElementById('av_' + c).value = ''; });
+    document.getElementById('av_eva').value = 0;
+    evaTocada = false;
+    atualizarEva(false);
+    montarCaracteristicas([]);
+    limparLinhas();
+    adicionarLinha('adm');
+    adicionarLinha('forca');
+    fotosAvaliacao = [];
+    renderizarFotosAvaliacao();
+  }
+
+  function abrirModal(id) {
+    document.getElementById(id).classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModal(id) {
+    document.getElementById(id).classList.remove('aberto');
+    const algumAberto = document.querySelector('.modal-overlay.aberto');
+    if (!algumAberto) document.body.style.overflow = '';
+  }
+
+  window.abrirNovaAvaliacao = function abrirNovaAvaliacao(pacienteId) {
+    const p = pacientes.find(x => x.id === pacienteId);
+    if (!p) return;
+    avPacienteAtual = pacienteId;
+    avEditandoId = null;
+    limparFormAvaliacao();
+    document.getElementById('av_dataAvaliacao').value = formatarDataISO(new Date());
+    document.getElementById('tituloModalAvaliacao').textContent = '📝 Avaliação Inicial';
+    document.getElementById('avPacienteNome').textContent = 'Paciente: ' + p.nome;
+    document.getElementById('avAvisoCorrecao').classList.add('oculto');
+    document.getElementById('avBlocoFotos').classList.remove('oculto');
+    document.getElementById('btnSalvarAvaliacao').textContent = '💾 Salvar Avaliação';
+    abrirModal('modalAvaliacao');
+  };
+
+  window.abrirCorrecao = function abrirCorrecao(id) {
+    const a = avaliacoes.find(x => x.id === id);
+    if (!a) return;
+    const p = pacientes.find(x => x.id === a.pacienteId);
+    avEditandoId = id;
+    avPacienteAtual = a.pacienteId;
+
+    CAMPOS_AV_TEXTO.forEach(c => { document.getElementById('av_' + c).value = a[c] || ''; });
+    document.getElementById('av_eva').value = a.eva ?? 0;
+    evaTocada = true;
+    atualizarEva(false);
+    montarCaracteristicas(a.caracteristicas);
+    limparLinhas();
+    (a.adm || []).forEach(l => adicionarLinha('adm', l));
+    (a.forca || []).forEach(l => adicionarLinha('forca', l));
+    (a.testes || []).forEach(l => adicionarLinha('testes', l));
+    fotosAvaliacao = [];
+
+    document.getElementById('tituloModalAvaliacao').textContent = '✏️ Corrigir Avaliação';
+    document.getElementById('avPacienteNome').textContent = 'Paciente: ' + (p ? p.nome : (a.pacienteNome || ''));
+    document.getElementById('avAvisoCorrecao').classList.remove('oculto');
+    document.getElementById('avBlocoFotos').classList.add('oculto');
+    document.getElementById('btnSalvarAvaliacao').textContent = '💾 Salvar Correção';
+
+    fecharModal('modalVerAvaliacao');
+    abrirModal('modalAvaliacao');
+  };
+
+  window.fecharModalAvaliacao = async function fecharModalAvaliacao() {
+    const ok = await confirmar('O que você digitou nesta avaliação será perdido.', 'Fechar sem salvar?', 'Fechar sem salvar', true);
+    if (!ok) return;
+    fecharModal('modalAvaliacao');
+    avPacienteAtual = null;
+    avEditandoId = null;
+  };
+
+  window.salvarAvaliacao = async function salvarAvaliacao() {
+    if (!avaliacoesRef || !avPacienteAtual) return;
+
+    const dados = {};
+    CAMPOS_AV_TEXTO.forEach(c => { dados[c] = document.getElementById('av_' + c).value.trim(); });
+
+    if (!dados.queixa) {
+      await avisar('Informe a queixa principal do paciente.');
+      return;
+    }
+    if (!evaTocada) {
+      await avisar('Marque a intensidade da dor (EVA) na barra, mesmo que seja 0.');
+      return;
+    }
+
+    dados.eva = Number(document.getElementById('av_eva').value);
+    dados.caracteristicas = Array.from(document.querySelectorAll('#avCaracteristicas input:checked')).map(i => i.value);
+    dados.adm = lerLinhas('adm');
+    dados.forca = lerLinhas('forca');
+    dados.testes = lerLinhas('testes');
+    if (!dados.dataAvaliacao) dados.dataAvaliacao = formatarDataISO(new Date());
+
+    const btn = document.getElementById('btnSalvarAvaliacao');
+    const textoOriginal = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '💾 Salvando...';
+
+    try {
+      const agora = new Date().toLocaleString('pt-BR');
+
+      if (avEditandoId) {
+        const atual = avaliacoes.find(a => a.id === avEditandoId);
+        const versaoAnterior = {};
+        [...CAMPOS_AV_TEXTO, 'eva', 'caracteristicas', 'adm', 'forca', 'testes'].forEach(c => {
+          versaoAnterior[c] = atual[c] ?? null;
+        });
+        versaoAnterior.salvaEm = atual.corrigidoEm || atual.criadoEm || '';
+        dados.historico = [...(atual.historico || []), versaoAnterior];
+        dados.corrigidoEm = agora;
+        dados.corrigidoEmTS = Date.now();
+        await updateDoc(doc(avaliacoesRef, avEditandoId), dados);
+      } else {
+        const p = pacientes.find(x => x.id === avPacienteAtual);
+        dados.pacienteId = avPacienteAtual;
+        dados.pacienteNome = p ? p.nome : '';
+        dados.fotos = [...fotosAvaliacao];
+        dados.historico = [];
+        dados.criadoEm = agora;
+        dados.criadoEmTS = Date.now();
+
+        if (JSON.stringify(dados).length > 900000) {
+          await avisar('As fotos ficaram grandes demais para salvar juntas. Remova uma foto e tente de novo.');
+          return;
+        }
+        await addDoc(avaliacoesRef, dados);
+      }
+
+      fecharModal('modalAvaliacao');
+      avPacienteAtual = null;
+      avEditandoId = null;
+    } catch (erro) {
+      console.error(erro);
+      await avisar('Não foi possível salvar a avaliação. Verifique sua internet e tente de novo.', 'Erro ao salvar');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = textoOriginal;
+    }
+  };
+
+  // ---------- AVALIAÇÃO INICIAL: VISUALIZAÇÃO ----------
+
+  function blocoTexto(titulo, texto) {
+    if (!texto) return '';
+    return `<div class="ver-bloco"><h4>${titulo}</h4><p>${esc(texto)}</p></div>`;
+  }
+
+  function blocoTabela(titulo, linhas, colNome, colValor, formatar) {
+    if (!linhas || linhas.length === 0) return '';
+    return `
+      <div class="ver-bloco"><h4>${titulo}</h4></div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>${colNome}</th><th>${colValor}</th></tr></thead>
+          <tbody>
+            ${linhas.map(l => `<tr><td>${esc(l.nome)}</td><td>${esc(formatar(l.valor))}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  window.verAvaliacao = function verAvaliacao(id, indiceVersao = null) {
+    const a = avaliacoes.find(x => x.id === id);
+    if (!a) return;
+    const p = pacientes.find(x => x.id === a.pacienteId);
+    const vendoAntiga = indiceVersao !== null;
+    const d = vendoAntiga ? a.historico[indiceVersao] : a;
+    if (!d) return;
+
+    document.getElementById('verSub').textContent =
+      (p ? p.nome : (a.pacienteNome || '')) + ' · ' + dataBR(d.dataAvaliacao);
+
+    const eva = d.eva ?? 0;
+    const caracteristicas = [...(d.caracteristicas || [])];
+    if (d.outrasCaracteristicas) caracteristicas.push(d.outrasCaracteristicas);
+
+    let html = '';
+
+    if (vendoAntiga) {
+      html += `<div class="aviso-versao">🕓 Você está vendo a versão ${indiceVersao + 1}, anterior à correção. Salva em ${esc(d.salvaEm || '—')}.</div>`;
+    }
+
+    html += blocoTexto('Queixa principal', d.queixa);
+    html += blocoTexto('História da doença atual', d.hda);
+
+    html += `
+      <div class="ver-eva">
+        <div class="numero" style="background:${corEva(eva)}">${eva}</div>
+        <div class="texto">
+          <strong>EVA ${eva}/10 · ${descricaoEva(eva)}</strong>
+          <span>${d.localizacaoDor ? esc(d.localizacaoDor) : 'Localização não informada'}</span>
+        </div>
+      </div>
+    `;
+
+    if (caracteristicas.length) html += blocoTexto('Características da dor', caracteristicas.join(', '));
+
+    html += blocoTexto('Cirurgias prévias', d.cirurgias);
+    html += blocoTexto('Doenças crônicas', d.doencasCronicas);
+    html += blocoTexto('Medicamentos em uso', d.medicamentos);
+    html += blocoTexto('Diagnóstico clínico / CID', d.diagnostico);
+
+    html += blocoTabela('Amplitude de movimento (ADM)', d.adm, 'Articulação / movimento', 'Graus', v => (v !== '' && v !== null ? v + '°' : '—'));
+    html += blocoTabela('Força muscular (Oxford)', d.forca, 'Grupo muscular', 'Grau', v => 'Grau ' + v);
+    html += blocoTabela('Testes especiais', d.testes, 'Teste', 'Resultado', v => v);
+
+    html += blocoTexto('Observações posturais', d.postura);
+    html += blocoTexto('Objetivos do tratamento', d.objetivos);
+
+    if (!vendoAntiga && a.fotos && a.fotos.length) {
+      html += `<div class="ver-bloco"><h4>Fotos</h4></div><div class="thumbs-wrap" style="margin-bottom:14px;">${a.fotos.map(f => `<img src="${f}" class="foto-ver">`).join('')}</div>`;
+    }
+
+    if (!vendoAntiga) {
+      html += `<div class="registro-info">🔒 Registrada em ${esc(a.criadoEm || '—')}${a.corrigidoEm ? '<br>✏️ Última correção em ' + esc(a.corrigidoEm) : ''}</div>`;
+
+      if (a.historico && a.historico.length) {
+        html += `<div class="secao-modal-titulo">Histórico de correções</div>`;
+        html += a.historico.map((h, i) => `
+          <div class="avaliacao-item">
+            <div class="ficha-info"><strong>Versão ${i + 1}</strong> · salva em ${esc(h.salvaEm || '—')} ${badgeEva(h.eva)}</div>
+            <button class="btn-ver" onclick="verAvaliacao('${a.id}', ${i})">Ver</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    document.getElementById('verCorpo').innerHTML = html;
+
+    let rodape;
+    if (vendoAntiga) {
+      rodape = `<button class="btn-modal-salvar" onclick="verAvaliacao('${a.id}')">← Voltar à versão atual</button>`;
+    } else if (p && !p.arquivado) {
+      rodape = `
+        <button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>
+        <button class="btn-modal-salvar" onclick="abrirCorrecao('${a.id}')">✏️ Corrigir</button>
+      `;
+    } else {
+      rodape = `<button class="btn-modal-cancelar" onclick="fecharVerAvaliacao()">Fechar</button>`;
+    }
+    document.getElementById('verRodape').innerHTML = rodape;
+
+    document.querySelector('#modalVerAvaliacao .modal-body').scrollTop = 0;
+    abrirModal('modalVerAvaliacao');
+  };
+
+  window.fecharVerAvaliacao = function fecharVerAvaliacao() {
+    fecharModal('modalVerAvaliacao');
+  };
+
+  document.getElementById('modalVerAvaliacao').addEventListener('click', (e) => {
+    if (e.target.id === 'modalVerAvaliacao') fecharVerAvaliacao();
+  });
 
   // ---------- AGENDA / CALENDÁRIO ----------
 
