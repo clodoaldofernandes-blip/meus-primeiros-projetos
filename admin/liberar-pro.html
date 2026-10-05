@@ -39,12 +39,13 @@ p.sub { font-size: .85rem; color: #777; text-align: center; margin-bottom: 1.75r
   display: block; font-size: .8rem; font-weight: 700;
   color: #555; margin-bottom: .4rem;
 }
-.campo input {
+.campo input, .campo select {
   width: 100%; padding: .8rem .9rem;
   border: 1.5px solid var(--cinza-borda); border-radius: 10px;
   font-size: 1rem; font-family: inherit; outline: none;
+  background: white;
 }
-.campo input:focus { border-color: var(--azul); }
+.campo input:focus, .campo select:focus { border-color: var(--azul); }
 button {
   width: 100%; background: var(--azul); color: white;
   border: none; padding: .9rem; border-radius: 10px;
@@ -74,6 +75,16 @@ button:disabled { opacity: .6; cursor: not-allowed; }
   </div>
 
   <div class="campo">
+    <label>Produto</label>
+    <select id="fProduto">
+      <option value="">Selecione o produto...</option>
+      <option value="estetica">Estética Fácil</option>
+      <option value="cliente">Cliente Fácil</option>
+      <option value="fisio">Fisioterapia Fácil</option>
+    </select>
+  </div>
+
+  <div class="campo">
     <label>E-mail do cliente</label>
     <input type="email" id="fEmail" placeholder="cliente@email.com" autocapitalize="off" autocorrect="off">
   </div>
@@ -87,6 +98,7 @@ button:disabled { opacity: .6; cursor: not-allowed; }
 async function liberarPro() {
   const senha = document.getElementById('fSenha').value;
   const email = document.getElementById('fEmail').value.trim();
+  const produto = document.getElementById('fProduto').value;
   const btn = document.getElementById('btnLiberar');
   const msg = document.getElementById('mensagem');
 
@@ -99,6 +111,12 @@ async function liberarPro() {
     return;
   }
 
+  if (!produto) {
+    msg.className = 'mensagem erro';
+    msg.textContent = 'Selecione o produto que o cliente comprou.';
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Liberando...';
 
@@ -106,13 +124,13 @@ async function liberarPro() {
     const resposta = await fetch('/api/liberar-pro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
+      body: JSON.stringify({ email, senha, produto })
     });
     const dados = await resposta.json();
 
     if (resposta.ok) {
       msg.className = 'mensagem sucesso';
-      msg.textContent = `✅ PRO liberado para ${dados.email}`;
+      msg.textContent = `✅ PRO do ${dados.produto || 'produto'} liberado para ${dados.email}`;
       document.getElementById('fEmail').value = '';
     } else {
       msg.className = 'mensagem erro';
