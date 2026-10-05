@@ -278,6 +278,92 @@ header p { opacity: .85; font-size: .9rem; }
   padding: .15rem .5rem; border-radius: 999px;
 }
 
+/* LOGIN DO ADMINISTRADOR */
+.oculto { display: none !important; }
+
+.login-wrap {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--cinza-borda);
+}
+
+.login-card h2 { text-align: center; margin-bottom: 6px; font-size: 1.2rem; }
+.login-card .sub-login { text-align: center; color: var(--texto); font-size: .85rem; margin-bottom: 20px; }
+
+.login-card label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: .85rem;
+  color: #333;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--cinza-borda);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .9rem;
+  outline: none;
+}
+
+.login-card input:focus { border-color: var(--azul); }
+
+.btn-entrar {
+  width: 100%;
+  background: var(--azul);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-entrar:hover { background: var(--azul-escuro); }
+.btn-entrar:disabled { opacity: .5; cursor: not-allowed; }
+
+.login-erro {
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.btn-sair-header {
+  background: rgba(255,255,255,.15);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  margin-left: 12px;
+}
+
+.btn-sair-header:hover { background: rgba(255,255,255,.28); }
+
 @media (max-width: 600px) {
   .form-grid { grid-template-columns: 1fr; }
   .grid-imoveis { grid-template-columns: 1fr; }
@@ -289,12 +375,31 @@ header p { opacity: .85; font-size: .9rem; }
 <header>
   <div class="header-nav">
     <a href="../index.html" class="btn-voltar-header">← Voltar ao site</a>
+    <button class="btn-sair-header oculto" id="btnSair" onclick="sair()">🚪 Sair</button>
   </div>
   <h1>⚙️ Painel Administrativo</h1>
   <p>Gerencie os imóveis cadastrados no site</p>
 </header>
 
-<div class="container">
+<!-- TELA DE LOGIN DO ADMINISTRADOR -->
+<div class="login-wrap" id="telaLogin">
+  <div class="login-card">
+    <h2>🔒 Acesso restrito</h2>
+    <p class="sub-login">Entre com a sua conta de administrador</p>
+
+    <div class="login-erro" id="loginErro"></div>
+
+    <label>E-mail</label>
+    <input type="email" id="loginEmail" placeholder="seu@email.com">
+
+    <label>Senha</label>
+    <input type="password" id="loginSenha" placeholder="Sua senha">
+
+    <button class="btn-entrar" id="btnEntrar" onclick="entrar()">Entrar</button>
+  </div>
+</div>
+
+<div class="container oculto" id="painel">
 
   <div class="toolbar">
     <h2 id="contador">0 imóveis cadastrados</h2>
@@ -383,6 +488,7 @@ header p { opacity: .85; font-size: .9rem; }
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   const firebaseConfig = {
@@ -395,15 +501,90 @@ header p { opacity: .85; font-size: .9rem; }
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  // Só esta conta pode gerenciar os imóveis (mesmo código usado nas regras do Firebase)
+  const ADMIN_UID = 'OnfwZs5CuOWjUUKamGwYvu5ZcLN2';
 
   let imoveis = [];
   let idEmEdicao = null;
+  let pararDeEscutar = null;
 
-  db.collection('imoveis').orderBy('criadoEm', 'desc').onSnapshot(snapshot => {
-    imoveis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderizar();
-  }, erro => {
-    console.error('Erro ao carregar imoveis:', erro);
+  // ---------- LOGIN DO ADMINISTRADOR ----------
+
+  function mostrarErroLogin(texto) {
+    const erro = document.getElementById('loginErro');
+    erro.textContent = texto;
+    erro.style.display = 'block';
+  }
+
+  async function entrar() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    const btn = document.getElementById('btnEntrar');
+    document.getElementById('loginErro').style.display = 'none';
+
+    if (!email || !senha) {
+      mostrarErroLogin('Preencha e-mail e senha.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+
+    try {
+      await auth.signInWithEmailAndPassword(email, senha);
+    } catch (erro) {
+      console.error(erro);
+      if (erro.code === 'auth/too-many-requests') {
+        mostrarErroLogin('Muitas tentativas. Aguarde um momento e tente de novo.');
+      } else {
+        mostrarErroLogin('E-mail ou senha incorretos.');
+      }
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+
+  async function sair() {
+    await auth.signOut();
+  }
+
+  auth.onAuthStateChanged(async (usuario) => {
+    if (pararDeEscutar) { pararDeEscutar(); pararDeEscutar = null; }
+
+    if (usuario && usuario.uid === ADMIN_UID) {
+      document.getElementById('telaLogin').classList.add('oculto');
+      document.getElementById('painel').classList.remove('oculto');
+      document.getElementById('btnSair').classList.remove('oculto');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginSenha').value = '';
+
+      pararDeEscutar = db.collection('imoveis').orderBy('criadoEm', 'desc').onSnapshot(snapshot => {
+        imoveis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderizar();
+      }, erro => {
+        console.error('Erro ao carregar imoveis:', erro);
+      });
+      return;
+    }
+
+    // Entrou com uma conta que não é a do administrador: sai e avisa
+    if (usuario) {
+      await auth.signOut();
+      mostrarErroLogin('Esta conta não tem permissão para gerenciar os imóveis.');
+      return;
+    }
+
+    document.getElementById('telaLogin').classList.remove('oculto');
+    document.getElementById('painel').classList.add('oculto');
+    document.getElementById('btnSair').classList.add('oculto');
+    imoveis = [];
+  });
+
+  document.getElementById('loginSenha').addEventListener('keydown', e => {
+    if (e.key === 'Enter') entrar();
   });
 
   function formatarTipo(tipo) {
