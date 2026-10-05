@@ -1530,8 +1530,9 @@ textarea { min-height: 80px; resize: vertical; }
       <div class="secao-modal-titulo">Resposta ao tratamento</div>
       <div class="form-grid">
         <div>
-          <label>Resposta do paciente</label>
+          <label>Resposta do paciente *</label>
           <select id="se_resposta">
+            <option value="">Selecione...</option>
             <option>Melhora</option>
             <option>Sem alteração</option>
             <option>Piora</option>
@@ -2705,7 +2706,7 @@ textarea { min-height: 80px; resize: vertical; }
     seEvaTocada = false;
     atualizarEvaSessao(false);
     montarChecks('seCondutas', CONDUTAS, []);
-    document.getElementById('se_resposta').value = 'Melhora';
+    document.getElementById('se_resposta').value = '';
     document.getElementById('se_decisao').value = 'Manter';
     atualizarDecisao();
     document.getElementById('linhasReavAdm').innerHTML = '';
@@ -2763,7 +2764,7 @@ textarea { min-height: 80px; resize: vertical; }
     seEvaTocada = true;
     atualizarEvaSessao(false);
     montarChecks('seCondutas', CONDUTAS, s.condutas);
-    document.getElementById('se_resposta').value = s.resposta || 'Melhora';
+    document.getElementById('se_resposta').value = s.resposta || '';
     document.getElementById('se_decisao').value = s.decisao || 'Manter';
     atualizarDecisao();
     (s.admReav || []).forEach(l => adicionarLinha('adm', { ...l, reav: true }, 'linhasReavAdm'));
@@ -2817,6 +2818,11 @@ textarea { min-height: 80px; resize: vertical; }
 
     if (!seEvaTocada) {
       await avisar('Marque a intensidade da dor de hoje (EVA) na barra, mesmo que seja 0.');
+      return;
+    }
+
+    if (!document.getElementById('se_resposta').value) {
+      await avisar('Selecione a resposta do paciente ao tratamento (Melhora, Sem alteração ou Piora).');
       return;
     }
 
