@@ -10,6 +10,13 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// Cada produto tem o seu próprio campo de liberação no perfil do cliente
+const PRODUTOS = {
+  estetica: { campo: 'pro', nome: 'Estética Fácil' },
+  cliente: { campo: 'proClienteFacil', nome: 'Cliente Fácil' },
+  fisio: { campo: 'proFisioterapia', nome: 'Fisioterapia Fácil' },
+};
+
 module.exports = async (req, res) => {
   // Permite chamadas vindas do navegador
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,7 +32,11 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { email, senha } = req.body;
+    const { senha } = req.body;
+    const email = String(req.body.email || '').trim().toLowerCase();
+
+    // Se o produto não for informado, mantém o comportamento antigo (Estética Fácil)
+    const chaveProduto = String(req.body.produto || 'estetica').trim().toLowerCase();
 
     // Confere a senha de administrador
     if (senha !== process.env.ADMIN_PASSWORD) {
@@ -36,14 +47,24 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'E-mail não informado' });
     }
 
+    const produto = PRODUTOS[chaveProduto];
+    if (!produto) {
+      return res.status(400).json({ error: 'Produto inválido' });
+    }
+
     // Acha o usuário no Firebase Authentication pelo e-mail
     const userRecord = await admin.auth().getUserByEmail(email);
     const uid = userRecord.uid;
 
-    // Libera o plano PRO no Firestore
-    await db.collection('usuarios').doc(uid).set({ pro: true }, { merge: true });
+    // Libera o plano PRO do produto escolhido no Firestore
+    await db.collection('usuarios').doc(uid).set({ [produto.campo]: true }, { merge: true });
 
-    return res.status(200).json({ message: 'PRO liberado com sucesso', email });
+    console.log(`PRO do ${produto.nome} liberado manualmente para: ${email} (uid: ${uid})`);
+    return res.status(200).json({
+      message: 'PRO liberado com sucesso',
+      email,
+      produto: produto.nome,
+    });
 
   } catch (erro) {
     console.error('Erro ao liberar PRO manualmente:', erro);
