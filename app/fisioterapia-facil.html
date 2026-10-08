@@ -1163,9 +1163,9 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="aviso-limite" id="avisoLimite">
     <div>
       <strong>🔒 Limite de 2 pacientes grátis atingido</strong>
-      Libere pacientes ilimitados por R$ 69,90 (pagamento único, sem mensalidade).
+      Libere pacientes ilimitados por R$ 69,90 (pagamento único, sem mensalidade). Na compra, use o mesmo e-mail desta conta.
     </div>
-    <a href="https://wa.me/5583982001314?text=Oi!%20Quero%20liberar%20o%20acesso%20completo%20do%20Fisioterapia%20F%C3%A1cil" target="_blank" class="btn-upgrade">💬 Liberar no WhatsApp</a>
+    <a href="https://clodoaldofernandes.com.br/comprar-ff.html" target="_blank" class="btn-upgrade">🛒 Liberar agora</a>
   </div>
 
   <div class="dashboard">
@@ -2118,7 +2118,7 @@ textarea { min-height: 80px; resize: vertical; }
     if (!pacientesRef) return;
 
     if (!pacienteEditandoId && !souPro && pacientes.length >= LIMITE_GRATIS) {
-      await avisar('Você atingiu o limite de ' + LIMITE_GRATIS + ' pacientes do plano grátis.\nFale no WhatsApp para liberar pacientes ilimitados por R$ 69,90 (pagamento único).', '🔒 Limite atingido');
+      await avisar('Você atingiu o limite de ' + LIMITE_GRATIS + ' pacientes do plano grátis.\nClique em "Liberar agora", no aviso do topo da tela, para ter pacientes ilimitados por R$ 69,90 (pagamento único).', '🔒 Limite atingido');
       return;
     }
 
