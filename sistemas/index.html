@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemas Web | Clodoaldo Fernandes</title>
+<meta name="description" content="Estética Fácil, Cliente Fácil e Fisioterapia Fácil: sistemas web para organizar o seu atendimento. Comece grátis, sem mensalidade.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f4f6fb; color: #1f2937; }
+
+header {
+  background: #0b1220;
+  color: white;
+  padding: 56px 20px 64px;
+  text-align: center;
+}
+
+.etiqueta {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #93c5fd;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  max-width: 640px;
+  margin: 12px auto 14px;
+}
+
+header p { color: #cbd5e1; font-size: 1rem; max-width: 560px; margin: 0 auto; line-height: 1.5; }
+
+.container {
+  max-width: 1080px;
+  margin: -32px auto 0;
+  padding: 0 20px 56px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.sistema {
+  background: white;
+  border-radius: 18px;
+  padding: 26px 24px 24px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 28px rgba(11, 18, 32, .08);
+  display: flex;
+  flex-direction: column;
+}
+
+.icone {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.sistema h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+.publico { font-size: .9rem; font-weight: 600; color: #4b5563; margin-bottom: 14px; }
+
+.sistema ul { list-style: none; margin-bottom: 18px; flex: 1; }
+
+.sistema li {
+  font-size: .92rem;
+  color: #374151;
+  padding: 6px 0 6px 24px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.sistema li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 800;
+}
+
+.preco { font-size: 1.5rem; font-weight: 800; color: #111827; }
+.preco-obs { font-size: .82rem; color: #4b5563; margin-bottom: 16px; }
+
+.btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: 13px 14px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.btn-testar { color: white; }
+.btn-comprar { background: white; border: 2px solid; }
+
+.estetica h2, .estetica li::before, .estetica .btn-comprar { color: #be185d; }
+.estetica .icone { background: #fce7f1; }
+.estetica .btn-testar { background: #be185d; }
+.estetica .btn-comprar { border-color: #be185d; }
+
+.cliente h2, .cliente li::before, .cliente .btn-comprar { color: #1a56db; }
+.cliente .icone { background: #e8f0fe; }
+.cliente .btn-testar { background: #1a56db; }
+.cliente .btn-comprar { border-color: #1a56db; }
+
+.fisio h2, .fisio li::before, .fisio .btn-comprar { color: #0e7490; }
+.fisio .icone { background: #e0f2f5; }
+.fisio .btn-testar { background: #0e7490; }
+.fisio .btn-comprar { border-color: #0e7490; }
+
+.como {
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  padding: 26px 24px;
+  margin-top: 24px;
+}
+
+.como h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; color: #111827; }
+.como ol { padding-left: 20px; }
+.como li { font-size: .95rem; color: #374151; line-height: 1.6; padding: 2px 0; }
+
+footer { text-align: center; padding: 0 20px 48px; font-size: .9rem; color: #4b5563; line-height: 1.7; }
+footer strong { color: #111827; }
+footer a { color: #1a56db; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .grade { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.7rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="etiqueta">Sistemas web</div>
+  <h1>3 sistemas para organizar o seu atendimento</h1>
+  <p>Funcionam no celular e no computador, direto no navegador. Comece grátis e pague uma única vez se quiser liberar tudo, sem mensalidade.</p>
+</header>
+
+<div class="container">
+
+  <div class="grade">
+
+    <div class="sistema estetica">
+      <div class="icone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg>
+      </div>
+      <h2>Estética Fácil</h2>
+      <div class="publico">Para salões e profissionais de estética</div>
+      <ul>
+        <li>Cadastro de clientes</li>
+        <li>Fichas de atendimento com fotos de antes e depois</li>
+        <li>Agenda de atendimentos</li>
+        <li>Relatório de faturamento em PDF</li>
+      </ul>
+      <div class="preco">R$ 29,90</div>
+      <div class="preco-obs">Pagamento único · grátis até 2 clientes</div>
+      <a href="/app/estetica-facil.html" class="btn btn-testar">Testar grátis</a>
+      <a href="/comprar-ef.html" class="btn btn-comprar">Comprar a versão completa</a>
+    </div>
+
+    <div class="sistema cliente">
+      <div class="icone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+      </div>
+      <h2>Cliente Fácil</h2>
+      <div class="publico">Para corretores de imóveis</div>
+      <ul>
+        <li>Clientes organizados por comprador e vendedor</li>
+        <li>Temperatura do lead</li>
+        <li>Ficha de visita digital</li>
+        <li>Fotos e exportação em PDF</li>
+      </ul>
+      <div class="preco">R$ 49,90</div>
+      <div class="preco-obs">Pagamento único · grátis até 2 clientes</div>
+      <a href="/cliente-facil.html" class="btn btn-testar">Testar grátis</a>
+      <a href="/comprar-cf.html" class="btn btn-comprar">Comprar a versão completa</a>
+    </div>
+
+    <div class="sistema fisio">
+      <div class="icone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0e7490" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+      </div>
+      <h2>Fisioterapia Fácil</h2>
+      <div class="publico">Para fisioterapeutas</div>
+      <ul>
+        <li>Avaliação inicial com EVA, ADM e força</li>
+        <li>Sessões com reavaliação e decisão de conduta</li>
+        <li>Gráfico da evolução da dor</li>
+        <li>Agenda e controle financeiro</li>
+      </ul>
+      <div class="preco">R$ 69,90</div>
+      <div class="preco-obs">Pagamento único · grátis até 2 pacientes</div>
+      <a href="/app/fisioterapia-facil.html" class="btn btn-testar">Testar grátis</a>
+      <a href="/comprar-ff.html" class="btn btn-comprar">Comprar a versão completa</a>
+    </div>
+
+  </div>
+
+  <div class="como">
+    <h3>Como funciona</h3>
+    <ol>
+      <li>Clique em <strong>Testar grátis</strong> e crie sua conta com e-mail e senha.</li>
+      <li>Use à vontade dentro do limite gratuito.</li>
+      <li>Gostou? Compre a versão completa usando o <strong>mesmo e-mail</strong> da sua conta. A liberação é feita logo após o pagamento.</li>
+    </ol>
+  </div>
+
+</div>
+
+<footer>
+  Desenvolvidos por <strong>Clodoaldo Fernandes</strong><br>
+  Analista e Desenvolvedor de Sistemas<br>
+  <a href="/index.html">← Voltar para o site principal</a>
+</footer>
+
+</body>
+</html>
