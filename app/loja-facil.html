@@ -292,8 +292,11 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
   let souPro = false;
   let lojas = [];
   let lojaAtualId = null;
+  let empresa = {};
   let lojasRef = null;
   let perfilRef = null;
+  let empresaRef = null;
+  let pararDeEscutarEmpresa = null;
   let modoCadastro = false;
   let pararDeEscutarPerfil = null;
   let pararDeEscutarLojas = null;
@@ -389,7 +392,7 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
     btn.disabled = true; btn.textContent = 'Salvando...';
     try {
       const novaLoja = await addDoc(lojasRef, { nome: loja, cidade, criadoEmTS: Date.now() });
-      await updateDoc(perfilRef, { nomeEmpresaLF: empresa, lojaPadraoLF: novaLoja.id });
+      await setDoc(empresaRef, { nomeEmpresa: empresa, lojaPadrao: novaLoja.id }, { merge: true });
     } catch (erro) {
       console.error(erro);
       erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
@@ -417,7 +420,7 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
   window.salvarEmpresa = async function () {
     const nome = $('cfgEmpresa').value.trim();
     if (!nome) { alert('Digite o nome da empresa.'); return; }
-    await updateDoc(perfilRef, { nomeEmpresaLF: nome });
+    await setDoc(empresaRef, { nomeEmpresa: nome }, { merge: true });
     alert('Nome da empresa salvo!');
   };
 
@@ -460,10 +463,10 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
   }
 
   function renderizar() {
-    const empresa = perfil.nomeEmpresaLF || '';
+    const nomeEmpresa = empresa.nomeEmpresa || '';
 
     // Primeiro acesso: ainda não configurou a empresa
-    if (!empresa || lojas.length === 0) {
+    if (!nomeEmpresa || lojas.length === 0) {
       appConteudo.classList.add('oculto');
       telaBoasVindas.classList.remove('oculto');
       return;
@@ -475,7 +478,7 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
       let salva = null;
       try { salva = localStorage.getItem('lojaAtualLF_' + usuarioAtual.uid); } catch (e) {}
       lojaAtualId = lojas.some(l => l.id === salva) ? salva
-        : (lojas.some(l => l.id === perfil.lojaPadraoLF) ? perfil.lojaPadraoLF : lojas[0].id);
+        : (lojas.some(l => l.id === empresa.lojaPadrao) ? empresa.lojaPadrao : lojas[0].id);
     }
     const lojaAtual = lojas.find(l => l.id === lojaAtualId);
 
@@ -483,13 +486,13 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
       '<option value="' + l.id + '"' + (l.id === lojaAtualId ? ' selected' : '') + '>' + escapar(l.nome) + '</option>'
     ).join('');
 
-    $('saudacao').textContent = 'Olá, ' + empresa + '!';
+    $('saudacao').textContent = 'Olá, ' + nomeEmpresa + '!';
     $('indLojas').textContent = lojas.length;
     $('indLojaAtual').textContent = lojaAtual ? lojaAtual.nome : '—';
     $('indPlano').textContent = souPro ? 'PRO ⭐' : 'Gratuito';
     $('rodapeMenu').textContent = usuarioAtual ? usuarioAtual.email : '';
 
-    if (document.activeElement !== $('cfgEmpresa')) $('cfgEmpresa').value = empresa;
+    if (document.activeElement !== $('cfgEmpresa')) $('cfgEmpresa').value = nomeEmpresa;
 
     $('listaLojas').innerHTML = lojas.map(l =>
       '<li><div><strong>' + escapar(l.nome) + '</strong> ' +
@@ -500,13 +503,21 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
     ).join('');
   }
 
+  // Mostra um aviso em vez de deixar a tela em branco
+  function mostrarFalhaConexao() {
+    telaBoasVindas.classList.add('oculto');
+    appConteudo.classList.remove('oculto');
+    statusEl.innerHTML = '⚠️ Não foi possível carregar seus dados. Verifique sua internet, desative bloqueadores de anúncio para este site e recarregue a página.';
+  }
+
   // ---------- AUTENTICAÇÃO ----------
   onAuthStateChanged(auth, async (usuario) => {
     if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
     if (pararDeEscutarLojas) { pararDeEscutarLojas(); pararDeEscutarLojas = null; }
+    if (pararDeEscutarEmpresa) { pararDeEscutarEmpresa(); pararDeEscutarEmpresa = null; }
 
     if (!usuario) {
-      usuarioAtual = null; perfil = {}; lojas = []; lojaAtualId = null;
+      usuarioAtual = null; perfil = {}; empresa = {}; lojas = []; lojaAtualId = null;
       telaLogin.classList.remove('oculto');
       telaBoasVindas.classList.add('oculto');
       appConteudo.classList.add('oculto');
@@ -520,40 +531,49 @@ input:focus, select:focus { outline: 2px solid var(--cor); border-color: transpa
 
     perfilRef = doc(db, 'usuarios', usuario.uid);
     lojasRef = collection(db, 'usuarios', usuario.uid, 'lojasLF');
+    empresaRef = doc(db, 'usuarios', usuario.uid, 'configLF', 'empresa');
 
-    // Cria o perfil só se ainda não existir (nunca sobrescreve)
+    // Cria o perfil só se ainda não existir (nunca sobrescreve).
+    // O perfil não pode ser alterado depois (regra de segurança), por isso
+    // os dados da empresa ficam em configLF/empresa.
     try {
       const snap = await getDoc(perfilRef);
       if (!snap.exists()) {
         await setDoc(perfilRef, { proLojaFacil: false, email: usuario.email, criadoEm: new Date().toLocaleString('pt-BR') });
-      } else if (snap.data().proLojaFacil === undefined) {
-        await updateDoc(perfilRef, { proLojaFacil: false });
       }
     } catch (erro) {
       console.error('Erro ao verificar perfil:', erro);
     }
 
-    let perfilCarregado = false, lojasCarregadas = false;
+    let carregou = { perfil: false, empresa: false, lojas: false };
+    const tentarRenderizar = () => { if (carregou.perfil && carregou.empresa && carregou.lojas) renderizar(); };
+    const falhou = (erro) => {
+      console.error(erro);
+      mostrarFalhaConexao();
+    };
 
     pararDeEscutarPerfil = onSnapshot(perfilRef, (snap) => {
       perfil = snap.exists() ? snap.data() : {};
       souPro = perfil.proLojaFacil === true;
-      perfilCarregado = true;
-      if (lojasCarregadas) renderizar();
-    });
+      carregou.perfil = true;
+      tentarRenderizar();
+    }, falhou);
+
+    pararDeEscutarEmpresa = onSnapshot(empresaRef, (snap) => {
+      empresa = snap.exists() ? snap.data() : {};
+      carregou.empresa = true;
+      tentarRenderizar();
+    }, falhou);
 
     pararDeEscutarLojas = onSnapshot(
       query(lojasRef, orderBy('criadoEmTS', 'asc')),
       (snapshot) => {
         lojas = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
-        lojasCarregadas = true;
-        if (perfilCarregado) renderizar();
+        carregou.lojas = true;
+        tentarRenderizar();
       },
-      (erro) => {
-        console.error(erro);
-        statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
-      }
+      falhou
     );
   });
 </script>
