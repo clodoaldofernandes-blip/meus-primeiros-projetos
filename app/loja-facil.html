@@ -402,11 +402,12 @@ td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
       </div>
       <div>
         <label for="mpCusto">Preço de custo (R$)</label>
-        <input id="mpCusto" type="text" inputmode="decimal" placeholder="0,00">
+        <input id="mpCusto" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00">
       </div>
       <div>
         <label for="mpPreco">Preço de venda (R$) *</label>
-        <input id="mpPreco" type="text" inputmode="decimal" placeholder="0,00">
+        <input id="mpPreco" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00">
+        <p class="ajuda">Digite só os números: 3880 vira 38,80.</p>
       </div>
       <div>
         <label for="mpMinimo">Estoque mínimo</label>
@@ -562,8 +563,16 @@ td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
     return (Number(n) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
   function numeroParaCampo(n) {
-    return n ? Number(n).toFixed(2).replace('.', ',') : '';
+    return n ? Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
   }
+  // Máscara de dinheiro: digita só números e o sistema coloca vírgula e pontos (3880 -> 38,80)
+  function aplicarMascaraMoeda(campo) {
+    const digitos = campo.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 11);
+    campo.value = digitos ? numeroParaCampo(parseInt(digitos, 10) / 100) : '';
+  }
+  document.querySelectorAll('.campo-moeda').forEach(campo =>
+    campo.addEventListener('input', () => aplicarMascaraMoeda(campo))
+  );
   function hojeISO() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
