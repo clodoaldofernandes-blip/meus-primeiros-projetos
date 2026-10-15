@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja Fácil — Gestão para lojas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cor: #6d28d9;
+  --cor-escura: #5b21b6;
+  --cor-clara: #ede9fe;
+  --fundo: #f7f6fb;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --sombra: 0 8px 32px rgba(109,40,217,.12);
+  --verde: #16a34a;
+  --vermelho: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--fundo); color: var(--preto); }
+.oculto { display: none !important; }
+
+/* ---------- LOGIN ---------- */
+#telaLogin {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.caixa-login {
+  background: #fff; width: 100%; max-width: 400px; border-radius: 18px;
+  box-shadow: var(--sombra); padding: 36px 28px;
+}
+.logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 6px; }
+.logo-icone {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--cor); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.logo h1 { font-size: 26px; font-weight: 800; color: var(--cor-escura); }
+.subtitulo { text-align: center; color: var(--texto); font-size: 14px; margin-bottom: 24px; }
+label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+input, select {
+  width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--cinza-borda);
+  border-radius: 10px; font-family: inherit; font-size: 15px; background: #fff;
+}
+input:focus, select:focus { outline: 2px solid var(--cor); border-color: transparent; }
+.btn {
+  min-height: 46px; padding: 0 20px; border-radius: 10px; border: 0; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+}
+.btn-principal { background: var(--cor); color: #fff; width: 100%; margin-top: 20px; }
+.btn-principal:hover { background: var(--cor-escura); }
+.btn-principal:disabled { opacity: .6; cursor: wait; }
+.btn-secundario { background: #fff; color: var(--cor); border: 1.5px solid var(--cor); }
+.link-botao {
+  background: none; border: 0; color: var(--cor); font-family: inherit; font-size: 14px;
+  font-weight: 600; cursor: pointer; padding: 8px; min-height: 40px;
+}
+.alternar { text-align: center; margin-top: 14px; font-size: 14px; color: var(--texto); }
+.msg-erro {
+  display: none; background: #fef2f2; color: var(--vermelho); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-top: 14px;
+}
+.msg-ok {
+  display: none; background: #f0fdf4; color: var(--verde); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-top: 14px;
+}
+
+/* ---------- APP ---------- */
+#appConteudo { display: flex; flex-wrap: wrap; min-height: 100vh; }
+.menu {
+  flex: 1 1 230px; max-width: 100%; background: #1e1b2e; color: #e9e5f5;
+  padding: 24px 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.menu .logo { justify-content: flex-start; padding: 0 8px 20px; }
+.menu .logo h1 { color: #fff; font-size: 22px; }
+.menu .logo-icone { width: 36px; height: 36px; font-size: 18px; }
+.menu button {
+  text-align: left; background: none; border: 0; color: #d6d0ea; font-family: inherit;
+  font-size: 15px; font-weight: 500; padding: 0 14px; min-height: 44px; border-radius: 10px; cursor: pointer;
+}
+.menu button:hover { background: rgba(255,255,255,.07); }
+.menu button.ativo { background: var(--cor); color: #fff; font-weight: 600; }
+.menu .rodape-menu { margin-top: auto; padding: 16px 8px 0; font-size: 12px; color: #a59dc2; }
+
+.conteudo { flex: 999 1 560px; min-width: 0; padding: 24px; }
+.topo {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 22px;
+}
+.topo h2 { font-size: 26px; font-weight: 800; }
+.topo-direita { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.seletor-loja { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.seletor-loja select { min-width: 190px; }
+#status { font-size: 13px; color: var(--texto); margin-bottom: 16px; }
+
+.cartao {
+  background: #fff; border: 1px solid var(--cinza-borda); border-radius: 14px; padding: 22px; margin-bottom: 18px;
+}
+.cartao h3 { font-size: 18px; margin-bottom: 6px; }
+.cartao p { color: var(--texto); font-size: 14px; line-height: 1.5; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.indicador { background: #fff; border: 1px solid var(--cinza-borda); border-radius: 14px; padding: 18px; }
+.indicador span { font-size: 13px; color: var(--texto); }
+.indicador strong { display: block; font-size: 26px; margin-top: 6px; }
+
+.lista-lojas { list-style: none; margin-top: 14px; }
+.lista-lojas li {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 0; border-bottom: 1px solid var(--cinza-borda);
+}
+.lista-lojas li:last-child { border-bottom: 0; }
+.lista-lojas small { color: var(--texto); }
+.form-linha { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px; }
+.form-linha > div { flex: 1 1 200px; }
+.form-linha .btn { flex: 0 0 auto; }
+.etiqueta {
+  display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  background: var(--cor-clara); color: var(--cor-escura);
+}
+.aviso-pro {
+  background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px;
+  padding: 12px 14px; font-size: 14px; margin-top: 12px;
+}
+.em-breve { text-align: center; padding: 48px 20px; }
+.em-breve .icone { font-size: 40px; margin-bottom: 10px; }
+.btn-sair { background: #fff; border: 1px solid var(--cinza-borda); color: var(--preto); min-height: 40px; font-size: 14px; }
+
+/* ---------- BOAS-VINDAS ---------- */
+#telaBoasVindas { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+</style>
+</head>
+<body>
+
+<!-- ===== TELA DE LOGIN ===== -->
+<div id="telaLogin">
+  <div class="caixa-login">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Loja Fácil</h1></div>
+    <p class="subtitulo" id="loginSubtitulo">Estoque, vendas e financeiro da sua loja em um só lugar</p>
+
+    <label for="loginEmail">E-mail</label>
+    <input id="loginEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com">
+
+    <label for="loginSenha">Senha</label>
+    <input id="loginSenha" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+
+    <button class="btn btn-principal" id="btnLogin" onclick="fazerLogin()">Entrar</button>
+    <div class="msg-erro" id="loginErro"></div>
+    <div class="msg-ok" id="loginOk"></div>
+
+    <div class="alternar">
+      <span id="textoAlternar">Ainda não tem conta?</span>
+      <button class="link-botao" id="btnAlternar" onclick="alternarModo()">Criar conta grátis</button>
+    </div>
+    <div class="alternar">
+      <button class="link-botao" id="btnEsqueci" onclick="esqueciSenha()">Esqueci minha senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOAS-VINDAS (primeiro acesso) ===== -->
+<div id="telaBoasVindas" class="oculto">
+  <div class="caixa-login">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Bem-vindo(a)!</h1></div>
+    <p class="subtitulo">Vamos configurar sua loja. Leva menos de 1 minuto.</p>
+
+    <label for="bvEmpresa">Nome da empresa</label>
+    <input id="bvEmpresa" type="text" placeholder="Ex.: Bella Cosméticos">
+
+    <label for="bvLoja">Nome da primeira loja</label>
+    <input id="bvLoja" type="text" placeholder="Ex.: Loja Centro">
+
+    <label for="bvCidade">Cidade</label>
+    <input id="bvCidade" type="text" placeholder="Ex.: João Pessoa - PB">
+
+    <button class="btn btn-principal" id="btnBoasVindas" onclick="salvarBoasVindas()">Começar a usar</button>
+    <div class="msg-erro" id="bvErro"></div>
+  </div>
+</div>
+
+<!-- ===== SISTEMA ===== -->
+<div id="appConteudo" class="oculto">
+  <nav class="menu" aria-label="Menu principal">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Loja Fácil</h1></div>
+    <button data-tela="painel" class="ativo" onclick="abrirTela('painel')">Painel</button>
+    <button data-tela="produtos" onclick="abrirTela('produtos')">Produtos e estoque</button>
+    <button data-tela="vendas" onclick="abrirTela('vendas')">Vendas</button>
+    <button data-tela="financeiro" onclick="abrirTela('financeiro')">Financeiro</button>
+    <button data-tela="config" onclick="abrirTela('config')">Minha empresa</button>
+    <div class="rodape-menu" id="rodapeMenu"></div>
+  </nav>
+
+  <main class="conteudo">
+    <div class="topo">
+      <h2 id="tituloTela">Painel</h2>
+      <div class="topo-direita">
+        <div class="seletor-loja">
+          <label for="seletorLoja" style="margin:0">Loja:</label>
+          <select id="seletorLoja" onchange="trocarLoja(this.value)"></select>
+        </div>
+        <button class="btn btn-sair" onclick="sair()">Sair</button>
+      </div>
+    </div>
+    <div id="status">🔄 Carregando...</div>
+
+    <!-- PAINEL -->
+    <section id="tela-painel">
+      <div class="cartao">
+        <h3 id="saudacao">Olá!</h3>
+        <p>Este é o painel da sua loja. Nas próximas atualizações, aqui vão aparecer as vendas do dia, os alertas de estoque e os produtos perto do vencimento.</p>
+      </div>
+      <div class="grade">
+        <div class="indicador"><span>Lojas cadastradas</span><strong id="indLojas">0</strong></div>
+        <div class="indicador"><span>Loja selecionada</span><strong id="indLojaAtual" style="font-size:18px">—</strong></div>
+        <div class="indicador"><span>Plano</span><strong id="indPlano" style="font-size:18px">Gratuito</strong></div>
+      </div>
+    </section>
+
+    <!-- EM BREVE -->
+    <section id="tela-produtos" class="oculto"><div class="cartao em-breve"><div class="icone" aria-hidden="true">📦</div><h3>Produtos e estoque</h3><p>Em construção — próxima etapa.</p></div></section>
+    <section id="tela-vendas" class="oculto"><div class="cartao em-breve"><div class="icone" aria-hidden="true">🛒</div><h3>Vendas</h3><p>Em construção.</p></div></section>
+    <section id="tela-financeiro" class="oculto"><div class="cartao em-breve"><div class="icone" aria-hidden="true">💰</div><h3>Financeiro</h3><p>Em construção.</p></div></section>
+
+    <!-- MINHA EMPRESA -->
+    <section id="tela-config" class="oculto">
+      <div class="cartao">
+        <h3>Dados da empresa</h3>
+        <div class="form-linha">
+          <div>
+            <label for="cfgEmpresa">Nome da empresa</label>
+            <input id="cfgEmpresa" type="text">
+          </div>
+          <button class="btn btn-secundario" onclick="salvarEmpresa()">Salvar</button>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3>Minhas lojas</h3>
+        <p>No plano gratuito você pode ter 1 loja. No PRO, até 3 lojas.</p>
+        <ul class="lista-lojas" id="listaLojas"></ul>
+
+        <div class="form-linha">
+          <div>
+            <label for="novaLojaNome">Nome da nova loja</label>
+            <input id="novaLojaNome" type="text" placeholder="Ex.: Loja Shopping">
+          </div>
+          <div>
+            <label for="novaLojaCidade">Cidade</label>
+            <input id="novaLojaCidade" type="text" placeholder="Ex.: Sapé - PB">
+          </div>
+          <button class="btn btn-secundario" onclick="adicionarLoja()">Adicionar loja</button>
+        </div>
+        <div class="aviso-pro oculto" id="avisoLimiteLojas"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged, sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, getDoc, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Configuração do projeto Firebase (clodoaldofernandes-crm)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1",
+    measurementId: "G-MBJFQR0X9J"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ---------- LIMITES DOS PLANOS ----------
+  const LIMITE_LOJAS_GRATIS = 1;
+  const LIMITE_LOJAS_PRO = 3;
+  const LINK_COMPRA = 'https://clodoaldofernandes.com.br/sistemas';
+
+  // ---------- ESTADO ----------
+  let usuarioAtual = null;
+  let perfil = {};
+  let souPro = false;
+  let lojas = [];
+  let lojaAtualId = null;
+  let lojasRef = null;
+  let perfilRef = null;
+  let modoCadastro = false;
+  let pararDeEscutarPerfil = null;
+  let pararDeEscutarLojas = null;
+
+  const $ = (id) => document.getElementById(id);
+  const telaLogin = $('telaLogin');
+  const telaBoasVindas = $('telaBoasVindas');
+  const appConteudo = $('appConteudo');
+  const statusEl = $('status');
+
+  // ---------- LOGIN ----------
+  function mensagemErroFirebase(codigo) {
+    const mapa = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/missing-password': 'Informe uma senha.',
+      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/wrong-password': 'E-mail ou senha incorretos.',
+      'auth/user-not-found': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente de novo.',
+      'auth/missing-email': 'Digite seu e-mail no campo acima.'
+    };
+    return mapa[codigo] || 'Não foi possível concluir. Tente novamente.';
+  }
+
+  function mostrarErroLogin(texto) {
+    $('loginOk').style.display = 'none';
+    $('loginErro').textContent = texto;
+    $('loginErro').style.display = 'block';
+  }
+
+  window.alternarModo = function () {
+    modoCadastro = !modoCadastro;
+    $('btnLogin').textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+    $('textoAlternar').textContent = modoCadastro ? 'Já tem conta?' : 'Ainda não tem conta?';
+    $('btnAlternar').textContent = modoCadastro ? 'Entrar' : 'Criar conta grátis';
+    $('btnEsqueci').style.display = modoCadastro ? 'none' : 'inline-block';
+    $('loginErro').style.display = 'none';
+    $('loginOk').style.display = 'none';
+  };
+
+  window.fazerLogin = async function () {
+    const email = $('loginEmail').value.trim();
+    const senha = $('loginSenha').value;
+    $('loginErro').style.display = 'none';
+    if (!email || !senha) { mostrarErroLogin('Preencha e-mail e senha.'); return; }
+
+    const btn = $('btnLogin');
+    btn.disabled = true;
+    btn.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+    try {
+      if (modoCadastro) await createUserWithEmailAndPassword(auth, email, senha);
+      else await signInWithEmailAndPassword(auth, email, senha);
+    } catch (erro) {
+      console.error(erro);
+      mostrarErroLogin(mensagemErroFirebase(erro.code));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+    }
+  };
+
+  window.esqueciSenha = async function () {
+    const email = $('loginEmail').value.trim();
+    if (!email) { mostrarErroLogin('Digite seu e-mail no campo acima e clique de novo em "Esqueci minha senha".'); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      $('loginErro').style.display = 'none';
+      $('loginOk').textContent = 'Enviamos um link para redefinir sua senha. Confira seu e-mail (e a caixa de spam).';
+      $('loginOk').style.display = 'block';
+    } catch (erro) {
+      console.error(erro);
+      mostrarErroLogin(mensagemErroFirebase(erro.code));
+    }
+  };
+
+  window.sair = async function () { await signOut(auth); };
+
+  // ---------- BOAS-VINDAS ----------
+  window.salvarBoasVindas = async function () {
+    const empresa = $('bvEmpresa').value.trim();
+    const loja = $('bvLoja').value.trim();
+    const cidade = $('bvCidade').value.trim();
+    const erroEl = $('bvErro');
+    erroEl.style.display = 'none';
+    if (!empresa || !loja) {
+      erroEl.textContent = 'Preencha o nome da empresa e o nome da loja.';
+      erroEl.style.display = 'block';
+      return;
+    }
+    const btn = $('btnBoasVindas');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      const novaLoja = await addDoc(lojasRef, { nome: loja, cidade, criadoEmTS: Date.now() });
+      await updateDoc(perfilRef, { nomeEmpresaLF: empresa, lojaPadraoLF: novaLoja.id });
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Começar a usar';
+    }
+  };
+
+  // ---------- NAVEGAÇÃO ----------
+  const titulos = { painel: 'Painel', produtos: 'Produtos e estoque', vendas: 'Vendas', financeiro: 'Financeiro', config: 'Minha empresa' };
+  window.abrirTela = function (nome) {
+    Object.keys(titulos).forEach(t => $('tela-' + t).classList.toggle('oculto', t !== nome));
+    document.querySelectorAll('.menu button[data-tela]').forEach(b => b.classList.toggle('ativo', b.dataset.tela === nome));
+    $('tituloTela').textContent = titulos[nome];
+  };
+
+  window.trocarLoja = function (id) {
+    lojaAtualId = id;
+    try { localStorage.setItem('lojaAtualLF_' + usuarioAtual.uid, id); } catch (e) {}
+    renderizar();
+  };
+
+  // ---------- EMPRESA E LOJAS ----------
+  window.salvarEmpresa = async function () {
+    const nome = $('cfgEmpresa').value.trim();
+    if (!nome) { alert('Digite o nome da empresa.'); return; }
+    await updateDoc(perfilRef, { nomeEmpresaLF: nome });
+    alert('Nome da empresa salvo!');
+  };
+
+  window.adicionarLoja = async function () {
+    const nome = $('novaLojaNome').value.trim();
+    const cidade = $('novaLojaCidade').value.trim();
+    const aviso = $('avisoLimiteLojas');
+    aviso.classList.add('oculto');
+    if (!nome) { alert('Digite o nome da loja.'); return; }
+
+    const limite = souPro ? LIMITE_LOJAS_PRO : LIMITE_LOJAS_GRATIS;
+    if (lojas.length >= limite) {
+      aviso.innerHTML = souPro
+        ? 'Você chegou ao limite de ' + LIMITE_LOJAS_PRO + ' lojas do plano PRO.'
+        : 'O plano gratuito permite 1 loja. <a href="' + LINK_COMPRA + '" target="_blank" rel="noopener">Assine o PRO</a> para ter até ' + LIMITE_LOJAS_PRO + ' lojas.';
+      aviso.classList.remove('oculto');
+      return;
+    }
+    await addDoc(lojasRef, { nome, cidade, criadoEmTS: Date.now() });
+    $('novaLojaNome').value = '';
+    $('novaLojaCidade').value = '';
+  };
+
+  window.renomearLoja = async function (id) {
+    const loja = lojas.find(l => l.id === id);
+    const novo = prompt('Novo nome da loja:', loja ? loja.nome : '');
+    if (novo && novo.trim()) await updateDoc(doc(lojasRef, id), { nome: novo.trim() });
+  };
+
+  window.excluirLoja = async function (id) {
+    if (lojas.length <= 1) { alert('Você precisa ter pelo menos uma loja.'); return; }
+    const loja = lojas.find(l => l.id === id);
+    if (!confirm('Excluir a loja "' + (loja ? loja.nome : '') + '"? Essa ação não pode ser desfeita.')) return;
+    await deleteDoc(doc(lojasRef, id));
+  };
+
+  // ---------- TELA ----------
+  function escapar(texto) {
+    return String(texto || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function renderizar() {
+    const empresa = perfil.nomeEmpresaLF || '';
+
+    // Primeiro acesso: ainda não configurou a empresa
+    if (!empresa || lojas.length === 0) {
+      appConteudo.classList.add('oculto');
+      telaBoasVindas.classList.remove('oculto');
+      return;
+    }
+    telaBoasVindas.classList.add('oculto');
+    appConteudo.classList.remove('oculto');
+
+    if (!lojas.some(l => l.id === lojaAtualId)) {
+      let salva = null;
+      try { salva = localStorage.getItem('lojaAtualLF_' + usuarioAtual.uid); } catch (e) {}
+      lojaAtualId = lojas.some(l => l.id === salva) ? salva
+        : (lojas.some(l => l.id === perfil.lojaPadraoLF) ? perfil.lojaPadraoLF : lojas[0].id);
+    }
+    const lojaAtual = lojas.find(l => l.id === lojaAtualId);
+
+    $('seletorLoja').innerHTML = lojas.map(l =>
+      '<option value="' + l.id + '"' + (l.id === lojaAtualId ? ' selected' : '') + '>' + escapar(l.nome) + '</option>'
+    ).join('');
+
+    $('saudacao').textContent = 'Olá, ' + empresa + '!';
+    $('indLojas').textContent = lojas.length;
+    $('indLojaAtual').textContent = lojaAtual ? lojaAtual.nome : '—';
+    $('indPlano').textContent = souPro ? 'PRO ⭐' : 'Gratuito';
+    $('rodapeMenu').textContent = usuarioAtual ? usuarioAtual.email : '';
+
+    if (document.activeElement !== $('cfgEmpresa')) $('cfgEmpresa').value = empresa;
+
+    $('listaLojas').innerHTML = lojas.map(l =>
+      '<li><div><strong>' + escapar(l.nome) + '</strong> ' +
+      (l.id === lojaAtualId ? '<span class="etiqueta">selecionada</span>' : '') +
+      '<br><small>' + escapar(l.cidade || 'Cidade não informada') + '</small></div>' +
+      '<div><button class="link-botao" onclick="renomearLoja(\'' + l.id + '\')">Renomear</button>' +
+      '<button class="link-botao" style="color:var(--vermelho)" onclick="excluirLoja(\'' + l.id + '\')">Excluir</button></div></li>'
+    ).join('');
+  }
+
+  // ---------- AUTENTICAÇÃO ----------
+  onAuthStateChanged(auth, async (usuario) => {
+    if (pararDeEscutarPerfil) { pararDeEscutarPerfil(); pararDeEscutarPerfil = null; }
+    if (pararDeEscutarLojas) { pararDeEscutarLojas(); pararDeEscutarLojas = null; }
+
+    if (!usuario) {
+      usuarioAtual = null; perfil = {}; lojas = []; lojaAtualId = null;
+      telaLogin.classList.remove('oculto');
+      telaBoasVindas.classList.add('oculto');
+      appConteudo.classList.add('oculto');
+      return;
+    }
+
+    usuarioAtual = usuario;
+    telaLogin.classList.add('oculto');
+    $('loginEmail').value = '';
+    $('loginSenha').value = '';
+
+    perfilRef = doc(db, 'usuarios', usuario.uid);
+    lojasRef = collection(db, 'usuarios', usuario.uid, 'lojasLF');
+
+    // Cria o perfil só se ainda não existir (nunca sobrescreve)
+    try {
+      const snap = await getDoc(perfilRef);
+      if (!snap.exists()) {
+        await setDoc(perfilRef, { proLojaFacil: false, email: usuario.email, criadoEm: new Date().toLocaleString('pt-BR') });
+      } else if (snap.data().proLojaFacil === undefined) {
+        await updateDoc(perfilRef, { proLojaFacil: false });
+      }
+    } catch (erro) {
+      console.error('Erro ao verificar perfil:', erro);
+    }
+
+    let perfilCarregado = false, lojasCarregadas = false;
+
+    pararDeEscutarPerfil = onSnapshot(perfilRef, (snap) => {
+      perfil = snap.exists() ? snap.data() : {};
+      souPro = perfil.proLojaFacil === true;
+      perfilCarregado = true;
+      if (lojasCarregadas) renderizar();
+    });
+
+    pararDeEscutarLojas = onSnapshot(
+      query(lojasRef, orderBy('criadoEmTS', 'asc')),
+      (snapshot) => {
+        lojas = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+        lojasCarregadas = true;
+        if (perfilCarregado) renderizar();
+      },
+      (erro) => {
+        console.error(erro);
+        statusEl.textContent = '⚠️ Erro ao conectar ao banco de dados';
+      }
+    );
+  });
+</script>
+</body>
+</html>
