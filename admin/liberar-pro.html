@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liberar PRO | Admin</title>
+<title>Liberar ou retirar PRO | Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -53,6 +53,8 @@ button {
   cursor: pointer; margin-top: .5rem;
 }
 button:hover { background: var(--azul-escuro); }
+button.btn-retirar { background: white; color: var(--vermelho); border: 2px solid var(--vermelho); margin-top: .75rem; }
+button.btn-retirar:hover { background: #fde8e8; }
 button:disabled { opacity: .6; cursor: not-allowed; }
 .mensagem {
   margin-top: 1.2rem; padding: .8rem 1rem;
@@ -67,7 +69,7 @@ button:disabled { opacity: .6; cursor: not-allowed; }
 
 <div class="card">
   <h1>🔓 Liberar PRO</h1>
-  <p class="sub">Libere o acesso PRO de um cliente manualmente</p>
+  <p class="sub">Libere ou retire o acesso PRO de um cliente manualmente</p>
 
   <div class="campo">
     <label>Senha de administrador</label>
@@ -90,18 +92,23 @@ button:disabled { opacity: .6; cursor: not-allowed; }
     <input type="email" id="fEmail" placeholder="cliente@email.com" autocapitalize="off" autocorrect="off">
   </div>
 
-  <button id="btnLiberar" onclick="liberarPro()">Liberar PRO</button>
+  <button id="btnLiberar" onclick="alterarPro('liberar')">Liberar PRO</button>
+  <button id="btnRetirar" class="btn-retirar" onclick="alterarPro('retirar')">Retirar PRO</button>
 
   <div id="mensagem" class="mensagem"></div>
 </div>
 
 <script>
-async function liberarPro() {
+async function alterarPro(acao) {
   const senha = document.getElementById('fSenha').value;
   const email = document.getElementById('fEmail').value.trim();
-  const produto = document.getElementById('fProduto').value;
-  const btn = document.getElementById('btnLiberar');
+  const select = document.getElementById('fProduto');
+  const produto = select.value;
+  const nomeProduto = select.options[select.selectedIndex].text;
+  const btnLiberar = document.getElementById('btnLiberar');
+  const btnRetirar = document.getElementById('btnRetirar');
   const msg = document.getElementById('mensagem');
+  const retirar = acao === 'retirar';
 
   msg.className = 'mensagem';
   msg.textContent = '';
@@ -114,36 +121,46 @@ async function liberarPro() {
 
   if (!produto) {
     msg.className = 'mensagem erro';
-    msg.textContent = 'Selecione o produto que o cliente comprou.';
+    msg.textContent = 'Selecione o produto.';
     return;
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Liberando...';
+  if (retirar && !confirm('Retirar o PRO do ' + nomeProduto + ' de ' + email + '?\n\nO cliente volta para o plano gratuito.')) {
+    return;
+  }
+
+  btnLiberar.disabled = true;
+  btnRetirar.disabled = true;
+  const botao = retirar ? btnRetirar : btnLiberar;
+  botao.textContent = retirar ? 'Retirando...' : 'Liberando...';
 
   try {
     const resposta = await fetch('/api/liberar-pro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha, produto })
+      body: JSON.stringify({ email, senha, produto, acao })
     });
     const dados = await resposta.json();
 
     if (resposta.ok) {
       msg.className = 'mensagem sucesso';
-      msg.textContent = `✅ PRO do ${dados.produto || 'produto'} liberado para ${dados.email}`;
+      msg.textContent = retirar
+        ? '✅ PRO do ' + (dados.produto || 'produto') + ' retirado de ' + dados.email
+        : '✅ PRO do ' + (dados.produto || 'produto') + ' liberado para ' + dados.email;
       document.getElementById('fEmail').value = '';
     } else {
       msg.className = 'mensagem erro';
-      msg.textContent = '❌ ' + (dados.error || 'Erro ao liberar PRO');
+      msg.textContent = '❌ ' + (dados.error || 'Erro ao alterar o PRO');
     }
   } catch (erro) {
     msg.className = 'mensagem erro';
     msg.textContent = '❌ Erro de conexão. Tente novamente.';
   }
 
-  btn.disabled = false;
-  btn.textContent = 'Liberar PRO';
+  btnLiberar.disabled = false;
+  btnRetirar.disabled = false;
+  btnLiberar.textContent = 'Liberar PRO';
+  btnRetirar.textContent = 'Retirar PRO';
 }
 </script>
 </body>
