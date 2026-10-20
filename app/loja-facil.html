@@ -495,6 +495,18 @@ td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
 
     <!-- ===== MINHA EMPRESA ===== -->
     <section id="tela-config" class="oculto">
+      <div class="cartao" id="cartaoPlano">
+        <h3>Meu plano: <span id="cfgPlanoNome">Gratuito</span></h3>
+        <div id="cfgPlanoGratis">
+          <p>No plano gratuito você tem 1 loja e até 30 produtos. Com o <strong>PRO</strong> você tem até 3 lojas e produtos ilimitados.</p>
+          <p style="margin-top:8px"><strong>PRO Mensal:</strong> R$ 39,90/mês &nbsp;•&nbsp; <strong>PRO Anual:</strong> R$ 397,00/ano (sai mais barato)</p>
+          <div class="aviso-pro">⚠️ Na compra, use o <strong>mesmo e-mail da sua conta</strong>: <strong id="cfgPlanoEmail"></strong>. Assim o PRO é liberado automaticamente.</div>
+          <a class="btn btn-principal" id="btnAssinarPro" target="_blank" rel="noopener" style="margin-top:14px;display:inline-flex;align-items:center;text-decoration:none">⭐ Assinar o PRO</a>
+          <p style="margin-top:10px;font-size:13px">Já pagou? O PRO aparece aqui sozinho em alguns minutos. Se não aparecer, fale com o suporte: clodoaldo.fernandes@gmail.com</p>
+        </div>
+        <p id="cfgPlanoPro" class="oculto">Obrigado por assinar! Você tem até 3 lojas e produtos ilimitados. ⭐</p>
+      </div>
+
       <div class="cartao">
         <h3>Dados da empresa</h3>
         <div class="form-linha">
@@ -775,7 +787,7 @@ td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
   const LIMITE_LOJAS_GRATIS = 1;
   const LIMITE_LOJAS_PRO = 3;
   const LIMITE_PRODUTOS_GRATIS = 30;
-  const LINK_COMPRA = 'https://clodoaldofernandes.com.br/sistemas';
+  const LINK_COMPRA = 'https://clodoaldofernandes.com.br/comprar-lf.html';
   const CATEGORIAS_SUGERIDAS = ['Maquiagem', 'Skincare', 'Cabelos', 'Perfumaria', 'Unhas', 'Infantil', 'Acessórios', 'Roupas', 'Presentes'];
 
   // ---------- ESTADO ----------
@@ -1780,6 +1792,11 @@ td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
     $('saudacao').textContent = 'Olá, ' + nomeEmpresa + '!';
     $('indLojas').textContent = lojas.length;
     $('indPlano').textContent = souPro ? 'PRO ⭐' : 'Gratuito';
+    $('cfgPlanoNome').textContent = souPro ? 'PRO ⭐' : 'Gratuito';
+    $('cfgPlanoGratis').classList.toggle('oculto', souPro);
+    $('cfgPlanoPro').classList.toggle('oculto', !souPro);
+    $('cfgPlanoEmail').textContent = usuarioAtual ? usuarioAtual.email : '';
+    $('btnAssinarPro').href = LINK_COMPRA;
     $('rodapeMenu').textContent = usuarioAtual ? usuarioAtual.email : '';
     if (document.activeElement !== $('cfgEmpresa')) $('cfgEmpresa').value = nomeEmpresa;
     $('cfgDiasAviso').value = String(diasAviso());
