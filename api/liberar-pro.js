@@ -39,6 +39,9 @@ module.exports = async (req, res) => {
     // Se o produto não for informado, mantém o comportamento antigo (Estética Fácil)
     const chaveProduto = String(req.body.produto || 'estetica').trim().toLowerCase();
 
+    // Ação: 'liberar' (padrão) ou 'retirar' (ex.: cliente cancelou a assinatura)
+    const retirar = String(req.body.acao || 'liberar').trim().toLowerCase() === 'retirar';
+
     // Confere a senha de administrador
     if (senha !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Senha incorreta' });
@@ -57,21 +60,22 @@ module.exports = async (req, res) => {
     const userRecord = await admin.auth().getUserByEmail(email);
     const uid = userRecord.uid;
 
-    // Libera o plano PRO do produto escolhido no Firestore
-    await db.collection('usuarios').doc(uid).set({ [produto.campo]: true }, { merge: true });
+    // Libera (true) ou retira (false) o plano PRO do produto escolhido no Firestore
+    await db.collection('usuarios').doc(uid).set({ [produto.campo]: !retirar }, { merge: true });
 
-    console.log(`PRO do ${produto.nome} liberado manualmente para: ${email} (uid: ${uid})`);
+    console.log(`PRO do ${produto.nome} ${retirar ? 'retirado' : 'liberado'} manualmente para: ${email} (uid: ${uid})`);
     return res.status(200).json({
-      message: 'PRO liberado com sucesso',
+      message: retirar ? 'PRO retirado com sucesso' : 'PRO liberado com sucesso',
+      acao: retirar ? 'retirar' : 'liberar',
       email,
       produto: produto.nome,
     });
 
   } catch (erro) {
-    console.error('Erro ao liberar PRO manualmente:', erro);
+    console.error('Erro ao alterar PRO manualmente:', erro);
     if (erro.code === 'auth/user-not-found') {
       return res.status(404).json({ error: 'Nenhum cliente encontrado com esse e-mail' });
     }
-    return res.status(500).json({ error: 'Erro interno ao liberar PRO' });
+    return res.status(500).json({ error: 'Erro interno ao alterar o PRO' });
   }
 };
