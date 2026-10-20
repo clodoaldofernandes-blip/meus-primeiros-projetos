@@ -15,6 +15,7 @@ const PRODUTOS = {
   estetica: { campo: 'pro', nome: 'Estética Fácil' },
   cliente: { campo: 'proClienteFacil', nome: 'Cliente Fácil' },
   fisio: { campo: 'proFisioterapia', nome: 'Fisioterapia Fácil' },
+  loja: { campo: 'proLojaFacil', nome: 'Loja Fácil' },
 };
 
 module.exports = async (req, res) => {

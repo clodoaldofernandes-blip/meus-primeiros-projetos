@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja Fácil — Gestão para lojas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cor: #6d28d9;
+  --cor-escura: #5b21b6;
+  --cor-clara: #ede9fe;
+  --fundo: #f7f6fb;
+  --cinza-borda: #e5e7eb;
+  --texto: #555;
+  --preto: #111;
+  --sombra: 0 8px 32px rgba(109,40,217,.12);
+  --verde: #16a34a;
+  --vermelho: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--fundo); color: var(--preto); }
+.oculto { display: none !important; }
+
+/* ---------- LOGIN ---------- */
+#telaLogin, #telaBoasVindas {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.caixa-login {
+  background: #fff; width: 100%; max-width: 400px; border-radius: 18px;
+  box-shadow: var(--sombra); padding: 36px 28px;
+}
+.logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 6px; }
+.logo-icone {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--cor); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.logo h1 { font-size: 26px; font-weight: 800; color: var(--cor-escura); }
+.subtitulo { text-align: center; color: var(--texto); font-size: 14px; margin-bottom: 24px; }
+label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+input, select {
+  width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--cinza-borda);
+  border-radius: 10px; font-family: inherit; font-size: 15px; background: #fff;
+}
+input:focus, select:focus { outline: 2px solid var(--cor); border-color: transparent; }
+.btn {
+  min-height: 46px; padding: 0 20px; border-radius: 10px; border: 0; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+}
+.btn-principal { background: var(--cor); color: #fff; }
+.btn-principal:hover { background: var(--cor-escura); }
+.btn-principal:disabled { opacity: .6; cursor: wait; }
+.btn-largo { width: 100%; margin-top: 20px; }
+.btn-secundario { background: #fff; color: var(--cor); border: 1.5px solid var(--cor); }
+.link-botao {
+  background: none; border: 0; color: var(--cor); font-family: inherit; font-size: 14px;
+  font-weight: 600; cursor: pointer; padding: 8px; min-height: 40px;
+}
+.link-perigo { color: var(--vermelho); }
+.alternar { text-align: center; margin-top: 14px; font-size: 14px; color: var(--texto); }
+.msg-erro {
+  display: none; background: #fef2f2; color: var(--vermelho); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-top: 14px;
+}
+.msg-ok {
+  display: none; background: #f0fdf4; color: var(--verde); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-top: 14px;
+}
+
+/* ---------- APP ---------- */
+#appConteudo { display: flex; flex-wrap: wrap; min-height: 100vh; }
+.menu {
+  flex: 1 1 230px; max-width: 100%; background: #1e1b2e; color: #e9e5f5;
+  padding: 24px 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.menu .logo { justify-content: flex-start; padding: 0 8px 20px; }
+.menu .logo h1 { color: #fff; font-size: 22px; }
+.menu .logo-icone { width: 36px; height: 36px; font-size: 18px; }
+.menu button {
+  text-align: left; background: none; border: 0; color: #d6d0ea; font-family: inherit;
+  font-size: 15px; font-weight: 500; padding: 0 14px; min-height: 44px; border-radius: 10px; cursor: pointer;
+}
+.menu button:hover { background: rgba(255,255,255,.07); }
+.menu button.ativo { background: var(--cor); color: #fff; font-weight: 600; }
+.menu .rodape-menu { margin-top: auto; padding: 16px 8px 0; font-size: 12px; color: #a59dc2; word-break: break-all; }
+
+.conteudo { flex: 999 1 560px; min-width: 0; padding: 24px; }
+.topo {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 22px;
+}
+.topo h2 { font-size: 26px; font-weight: 800; }
+.topo-direita { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.seletor-loja { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.seletor-loja select { min-width: 190px; }
+#status { font-size: 13px; color: var(--texto); margin-bottom: 16px; }
+
+.cartao {
+  background: #fff; border: 1px solid var(--cinza-borda); border-radius: 14px; padding: 22px; margin-bottom: 18px;
+}
+.cartao h3 { font-size: 18px; margin-bottom: 6px; }
+.cartao p { color: var(--texto); font-size: 14px; line-height: 1.5; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 18px; }
+.indicador { background: #fff; border: 1px solid var(--cinza-borda); border-radius: 14px; padding: 18px; }
+.indicador span { font-size: 13px; color: var(--texto); }
+.indicador strong { display: block; font-size: 26px; margin-top: 6px; }
+.indicador.alerta-laranja { background: #fff7ed; border-color: #fed7aa; }
+.indicador.alerta-laranja strong, .indicador.alerta-laranja span { color: #9a3412; }
+.indicador.alerta-vermelho { background: #fef2f2; border-color: #fecaca; }
+.indicador.alerta-vermelho strong, .indicador.alerta-vermelho span { color: #991b1b; }
+
+.lista-simples { list-style: none; margin-top: 10px; }
+.lista-simples li {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 0; border-bottom: 1px solid var(--cinza-borda); font-size: 14px;
+}
+.lista-simples li:last-child { border-bottom: 0; }
+.lista-simples small { color: var(--texto); }
+.form-linha { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px; }
+.form-linha > div { flex: 1 1 200px; }
+.form-linha .btn { flex: 0 0 auto; }
+.etiqueta {
+  display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  background: var(--cor-clara); color: var(--cor-escura); white-space: nowrap;
+}
+.tag-ok { background: #dcfce7; color: #166534; }
+.tag-baixo { background: #ffedd5; color: #9a3412; }
+.tag-vence { background: #fef3c7; color: #92400e; }
+.tag-vencido, .tag-zerado { background: #fee2e2; color: #991b1b; }
+.aviso-pro {
+  background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px;
+  padding: 12px 14px; font-size: 14px; margin-top: 12px;
+}
+.em-breve { text-align: center; padding: 48px 20px; }
+.em-breve .icone { font-size: 40px; margin-bottom: 10px; }
+.btn-sair { background: #fff; border: 1px solid var(--cinza-borda); color: var(--preto); min-height: 40px; font-size: 14px; }
+.vazio { text-align: center; color: var(--texto); padding: 30px 10px; font-size: 14px; }
+
+/* ---------- PRODUTOS ---------- */
+.barra-ferramentas { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+.barra-ferramentas .campo-busca { flex: 1 1 260px; }
+.barra-ferramentas .campo-filtro { flex: 0 1 190px; }
+.barra-ferramentas label { margin-top: 0; }
+.tabela-caixa { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 860px; }
+th { text-align: left; color: var(--texto); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 10px 8px; border-bottom: 1px solid var(--cinza-borda); }
+td { padding: 12px 8px; border-bottom: 1px solid #f1f0f5; vertical-align: middle; }
+td.num, th.num { text-align: right; }
+td .acoes { display: flex; flex-wrap: wrap; gap: 2px; }
+td .acoes .link-botao { padding: 6px 8px; min-height: 36px; font-size: 13px; }
+.nome-produto { font-weight: 600; }
+.sub { display: block; font-size: 12px; color: var(--texto); margin-top: 2px; }
+
+/* ---------- JANELA (MODAL) ---------- */
+.fundo-modal {
+  position: fixed; inset: 0; background: rgba(17,12,34,.55); display: flex; align-items: flex-start;
+  justify-content: center; padding: 30px 16px; overflow-y: auto; z-index: 50;
+}
+.modal { background: #fff; width: 100%; max-width: 560px; border-radius: 16px; padding: 24px; box-shadow: var(--sombra); }
+.modal-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 4px; }
+.modal-topo h3 { font-size: 20px; }
+.btn-fechar { background: none; border: 0; font-size: 26px; line-height: 1; cursor: pointer; color: var(--texto); width: 44px; height: 44px; }
+.duas-colunas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+.secao-modal { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--cinza-borda); }
+.secao-modal h4 { font-size: 15px; }
+.secao-modal p { font-size: 13px; color: var(--texto); margin-top: 2px; }
+.modal-rodape { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.ajuda { font-size: 12px; color: var(--texto); margin-top: 4px; }
+@media (max-width: 520px) { .duas-colunas { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- VENDAS (PDV) ---------- */
+.pdv { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.pdv-itens { flex: 2 1 460px; min-width: 0; }
+.pdv-pagamento { flex: 1 1 300px; min-width: 0; }
+.resultados-busca { list-style: none; border: 1px solid var(--cinza-borda); border-radius: 10px; margin-top: 6px; max-height: 260px; overflow-y: auto; }
+.resultados-busca li { border-bottom: 1px solid #f1f0f5; }
+.resultados-busca li:last-child { border-bottom: 0; }
+.resultados-busca button {
+  width: 100%; display: flex; justify-content: space-between; gap: 10px; align-items: center; text-align: left;
+  background: #fff; border: 0; padding: 10px 14px; min-height: 48px; font-family: inherit; font-size: 14px; cursor: pointer;
+}
+.resultados-busca button:hover { background: var(--cor-clara); }
+.carrinho td { padding: 10px 6px; }
+.carrinho table { min-width: 520px; }
+.qtd-controle { display: inline-flex; align-items: center; gap: 4px; }
+.qtd-controle button {
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--cinza-borda); background: #fff;
+  font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.qtd-controle span { min-width: 28px; text-align: center; font-weight: 700; }
+.opcoes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.opcao {
+  min-height: 46px; border-radius: 10px; border: 1px solid var(--cinza-borda); background: #fff;
+  font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; color: var(--preto);
+}
+.opcao.ativa { border: 2px solid var(--cor); background: var(--cor-clara); color: var(--cor-escura); }
+.linha-total { display: flex; justify-content: space-between; font-size: 15px; padding: 4px 0; }
+.linha-total.grande { font-size: 26px; font-weight: 800; border-top: 1px solid var(--cinza-borda); padding-top: 12px; margin-top: 6px; }
+.btn-finalizar { width: 100%; min-height: 54px; font-size: 17px; margin-top: 14px; }
+.tag-cancelada { background: #f3f4f6; color: #4b5563; }
+
+/* ---------- FINANCEIRO ---------- */
+.barra-mes { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 18px; }
+.barra-mes > div { flex: 0 1 220px; }
+.barra-mes label { margin-top: 0; }
+.barra-categoria { height: 10px; background: #f1f0f5; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.barra-categoria div { height: 100%; background: var(--cor); border-radius: 999px; }
+.linha-categoria { margin-bottom: 12px; font-size: 14px; }
+.linha-categoria .topo-linha { display: flex; justify-content: space-between; }
+.tag-paga { background: #dcfce7; color: #166534; }
+.tag-aberta { background: #fef3c7; color: #92400e; }
+.tag-atrasada { background: #fee2e2; color: #991b1b; }
+.check-linha { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 14px; font-weight: 600; }
+.check-linha input { width: 22px; height: 22px; min-height: 0; }
+
+/* ---------- COMPROVANTE ---------- */
+.comprovante { font-family: 'Courier New', monospace; font-size: 14px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; padding: 16px; white-space: pre-wrap; margin-top: 10px; }
+@media print {
+  body * { visibility: hidden !important; }
+  #comprovanteTexto, #comprovanteTexto * { visibility: visible !important; }
+  #comprovanteTexto { position: absolute; left: 0; top: 0; width: 100%; border: 0; background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TELA DE LOGIN ===== -->
+<div id="telaLogin">
+  <div class="caixa-login">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Loja Fácil</h1></div>
+    <p class="subtitulo">Estoque, vendas e financeiro da sua loja em um só lugar</p>
+
+    <label for="loginEmail">E-mail</label>
+    <input id="loginEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com">
+
+    <label for="loginSenha">Senha</label>
+    <input id="loginSenha" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+
+    <button class="btn btn-principal btn-largo" id="btnLogin" onclick="fazerLogin()">Entrar</button>
+    <div class="msg-erro" id="loginErro"></div>
+    <div class="msg-ok" id="loginOk"></div>
+
+    <div class="alternar">
+      <span id="textoAlternar">Ainda não tem conta?</span>
+      <button class="link-botao" id="btnAlternar" onclick="alternarModo()">Criar conta grátis</button>
+    </div>
+    <div class="alternar">
+      <button class="link-botao" id="btnEsqueci" onclick="esqueciSenha()">Esqueci minha senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOAS-VINDAS (primeiro acesso) ===== -->
+<div id="telaBoasVindas" class="oculto">
+  <div class="caixa-login">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Bem-vindo(a)!</h1></div>
+    <p class="subtitulo">Vamos configurar sua loja. Leva menos de 1 minuto.</p>
+
+    <label for="bvEmpresa">Nome da empresa</label>
+    <input id="bvEmpresa" type="text" placeholder="Ex.: Bella Cosméticos">
+
+    <label for="bvLoja">Nome da primeira loja</label>
+    <input id="bvLoja" type="text" placeholder="Ex.: Loja Centro">
+
+    <label for="bvCidade">Cidade</label>
+    <input id="bvCidade" type="text" placeholder="Ex.: João Pessoa - PB">
+
+    <button class="btn btn-principal btn-largo" id="btnBoasVindas" onclick="salvarBoasVindas()">Começar a usar</button>
+    <div class="msg-erro" id="bvErro"></div>
+  </div>
+</div>
+
+<!-- ===== SISTEMA ===== -->
+<div id="appConteudo" class="oculto">
+  <nav class="menu" aria-label="Menu principal">
+    <div class="logo"><div class="logo-icone" aria-hidden="true">🛍️</div><h1>Loja Fácil</h1></div>
+    <button data-tela="painel" class="ativo" onclick="abrirTela('painel')">Painel</button>
+    <button data-tela="produtos" onclick="abrirTela('produtos')">Produtos e estoque</button>
+    <button data-tela="vendas" onclick="abrirTela('vendas')">Vendas</button>
+    <button data-tela="financeiro" onclick="abrirTela('financeiro')">Financeiro</button>
+    <button data-tela="config" onclick="abrirTela('config')">Minha empresa</button>
+    <div class="rodape-menu" id="rodapeMenu"></div>
+  </nav>
+
+  <main class="conteudo">
+    <div class="topo">
+      <h2 id="tituloTela">Painel</h2>
+      <div class="topo-direita">
+        <div class="seletor-loja">
+          <label for="seletorLoja" style="margin:0">Loja:</label>
+          <select id="seletorLoja" onchange="trocarLoja(this.value)"></select>
+        </div>
+        <button class="btn btn-sair" onclick="sair()">Sair</button>
+      </div>
+    </div>
+    <div id="status">🔄 Carregando...</div>
+
+    <!-- ===== PAINEL ===== -->
+    <section id="tela-painel">
+      <div class="cartao">
+        <h3 id="saudacao">Olá!</h3>
+        <p>Resumo da loja selecionada: vendas, estoque e alertas.</p>
+      </div>
+      <div class="grade">
+        <div class="indicador"><span>Vendas hoje</span><strong id="pnVendasHoje">R$ 0,00</strong><span id="pnQtdHoje">0 vendas</span></div>
+        <div class="indicador"><span>Vendas no mês</span><strong id="pnVendasMes">R$ 0,00</strong><span id="pnTicket">Ticket médio: R$ 0,00</span></div>
+        <div class="indicador"><span>Lucro bruto no mês</span><strong id="pnLucroBruto">R$ 0,00</strong><span>Vendas menos custo dos produtos</span></div>
+        <div class="indicador"><span>Contas a pagar no mês</span><strong id="pnAPagar">R$ 0,00</strong><span id="pnAtrasadas">0 atrasada(s)</span></div>
+      </div>
+      <div class="grade">
+        <div class="indicador"><span>Produtos cadastrados</span><strong id="pnProdutos">0</strong></div>
+        <div class="indicador"><span>Valor em estoque (custo)</span><strong id="pnValor">R$ 0,00</strong></div>
+        <div class="indicador alerta-laranja"><span>Estoque baixo ou zerado</span><strong id="pnBaixo">0</strong></div>
+        <div class="indicador alerta-vermelho"><span id="pnVenceTitulo">Vencendo ou vencidos</span><strong id="pnVence">0</strong></div>
+      </div>
+      <div class="grade" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <div class="cartao" style="margin:0">
+          <h3>⏰ Validade</h3>
+          <ul class="lista-simples" id="pnListaVence"></ul>
+        </div>
+        <div class="cartao" style="margin:0">
+          <h3>📉 Repor estoque</h3>
+          <ul class="lista-simples" id="pnListaBaixo"></ul>
+        </div>
+      </div>
+      <div class="grade">
+        <div class="indicador"><span>Lojas cadastradas</span><strong id="indLojas">0</strong></div>
+        <div class="indicador"><span>Plano</span><strong id="indPlano" style="font-size:18px">Gratuito</strong></div>
+      </div>
+    </section>
+
+    <!-- ===== PRODUTOS E ESTOQUE ===== -->
+    <section id="tela-produtos" class="oculto">
+      <div class="grade">
+        <div class="indicador"><span>Produtos cadastrados</span><strong id="prTotal">0</strong></div>
+        <div class="indicador"><span>Valor em estoque (custo)</span><strong id="prValor">R$ 0,00</strong></div>
+        <div class="indicador alerta-laranja"><span>Estoque baixo ou zerado</span><strong id="prBaixo">0</strong></div>
+        <div class="indicador alerta-vermelho"><span>Vencendo ou vencidos</span><strong id="prVence">0</strong></div>
+      </div>
+
+      <div class="cartao">
+        <div class="barra-ferramentas">
+          <div class="campo-busca">
+            <label for="busca">Buscar produto</label>
+            <input id="busca" type="search" placeholder="Nome, categoria ou código de barras" oninput="renderizarProdutos()">
+          </div>
+          <div class="campo-filtro">
+            <label for="filtroCategoria">Categoria</label>
+            <select id="filtroCategoria" onchange="renderizarProdutos()"></select>
+          </div>
+          <div class="campo-filtro">
+            <label for="filtroSituacao">Situação</label>
+            <select id="filtroSituacao" onchange="renderizarProdutos()">
+              <option value="todos">Todas</option>
+              <option value="baixo">Estoque baixo ou zerado</option>
+              <option value="vence">Vencendo ou vencidos</option>
+              <option value="ok">Normal</option>
+            </select>
+          </div>
+          <button class="btn btn-secundario" onclick="abrirEntrada()">+ Entrada de estoque</button>
+          <button class="btn btn-principal" onclick="abrirProduto()">+ Novo produto</button>
+        </div>
+        <div class="aviso-pro oculto" id="avisoLimiteProdutos"></div>
+        <div class="tabela-caixa">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th class="num">Qtd. / mín.</th>
+                <th class="num">Custo</th>
+                <th class="num">Venda</th>
+                <th>Validade mais próxima</th>
+                <th>Situação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpoProdutos"></tbody>
+          </table>
+        </div>
+        <div class="vazio oculto" id="produtosVazio"></div>
+      </div>
+    </section>
+
+    <!-- ===== VENDAS (PDV) ===== -->
+    <section id="tela-vendas" class="oculto">
+      <div class="pdv">
+        <div class="cartao pdv-itens">
+          <h3>Nova venda</h3>
+          <label for="pdvBusca">Adicionar produto</label>
+          <input id="pdvBusca" type="search" autocomplete="off" placeholder="Bipe o código de barras ou digite o nome" oninput="buscarNoPdv()" onkeydown="teclaPdv(event)">
+          <p class="ajuda">Com leitor de código de barras, é só bipar: o produto entra direto na venda.</p>
+          <ul class="resultados-busca oculto" id="pdvResultados"></ul>
+
+          <div class="tabela-caixa carrinho" style="margin-top:16px">
+            <table>
+              <thead><tr><th>Produto</th><th>Qtd.</th><th class="num">Unit.</th><th class="num">Total</th><th></th></tr></thead>
+              <tbody id="pdvCarrinho"></tbody>
+            </table>
+          </div>
+          <div class="vazio" id="pdvVazio">Nenhum produto na venda ainda.</div>
+        </div>
+
+        <div class="cartao pdv-pagamento">
+          <h3>Pagamento</h3>
+          <label>Tipo de venda</label>
+          <div class="opcoes" id="pdvTipo">
+            <button class="opcao ativa" data-valor="balcao" onclick="escolherTipo('balcao')">Balcão</button>
+            <button class="opcao" data-valor="delivery" onclick="escolherTipo('delivery')">Delivery</button>
+          </div>
+
+          <label for="pdvCliente">Cliente (opcional)</label>
+          <input id="pdvCliente" type="text" placeholder="Nome ou WhatsApp">
+
+          <div id="pdvCamposDelivery" class="oculto">
+            <label for="pdvEndereco">Endereço de entrega</label>
+            <input id="pdvEndereco" type="text" placeholder="Rua, número, bairro e referência">
+            <label for="pdvTaxa">Taxa de entrega (R$)</label>
+            <input id="pdvTaxa" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00" oninput="renderizarCarrinho()">
+          </div>
+
+          <label for="pdvDesconto">Desconto (R$)</label>
+          <input id="pdvDesconto" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00" oninput="renderizarCarrinho()">
+
+          <label>Forma de pagamento</label>
+          <div class="opcoes" id="pdvPagamento">
+            <button class="opcao" data-valor="Dinheiro" onclick="escolherPagamento('Dinheiro')">Dinheiro</button>
+            <button class="opcao ativa" data-valor="Pix" onclick="escolherPagamento('Pix')">Pix</button>
+            <button class="opcao" data-valor="Débito" onclick="escolherPagamento('Débito')">Débito</button>
+            <button class="opcao" data-valor="Crédito" onclick="escolherPagamento('Crédito')">Crédito</button>
+          </div>
+
+          <div style="margin-top:16px">
+            <div class="linha-total"><span>Subtotal</span><span id="pdvSubtotal">R$ 0,00</span></div>
+            <div class="linha-total"><span>Desconto</span><span id="pdvDescontoTxt">– R$ 0,00</span></div>
+            <div class="linha-total oculto" id="pdvLinhaTaxa"><span>Taxa de entrega</span><span id="pdvTaxaTxt">+ R$ 0,00</span></div>
+            <div class="linha-total grande"><span>Total</span><span id="pdvTotal">R$ 0,00</span></div>
+          </div>
+          <button class="btn btn-principal btn-finalizar" id="pdvFinalizar" onclick="finalizarVenda()">Finalizar venda</button>
+          <button class="link-botao" style="width:100%" onclick="limparVenda()">Limpar venda</button>
+          <div class="msg-erro" id="pdvErro"></div>
+          <p class="ajuda" style="margin-top:10px">O comprovante gerado não tem valor fiscal.</p>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <div class="topo" style="margin-bottom:6px">
+          <h3>Vendas de hoje</h3>
+          <strong id="vhResumo">0 vendas · R$ 0,00</strong>
+        </div>
+        <ul class="lista-simples" id="vhLista"></ul>
+      </div>
+    </section>
+
+    <!-- ===== FINANCEIRO ===== -->
+    <section id="tela-financeiro" class="oculto">
+      <div class="barra-mes">
+        <div>
+          <label for="finMes">Mês</label>
+          <input id="finMes" type="month" onchange="trocarMesFinanceiro(this.value)">
+        </div>
+        <button class="btn btn-principal" onclick="abrirDespesa()">+ Lançar despesa</button>
+      </div>
+
+      <div class="grade">
+        <div class="indicador"><span>Entradas (vendas)</span><strong id="finEntradas" style="color:var(--verde)">R$ 0,00</strong><span id="finQtdVendas">0 vendas</span></div>
+        <div class="indicador"><span>Despesas pagas</span><strong id="finPagas" style="color:var(--vermelho)">R$ 0,00</strong></div>
+        <div class="indicador alerta-laranja"><span>A pagar</span><strong id="finAPagar">R$ 0,00</strong><span id="finAtrasadas">0 atrasada(s)</span></div>
+        <div class="indicador" style="background:#1e1b2e;border-color:#1e1b2e"><span style="color:#d6d0ea">Saldo do mês (caixa)</span><strong id="finSaldo" style="color:#fff">R$ 0,00</strong><span style="color:#d6d0ea">Entradas − despesas pagas</span></div>
+      </div>
+
+      <div class="grade" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+        <div class="cartao" style="margin:0">
+          <h3>Resultado do mês</h3>
+          <div class="linha-total"><span>Vendas</span><span id="resVendas">R$ 0,00</span></div>
+          <div class="linha-total"><span>(−) Custo dos produtos vendidos</span><span id="resCusto">R$ 0,00</span></div>
+          <div class="linha-total"><span>(−) Despesas do mês</span><span id="resDespesas">R$ 0,00</span></div>
+          <div class="linha-total"><span>(−) Imposto estimado (<span id="resAliq">0</span>%)</span><span id="resImposto">R$ 0,00</span></div>
+          <div class="linha-total grande" style="font-size:22px"><span>Lucro estimado</span><span id="resLucro">R$ 0,00</span></div>
+          <p class="ajuda" style="margin-top:8px">O imposto é uma estimativa para planejamento, usando a alíquota informada em "Minha empresa". O cálculo oficial é feito pelo contador.</p>
+        </div>
+        <div class="cartao" style="margin:0">
+          <h3>Despesas por categoria</h3>
+          <div id="finCategorias" style="margin-top:12px"></div>
+          <h3 style="margin-top:16px">Vendas por forma de pagamento</h3>
+          <div id="finPagamentos" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3>Contas e despesas do mês</h3>
+        <ul class="lista-simples" id="finLista"></ul>
+      </div>
+    </section>
+
+    <!-- ===== MINHA EMPRESA ===== -->
+    <section id="tela-config" class="oculto">
+      <div class="cartao">
+        <h3>Dados da empresa</h3>
+        <div class="form-linha">
+          <div>
+            <label for="cfgEmpresa">Nome da empresa</label>
+            <input id="cfgEmpresa" type="text">
+          </div>
+          <button class="btn btn-secundario" onclick="salvarEmpresa()">Salvar</button>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3>Aviso de validade</h3>
+        <p>Com quantos dias de antecedência o sistema deve avisar que um produto vai vencer?</p>
+        <div class="form-linha">
+          <div>
+            <label for="cfgDiasAviso">Antecedência</label>
+            <select id="cfgDiasAviso">
+              <option value="15">15 dias</option>
+              <option value="30">30 dias</option>
+              <option value="60">60 dias</option>
+              <option value="90">90 dias</option>
+            </select>
+          </div>
+          <button class="btn btn-secundario" onclick="salvarDiasAviso()">Salvar</button>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3>Imposto (estimativa)</h3>
+        <p>Alíquota efetiva do Simples Nacional informada pelo seu contador. Usada só para estimar o imposto no Financeiro.</p>
+        <div class="form-linha">
+          <div>
+            <label for="cfgAliquota">Alíquota (%)</label>
+            <input id="cfgAliquota" type="number" min="0" max="40" step="0.01" placeholder="Ex.: 6">
+          </div>
+          <button class="btn btn-secundario" onclick="salvarAliquota()">Salvar</button>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3>Minhas lojas</h3>
+        <p>No plano gratuito você pode ter 1 loja. No PRO, até 3 lojas.</p>
+        <ul class="lista-simples" id="listaLojas"></ul>
+
+        <div class="form-linha">
+          <div>
+            <label for="novaLojaNome">Nome da nova loja</label>
+            <input id="novaLojaNome" type="text" placeholder="Ex.: Loja Shopping">
+          </div>
+          <div>
+            <label for="novaLojaCidade">Cidade</label>
+            <input id="novaLojaCidade" type="text" placeholder="Ex.: Sapé - PB">
+          </div>
+          <button class="btn btn-secundario" onclick="adicionarLoja()">Adicionar loja</button>
+        </div>
+        <div class="aviso-pro oculto" id="avisoLimiteLojas"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ===== JANELA: PRODUTO (novo / editar) ===== -->
+<div class="fundo-modal oculto" id="modalProduto">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mpTitulo">
+    <div class="modal-topo">
+      <h3 id="mpTitulo">Novo produto</h3>
+      <button class="btn-fechar" aria-label="Fechar" onclick="fecharModais()">×</button>
+    </div>
+
+    <label for="mpNome">Nome do produto *</label>
+    <input id="mpNome" type="text" placeholder="Ex.: Batom matte — tom 05">
+
+    <div class="duas-colunas">
+      <div>
+        <label for="mpCategoria">Categoria</label>
+        <input id="mpCategoria" type="text" list="listaCategorias" placeholder="Ex.: Maquiagem">
+        <datalist id="listaCategorias"></datalist>
+      </div>
+      <div>
+        <label for="mpCodigo">Código de barras</label>
+        <input id="mpCodigo" type="text" inputmode="numeric" placeholder="Bipe ou digite">
+      </div>
+      <div>
+        <label for="mpCusto">Preço de custo (R$)</label>
+        <input id="mpCusto" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00">
+      </div>
+      <div>
+        <label for="mpPreco">Preço de venda (R$) *</label>
+        <input id="mpPreco" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00">
+        <p class="ajuda">Digite só os números: 3880 vira 38,80.</p>
+      </div>
+      <div>
+        <label for="mpMinimo">Estoque mínimo</label>
+        <input id="mpMinimo" type="number" min="0" step="1" placeholder="Ex.: 5">
+        <p class="ajuda">Avisa quando a quantidade ficar igual ou abaixo disso.</p>
+      </div>
+    </div>
+
+    <div class="secao-modal" id="mpSecaoInicial">
+      <h4>Estoque inicial nesta loja (opcional)</h4>
+      <p>Pode deixar em branco e dar entrada depois.</p>
+      <div class="duas-colunas">
+        <div>
+          <label for="mpQtd">Quantidade</label>
+          <input id="mpQtd" type="number" min="0" step="1" placeholder="0">
+        </div>
+        <div>
+          <label for="mpLote">Lote</label>
+          <input id="mpLote" type="text" placeholder="Ex.: L2309">
+        </div>
+        <div>
+          <label for="mpValidade">Validade</label>
+          <input id="mpValidade" type="date">
+        </div>
+      </div>
+    </div>
+
+    <div class="msg-erro" id="mpErro"></div>
+    <div class="modal-rodape">
+      <button class="btn btn-sair" onclick="fecharModais()">Cancelar</button>
+      <button class="btn btn-principal" id="mpSalvar" onclick="salvarProduto()">Salvar produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JANELA: ENTRADA DE ESTOQUE ===== -->
+<div class="fundo-modal oculto" id="modalEntrada">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="meTitulo">
+    <div class="modal-topo">
+      <h3 id="meTitulo">Entrada de estoque</h3>
+      <button class="btn-fechar" aria-label="Fechar" onclick="fecharModais()">×</button>
+    </div>
+    <p class="ajuda" id="meLoja"></p>
+
+    <label for="meProduto">Produto *</label>
+    <select id="meProduto"></select>
+
+    <div class="duas-colunas">
+      <div>
+        <label for="meQtd">Quantidade *</label>
+        <input id="meQtd" type="number" min="1" step="1" placeholder="Ex.: 12">
+      </div>
+      <div>
+        <label for="meLote">Lote</label>
+        <input id="meLote" type="text" placeholder="Ex.: L2309">
+      </div>
+      <div>
+        <label for="meValidade">Validade</label>
+        <input id="meValidade" type="date">
+      </div>
+    </div>
+
+    <div class="msg-erro" id="meErro"></div>
+    <div class="modal-rodape">
+      <button class="btn btn-sair" onclick="fecharModais()">Cancelar</button>
+      <button class="btn btn-principal" id="meSalvar" onclick="salvarEntrada()">Dar entrada</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JANELA: LOTES DO PRODUTO ===== -->
+<div class="fundo-modal oculto" id="modalLotes">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mlTitulo">
+    <div class="modal-topo">
+      <h3 id="mlTitulo">Lotes</h3>
+      <button class="btn-fechar" aria-label="Fechar" onclick="fecharModais()">×</button>
+    </div>
+    <p class="ajuda" id="mlLoja"></p>
+    <ul class="lista-simples" id="mlLista"></ul>
+    <div class="modal-rodape">
+      <button class="btn btn-secundario" id="mlEntrada">+ Entrada deste produto</button>
+      <button class="btn btn-sair" onclick="fecharModais()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JANELA: DESPESA ===== -->
+<div class="fundo-modal oculto" id="modalDespesa">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mdTitulo">
+    <div class="modal-topo">
+      <h3 id="mdTitulo">Lançar despesa</h3>
+      <button class="btn-fechar" aria-label="Fechar" onclick="fecharModais()">×</button>
+    </div>
+    <p class="ajuda" id="mdLoja"></p>
+
+    <label for="mdDescricao">Descrição *</label>
+    <input id="mdDescricao" type="text" placeholder="Ex.: Aluguel da loja">
+
+    <div class="duas-colunas">
+      <div>
+        <label for="mdCategoria">Categoria</label>
+        <select id="mdCategoria">
+          <option>Aluguel</option>
+          <option>Energia</option>
+          <option>Água</option>
+          <option>Internet e telefone</option>
+          <option>Salários</option>
+          <option>Fornecedores</option>
+          <option>Marketing</option>
+          <option>Impostos</option>
+          <option>Contador</option>
+          <option>Manutenção</option>
+          <option>Outros</option>
+        </select>
+      </div>
+      <div>
+        <label for="mdValor">Valor (R$) *</label>
+        <input id="mdValor" class="campo-moeda" type="text" inputmode="numeric" placeholder="0,00">
+      </div>
+      <div>
+        <label for="mdVencimento">Vencimento *</label>
+        <input id="mdVencimento" type="date">
+      </div>
+      <div id="mdRepetirCaixa">
+        <label for="mdRepetir">Repetir nos próximos meses</label>
+        <select id="mdRepetir">
+          <option value="0">Não repetir</option>
+          <option value="2">Mais 2 meses</option>
+          <option value="5">Mais 5 meses</option>
+          <option value="11">Mais 11 meses</option>
+        </select>
+      </div>
+    </div>
+    <label class="check-linha"><input id="mdPago" type="checkbox"> Já está paga</label>
+
+    <div class="msg-erro" id="mdErro"></div>
+    <div class="modal-rodape">
+      <button class="btn btn-sair" onclick="fecharModais()">Cancelar</button>
+      <button class="btn btn-principal" id="mdSalvar" onclick="salvarDespesa()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JANELA: COMPROVANTE ===== -->
+<div class="fundo-modal oculto" id="modalComprovante">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mcTitulo">
+    <div class="modal-topo">
+      <h3 id="mcTitulo">✅ Venda registrada</h3>
+      <button class="btn-fechar" aria-label="Fechar" onclick="fecharModais()">×</button>
+    </div>
+    <div class="comprovante" id="comprovanteTexto"></div>
+    <div class="modal-rodape">
+      <button class="btn btn-sair" onclick="window.print()">Imprimir</button>
+      <a class="btn btn-secundario" id="mcWhats" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Enviar no WhatsApp</a>
+      <button class="btn btn-principal" onclick="fecharModais()">Nova venda</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged, sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, getDoc, setDoc, writeBatch, where
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Configuração do projeto Firebase (clodoaldofernandes-crm)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXh4XmsS5YwoCkjd_-ozf_M5xiZlKsc-U",
+    authDomain: "clodoaldofernandes-crm.firebaseapp.com",
+    projectId: "clodoaldofernandes-crm",
+    storageBucket: "clodoaldofernandes-crm.firebasestorage.app",
+    messagingSenderId: "219414452",
+    appId: "1:219414452:web:702d6a061bc3d60a3dbce1",
+    measurementId: "G-MBJFQR0X9J"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ---------- LIMITES DOS PLANOS ----------
+  const LIMITE_LOJAS_GRATIS = 1;
+  const LIMITE_LOJAS_PRO = 3;
+  const LIMITE_PRODUTOS_GRATIS = 30;
+  const LINK_COMPRA = 'https://clodoaldofernandes.com.br/sistemas';
+  const CATEGORIAS_SUGERIDAS = ['Maquiagem', 'Skincare', 'Cabelos', 'Perfumaria', 'Unhas', 'Infantil', 'Acessórios', 'Roupas', 'Presentes'];
+
+  // ---------- ESTADO ----------
+  let usuarioAtual = null;
+  let perfil = {};
+  let souPro = false;
+  let empresa = {};
+  let lojas = [];
+  let produtos = [];
+  let lotes = [];
+  let lojaAtualId = null;
+  let modoCadastro = false;
+  let produtoEditandoId = null;
+
+  // Vendas e despesas: só o mês atual fica carregado (economiza leituras).
+  // Se o Financeiro mostrar outro mês, ele é carregado à parte.
+  let vendasMes = [], lancMes = [];
+  let vendasOutroMes = [], lancOutroMes = [];
+  let mesFin = null;
+  let carrinho = [];
+  let tipoVenda = 'balcao';
+  let formaPagamento = 'Pix';
+  let despesaEditandoId = null;
+
+  let perfilRef = null, empresaRef = null, lojasRef = null, produtosRef = null, lotesRef = null;
+  let vendasRef = null, financeiroRef = null;
+  let ouvintes = [];
+  let ouvintesFin = [];
+
+  const $ = (id) => document.getElementById(id);
+  const telaLogin = $('telaLogin');
+  const telaBoasVindas = $('telaBoasVindas');
+  const appConteudo = $('appConteudo');
+  const statusEl = $('status');
+
+  // ---------- UTILITÁRIOS ----------
+  function escapar(texto) {
+    return String(texto ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function lerValor(texto) {
+    if (texto === undefined || texto === null) return 0;
+    let t = String(texto).replace(/[R$\s]/g, '');
+    if (t.includes(',')) t = t.replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(t);
+    return isNaN(n) ? 0 : n;
+  }
+  function moeda(n) {
+    return (Number(n) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+  function numeroParaCampo(n) {
+    return n ? Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+  }
+  // Máscara de dinheiro: digita só números e o sistema coloca vírgula e pontos (3880 -> 38,80)
+  function aplicarMascaraMoeda(campo) {
+    const digitos = campo.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 11);
+    campo.value = digitos ? numeroParaCampo(parseInt(digitos, 10) / 100) : '';
+  }
+  document.querySelectorAll('.campo-moeda').forEach(campo =>
+    campo.addEventListener('input', () => aplicarMascaraMoeda(campo))
+  );
+  function hojeISO() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function diasAte(dataISO) {
+    const [a, m, d] = dataISO.split('-').map(Number);
+    const alvo = new Date(a, m - 1, d);
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    return Math.round((alvo - hoje) / 86400000);
+  }
+  function dataBR(dataISO) {
+    if (!dataISO) return '';
+    const [a, m, d] = dataISO.split('-');
+    return d + '/' + m + '/' + a;
+  }
+  function mesAtual() { return hojeISO().slice(0, 7); }
+  function nomeMes(mesISO) {
+    const [a, m] = mesISO.split('-').map(Number);
+    const nome = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    return nome.charAt(0).toUpperCase() + nome.slice(1);
+  }
+  function somarMeses(dataISO, n) {
+    const [a, m, d] = dataISO.split('-').map(Number);
+    const ultimoDia = new Date(a, m - 1 + n + 1, 0).getDate();
+    const data = new Date(a, m - 1 + n, Math.min(d, ultimoDia));
+    return data.getFullYear() + '-' + String(data.getMonth() + 1).padStart(2, '0') + '-' + String(data.getDate()).padStart(2, '0');
+  }
+  function aliquota() { return Number(empresa.aliquotaImposto) || 0; }
+  function diasAviso() { return Number(empresa.diasAvisoValidade) || 30; }
+  function lojaAtual() { return lojas.find(l => l.id === lojaAtualId); }
+
+  // ---------- LOGIN ----------
+  function mensagemErroFirebase(codigo) {
+    const mapa = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/missing-password': 'Informe uma senha.',
+      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/wrong-password': 'E-mail ou senha incorretos.',
+      'auth/user-not-found': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente de novo.',
+      'auth/missing-email': 'Digite seu e-mail no campo acima.'
+    };
+    return mapa[codigo] || 'Não foi possível concluir. Tente novamente.';
+  }
+  function mostrarErroLogin(texto) {
+    $('loginOk').style.display = 'none';
+    $('loginErro').textContent = texto;
+    $('loginErro').style.display = 'block';
+  }
+  window.alternarModo = function () {
+    modoCadastro = !modoCadastro;
+    $('btnLogin').textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+    $('textoAlternar').textContent = modoCadastro ? 'Já tem conta?' : 'Ainda não tem conta?';
+    $('btnAlternar').textContent = modoCadastro ? 'Entrar' : 'Criar conta grátis';
+    $('btnEsqueci').style.display = modoCadastro ? 'none' : 'inline-block';
+    $('loginErro').style.display = 'none';
+    $('loginOk').style.display = 'none';
+  };
+  window.fazerLogin = async function () {
+    const email = $('loginEmail').value.trim();
+    const senha = $('loginSenha').value;
+    $('loginErro').style.display = 'none';
+    if (!email || !senha) { mostrarErroLogin('Preencha e-mail e senha.'); return; }
+    const btn = $('btnLogin');
+    btn.disabled = true;
+    btn.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+    try {
+      if (modoCadastro) await createUserWithEmailAndPassword(auth, email, senha);
+      else await signInWithEmailAndPassword(auth, email, senha);
+    } catch (erro) {
+      console.error(erro);
+      mostrarErroLogin(mensagemErroFirebase(erro.code));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+    }
+  };
+  window.esqueciSenha = async function () {
+    const email = $('loginEmail').value.trim();
+    if (!email) { mostrarErroLogin('Digite seu e-mail no campo acima e clique de novo em "Esqueci minha senha".'); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      $('loginErro').style.display = 'none';
+      $('loginOk').textContent = 'Enviamos um link para redefinir sua senha. Confira seu e-mail (e a caixa de spam).';
+      $('loginOk').style.display = 'block';
+    } catch (erro) {
+      console.error(erro);
+      mostrarErroLogin(mensagemErroFirebase(erro.code));
+    }
+  };
+  window.sair = async function () { await signOut(auth); };
+
+  // ---------- BOAS-VINDAS ----------
+  window.salvarBoasVindas = async function () {
+    const nomeEmpresa = $('bvEmpresa').value.trim();
+    const loja = $('bvLoja').value.trim();
+    const cidade = $('bvCidade').value.trim();
+    const erroEl = $('bvErro');
+    erroEl.style.display = 'none';
+    if (!nomeEmpresa || !loja) {
+      erroEl.textContent = 'Preencha o nome da empresa e o nome da loja.';
+      erroEl.style.display = 'block';
+      return;
+    }
+    const btn = $('btnBoasVindas');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      const novaLoja = await addDoc(lojasRef, { nome: loja, cidade, criadoEmTS: Date.now() });
+      await setDoc(empresaRef, { nomeEmpresa, lojaPadrao: novaLoja.id }, { merge: true });
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Começar a usar';
+    }
+  };
+
+  // ---------- NAVEGAÇÃO ----------
+  const titulos = { painel: 'Painel', produtos: 'Produtos e estoque', vendas: 'Vendas', financeiro: 'Financeiro', config: 'Minha empresa' };
+  window.abrirTela = function (nome) {
+    Object.keys(titulos).forEach(t => $('tela-' + t).classList.toggle('oculto', t !== nome));
+    document.querySelectorAll('.menu button[data-tela]').forEach(b => b.classList.toggle('ativo', b.dataset.tela === nome));
+    $('tituloTela').textContent = titulos[nome];
+    if (nome === 'vendas') setTimeout(() => $('pdvBusca').focus(), 50);
+  };
+  window.trocarLoja = function (id) {
+    lojaAtualId = id;
+    try { localStorage.setItem('lojaAtualLF_' + usuarioAtual.uid, id); } catch (e) {}
+    renderizar();
+  };
+
+  // ---------- EMPRESA E LOJAS ----------
+  window.salvarEmpresa = async function () {
+    const nome = $('cfgEmpresa').value.trim();
+    if (!nome) { alert('Digite o nome da empresa.'); return; }
+    await setDoc(empresaRef, { nomeEmpresa: nome }, { merge: true });
+    alert('Nome da empresa salvo!');
+  };
+  window.salvarAliquota = async function () {
+    const valor = parseFloat(String($('cfgAliquota').value).replace(',', '.'));
+    if (isNaN(valor) || valor < 0 || valor > 40) { alert('Digite uma alíquota entre 0 e 40.'); return; }
+    await setDoc(empresaRef, { aliquotaImposto: valor }, { merge: true });
+    alert('Alíquota salva!');
+  };
+  window.salvarDiasAviso = async function () {
+    await setDoc(empresaRef, { diasAvisoValidade: Number($('cfgDiasAviso').value) }, { merge: true });
+    alert('Aviso de validade salvo!');
+  };
+  window.adicionarLoja = async function () {
+    const nome = $('novaLojaNome').value.trim();
+    const cidade = $('novaLojaCidade').value.trim();
+    const aviso = $('avisoLimiteLojas');
+    aviso.classList.add('oculto');
+    if (!nome) { alert('Digite o nome da loja.'); return; }
+    const limite = souPro ? LIMITE_LOJAS_PRO : LIMITE_LOJAS_GRATIS;
+    if (lojas.length >= limite) {
+      aviso.innerHTML = souPro
+        ? 'Você chegou ao limite de ' + LIMITE_LOJAS_PRO + ' lojas do plano PRO.'
+        : 'O plano gratuito permite 1 loja. <a href="' + LINK_COMPRA + '" target="_blank" rel="noopener">Assine o PRO</a> para ter até ' + LIMITE_LOJAS_PRO + ' lojas.';
+      aviso.classList.remove('oculto');
+      return;
+    }
+    await addDoc(lojasRef, { nome, cidade, criadoEmTS: Date.now() });
+    $('novaLojaNome').value = '';
+    $('novaLojaCidade').value = '';
+  };
+  window.renomearLoja = async function (id) {
+    const loja = lojas.find(l => l.id === id);
+    const novo = prompt('Novo nome da loja:', loja ? loja.nome : '');
+    if (novo && novo.trim()) await updateDoc(doc(lojasRef, id), { nome: novo.trim() });
+  };
+  window.excluirLoja = async function (id) {
+    if (lojas.length <= 1) { alert('Você precisa ter pelo menos uma loja.'); return; }
+    const loja = lojas.find(l => l.id === id);
+    const qtdLotes = lotes.filter(l => l.lojaId === id).length;
+    let msg = 'Excluir a loja "' + (loja ? loja.nome : '') + '"?';
+    if (qtdLotes) msg += '\n\nO estoque dessa loja (' + qtdLotes + ' lote(s)) também será apagado.';
+    msg += '\nEssa ação não pode ser desfeita.';
+    if (!confirm(msg)) return;
+    const lote = writeBatch(db);
+    lotes.filter(l => l.lojaId === id).forEach(l => lote.delete(doc(lotesRef, l.id)));
+    lote.delete(doc(lojasRef, id));
+    await lote.commit();
+  };
+
+  // ---------- CÁLCULO DO ESTOQUE (loja selecionada) ----------
+  function resumoProduto(p) {
+    const lotesDaLoja = lotes.filter(l => l.produtoId === p.id && l.lojaId === lojaAtualId && (Number(l.qtd) || 0) > 0);
+    const qtd = lotesDaLoja.reduce((s, l) => s + (Number(l.qtd) || 0), 0);
+    const comValidade = lotesDaLoja.filter(l => l.validade).sort((a, b) => a.validade.localeCompare(b.validade));
+    const proximaValidade = comValidade.length ? comValidade[0].validade : null;
+    const dias = proximaValidade ? diasAte(proximaValidade) : null;
+    const minimo = Number(p.estoqueMinimo) || 0;
+
+    const tags = [];
+    if (dias !== null && dias < 0) tags.push({ classe: 'tag-vencido', texto: 'Vencido' });
+    else if (dias !== null && dias <= diasAviso()) tags.push({ classe: 'tag-vence', texto: dias === 0 ? 'Vence hoje' : 'Vence em ' + dias + 'd' });
+    if (qtd === 0) tags.push({ classe: 'tag-zerado', texto: 'Sem estoque' });
+    else if (minimo > 0 && qtd <= minimo) tags.push({ classe: 'tag-baixo', texto: 'Estoque baixo' });
+    if (!tags.length) tags.push({ classe: 'tag-ok', texto: 'Normal' });
+
+    return {
+      qtd, minimo, proximaValidade, dias,
+      baixo: qtd === 0 || (minimo > 0 && qtd <= minimo),
+      vence: dias !== null && dias <= diasAviso(),
+      valorCusto: qtd * (Number(p.custo) || 0),
+      tags
+    };
+  }
+
+  // ---------- PRODUTOS ----------
+  function preencherCategorias() {
+    const usadas = [...new Set(produtos.map(p => (p.categoria || '').trim()).filter(Boolean))];
+    const todas = [...new Set([...usadas, ...CATEGORIAS_SUGERIDAS])].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    $('listaCategorias').innerHTML = todas.map(c => '<option value="' + escapar(c) + '">').join('');
+    const filtro = $('filtroCategoria');
+    const atual = filtro.value;
+    filtro.innerHTML = '<option value="">Todas</option>' + usadas.sort((a, b) => a.localeCompare(b, 'pt-BR'))
+      .map(c => '<option value="' + escapar(c) + '">' + escapar(c) + '</option>').join('');
+    if (usadas.includes(atual)) filtro.value = atual;
+  }
+
+  window.abrirProduto = function (id) {
+    $('avisoLimiteProdutos').classList.add('oculto');
+    if (!id && !souPro && produtos.length >= LIMITE_PRODUTOS_GRATIS) {
+      $('avisoLimiteProdutos').innerHTML = 'O plano gratuito permite até ' + LIMITE_PRODUTOS_GRATIS + ' produtos. <a href="' + LINK_COMPRA + '" target="_blank" rel="noopener">Assine o PRO</a> para cadastrar produtos ilimitados.';
+      $('avisoLimiteProdutos').classList.remove('oculto');
+      return;
+    }
+    produtoEditandoId = id || null;
+    const p = id ? produtos.find(x => x.id === id) : {};
+    $('mpTitulo').textContent = id ? 'Editar produto' : 'Novo produto';
+    $('mpNome').value = p.nome || '';
+    $('mpCategoria').value = p.categoria || '';
+    $('mpCodigo').value = p.codigoBarras || '';
+    $('mpCusto').value = numeroParaCampo(p.custo);
+    $('mpPreco').value = numeroParaCampo(p.preco);
+    $('mpMinimo').value = p.estoqueMinimo ?? '';
+    $('mpQtd').value = ''; $('mpLote').value = ''; $('mpValidade').value = '';
+    $('mpSecaoInicial').classList.toggle('oculto', !!id);
+    $('mpErro').style.display = 'none';
+    $('modalProduto').classList.remove('oculto');
+    setTimeout(() => $('mpNome').focus(), 50);
+  };
+
+  window.salvarProduto = async function () {
+    const erroEl = $('mpErro');
+    erroEl.style.display = 'none';
+    const nome = $('mpNome').value.trim();
+    const preco = lerValor($('mpPreco').value);
+    const codigo = $('mpCodigo').value.trim();
+    if (!nome) { erroEl.textContent = 'Informe o nome do produto.'; erroEl.style.display = 'block'; return; }
+    if (preco <= 0) { erroEl.textContent = 'Informe o preço de venda.'; erroEl.style.display = 'block'; return; }
+    if (codigo && produtos.some(p => p.codigoBarras === codigo && p.id !== produtoEditandoId)) {
+      erroEl.textContent = 'Já existe um produto com esse código de barras.'; erroEl.style.display = 'block'; return;
+    }
+    const dados = {
+      nome,
+      categoria: $('mpCategoria').value.trim(),
+      codigoBarras: codigo,
+      custo: lerValor($('mpCusto').value),
+      preco,
+      estoqueMinimo: Math.max(0, parseInt($('mpMinimo').value, 10) || 0)
+    };
+    const btn = $('mpSalvar');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      if (produtoEditandoId) {
+        await updateDoc(doc(produtosRef, produtoEditandoId), dados);
+      } else {
+        dados.criadoEmTS = Date.now();
+        const novo = await addDoc(produtosRef, dados);
+        const qtd = parseInt($('mpQtd').value, 10) || 0;
+        if (qtd > 0) {
+          await addDoc(lotesRef, {
+            produtoId: novo.id, lojaId: lojaAtualId, qtd,
+            lote: $('mpLote').value.trim(), validade: $('mpValidade').value || '', criadoEmTS: Date.now()
+          });
+        }
+      }
+      fecharModais();
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Salvar produto';
+    }
+  };
+
+  window.excluirProduto = async function (id) {
+    const p = produtos.find(x => x.id === id);
+    if (!p) return;
+    if (!confirm('Excluir o produto "' + p.nome + '"?\n\nO estoque dele em todas as lojas também será apagado. Essa ação não pode ser desfeita.')) return;
+    const lote = writeBatch(db);
+    lotes.filter(l => l.produtoId === id).forEach(l => lote.delete(doc(lotesRef, l.id)));
+    lote.delete(doc(produtosRef, id));
+    await lote.commit();
+  };
+
+  // ---------- ENTRADA DE ESTOQUE ----------
+  window.abrirEntrada = function (produtoId) {
+    if (!produtos.length) { alert('Cadastre um produto primeiro.'); return; }
+    const ordenados = [...produtos].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    $('meProduto').innerHTML = ordenados.map(p =>
+      '<option value="' + p.id + '">' + escapar(p.nome) + (p.codigoBarras ? ' — ' + escapar(p.codigoBarras) : '') + '</option>'
+    ).join('');
+    if (produtoId) $('meProduto').value = produtoId;
+    const loja = lojaAtual();
+    $('meLoja').textContent = 'Loja: ' + (loja ? loja.nome : '');
+    $('meQtd').value = ''; $('meLote').value = ''; $('meValidade').value = '';
+    $('meErro').style.display = 'none';
+    fecharModais();
+    $('modalEntrada').classList.remove('oculto');
+    setTimeout(() => $('meQtd').focus(), 50);
+  };
+
+  window.salvarEntrada = async function () {
+    const erroEl = $('meErro');
+    erroEl.style.display = 'none';
+    const produtoId = $('meProduto').value;
+    const qtd = parseInt($('meQtd').value, 10) || 0;
+    if (!produtoId) { erroEl.textContent = 'Escolha o produto.'; erroEl.style.display = 'block'; return; }
+    if (qtd <= 0) { erroEl.textContent = 'Informe a quantidade.'; erroEl.style.display = 'block'; return; }
+    const btn = $('meSalvar');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      await addDoc(lotesRef, {
+        produtoId, lojaId: lojaAtualId, qtd,
+        lote: $('meLote').value.trim(), validade: $('meValidade').value || '', criadoEmTS: Date.now()
+      });
+      fecharModais();
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Dar entrada';
+    }
+  };
+
+  // ---------- LOTES ----------
+  let produtoLotesId = null;
+  window.abrirLotes = function (produtoId) {
+    produtoLotesId = produtoId;
+    const p = produtos.find(x => x.id === produtoId);
+    $('mlTitulo').textContent = 'Lotes — ' + (p ? p.nome : '');
+    const loja = lojaAtual();
+    $('mlLoja').textContent = 'Loja: ' + (loja ? loja.nome : '') + '. Para corrigir uma contagem, use "Ajustar".';
+    $('mlEntrada').onclick = () => abrirEntrada(produtoId);
+    renderizarLotes();
+    fecharModais();
+    $('modalLotes').classList.remove('oculto');
+  };
+  function renderizarLotes() {
+    if (!produtoLotesId) return;
+    const lista = lotes
+      .filter(l => l.produtoId === produtoLotesId && l.lojaId === lojaAtualId)
+      .sort((a, b) => (a.validade || '9999').localeCompare(b.validade || '9999'));
+    if (!lista.length) {
+      $('mlLista').innerHTML = '<li><span class="vazio" style="padding:10px 0">Nenhum lote nesta loja.</span></li>';
+      return;
+    }
+    $('mlLista').innerHTML = lista.map(l => {
+      let tag = '';
+      if (l.validade) {
+        const d = diasAte(l.validade);
+        if (d < 0) tag = '<span class="etiqueta tag-vencido">Vencido</span>';
+        else if (d <= diasAviso()) tag = '<span class="etiqueta tag-vence">Vence em ' + d + 'd</span>';
+      }
+      return '<li><div><strong>' + (Number(l.qtd) || 0) + ' un.</strong> ' + tag +
+        '<br><small>Lote: ' + escapar(l.lote || '—') + ' · Validade: ' + (l.validade ? dataBR(l.validade) : 'não informada') + '</small></div>' +
+        '<div><button class="link-botao" onclick="ajustarLote(\'' + l.id + '\')">Ajustar</button>' +
+        '<button class="link-botao link-perigo" onclick="removerLote(\'' + l.id + '\')">Remover</button></div></li>';
+    }).join('');
+  }
+  window.ajustarLote = async function (id) {
+    const l = lotes.find(x => x.id === id);
+    if (!l) return;
+    const valor = prompt('Quantidade correta deste lote:', l.qtd);
+    if (valor === null) return;
+    const qtd = parseInt(valor, 10);
+    if (isNaN(qtd) || qtd < 0) { alert('Digite um número válido (0 ou mais).'); return; }
+    if (qtd === 0) await deleteDoc(doc(lotesRef, id));
+    else await updateDoc(doc(lotesRef, id), { qtd });
+  };
+  window.removerLote = async function (id) {
+    if (!confirm('Remover este lote do estoque?')) return;
+    await deleteDoc(doc(lotesRef, id));
+  };
+
+  // ---------- VENDAS (PDV) ----------
+  function qtdNaLoja(produtoId) {
+    return lotes.filter(l => l.produtoId === produtoId && l.lojaId === lojaAtualId)
+      .reduce((s, l) => s + (Number(l.qtd) || 0), 0);
+  }
+  // Lotes da loja na ordem de saída: primeiro o que vence antes (sem validade por último)
+  function lotesParaSaida(produtoId) {
+    return lotes
+      .filter(l => l.produtoId === produtoId && l.lojaId === lojaAtualId && (Number(l.qtd) || 0) > 0)
+      .sort((a, b) => (a.validade || '9999-99-99').localeCompare(b.validade || '9999-99-99') || (a.criadoEmTS || 0) - (b.criadoEmTS || 0));
+  }
+
+  window.buscarNoPdv = function () {
+    const termo = $('pdvBusca').value.trim().toLowerCase();
+    const lista = $('pdvResultados');
+    if (!termo) { lista.classList.add('oculto'); return; }
+    const achados = produtos
+      .filter(p => (p.nome || '').toLowerCase().includes(termo) || (p.codigoBarras || '').startsWith(termo))
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+      .slice(0, 8);
+    lista.innerHTML = achados.length
+      ? achados.map(p => '<li><button onclick="adicionarAoCarrinho(\'' + p.id + '\')"><span><strong>' + escapar(p.nome) + '</strong>' +
+          '<span class="sub">' + (p.codigoBarras ? escapar(p.codigoBarras) + ' · ' : '') + 'Estoque: ' + qtdNaLoja(p.id) + '</span></span>' +
+          '<strong>' + moeda(p.preco) + '</strong></button></li>').join('')
+      : '<li><span class="vazio" style="display:block;padding:14px">Nenhum produto encontrado.</span></li>';
+    lista.classList.remove('oculto');
+  };
+
+  window.teclaPdv = function (e) {
+    if (e.key === 'Escape') { $('pdvBusca').value = ''; buscarNoPdv(); return; }
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const termo = $('pdvBusca').value.trim();
+    if (!termo) return;
+    const porCodigo = produtos.find(p => p.codigoBarras && p.codigoBarras === termo);
+    if (porCodigo) { adicionarAoCarrinho(porCodigo.id); return; }
+    const t = termo.toLowerCase();
+    const achados = produtos.filter(p => (p.nome || '').toLowerCase().includes(t) || (p.codigoBarras || '').startsWith(t));
+    if (achados.length === 1) adicionarAoCarrinho(achados[0].id);
+  };
+
+  window.adicionarAoCarrinho = function (produtoId) {
+    const item = carrinho.find(i => i.produtoId === produtoId);
+    if (item) item.qtd += 1; else carrinho.push({ produtoId, qtd: 1 });
+    $('pdvBusca').value = '';
+    $('pdvResultados').classList.add('oculto');
+    $('pdvErro').style.display = 'none';
+    renderizarCarrinho();
+    $('pdvBusca').focus();
+  };
+  window.alterarQtd = function (produtoId, delta) {
+    const item = carrinho.find(i => i.produtoId === produtoId);
+    if (!item) return;
+    item.qtd += delta;
+    if (item.qtd <= 0) carrinho = carrinho.filter(i => i.produtoId !== produtoId);
+    renderizarCarrinho();
+  };
+  window.removerItem = function (produtoId) {
+    carrinho = carrinho.filter(i => i.produtoId !== produtoId);
+    renderizarCarrinho();
+  };
+  window.escolherTipo = function (tipo) {
+    tipoVenda = tipo;
+    document.querySelectorAll('#pdvTipo .opcao').forEach(b => b.classList.toggle('ativa', b.dataset.valor === tipo));
+    $('pdvCamposDelivery').classList.toggle('oculto', tipo !== 'delivery');
+    renderizarCarrinho();
+  };
+  window.escolherPagamento = function (forma) {
+    formaPagamento = forma;
+    document.querySelectorAll('#pdvPagamento .opcao').forEach(b => b.classList.toggle('ativa', b.dataset.valor === forma));
+  };
+
+  function totaisDaVenda() {
+    const itens = carrinho.map(i => {
+      const p = produtos.find(x => x.id === i.produtoId);
+      return p ? { p, qtd: i.qtd, total: i.qtd * (Number(p.preco) || 0) } : null;
+    }).filter(Boolean);
+    const subtotal = itens.reduce((s, i) => s + i.total, 0);
+    const desconto = Math.min(lerValor($('pdvDesconto').value), subtotal);
+    const taxa = tipoVenda === 'delivery' ? lerValor($('pdvTaxa').value) : 0;
+    return { itens, subtotal, desconto, taxa, total: Math.max(0, subtotal - desconto + taxa) };
+  }
+
+  function renderizarCarrinho() {
+    carrinho = carrinho.filter(i => produtos.some(p => p.id === i.produtoId));
+    const t = totaisDaVenda();
+    $('pdvCarrinho').innerHTML = t.itens.map(({ p, qtd, total }) => {
+      const disp = qtdNaLoja(p.id);
+      const aviso = qtd > disp ? '<span class="sub" style="color:var(--vermelho)">Estoque na loja: ' + disp + '</span>' : '';
+      return '<tr><td><span class="nome-produto">' + escapar(p.nome) + '</span>' + aviso + '</td>' +
+        '<td><div class="qtd-controle"><button aria-label="Diminuir" onclick="alterarQtd(\'' + p.id + '\', -1)">−</button><span>' + qtd + '</span>' +
+        '<button aria-label="Aumentar" onclick="alterarQtd(\'' + p.id + '\', 1)">+</button></div></td>' +
+        '<td class="num">' + moeda(p.preco) + '</td><td class="num"><strong>' + moeda(total) + '</strong></td>' +
+        '<td><button class="link-botao link-perigo" onclick="removerItem(\'' + p.id + '\')">Remover</button></td></tr>';
+    }).join('');
+    $('pdvVazio').classList.toggle('oculto', t.itens.length > 0);
+    $('pdvSubtotal').textContent = moeda(t.subtotal);
+    $('pdvDescontoTxt').textContent = '– ' + moeda(t.desconto);
+    $('pdvLinhaTaxa').classList.toggle('oculto', tipoVenda !== 'delivery');
+    $('pdvTaxaTxt').textContent = '+ ' + moeda(t.taxa);
+    $('pdvTotal').textContent = moeda(t.total);
+  }
+  window.renderizarCarrinho = renderizarCarrinho;
+
+  window.limparVenda = function () {
+    carrinho = [];
+    ['pdvBusca', 'pdvCliente', 'pdvEndereco', 'pdvTaxa', 'pdvDesconto'].forEach(id => { $(id).value = ''; });
+    $('pdvResultados').classList.add('oculto');
+    $('pdvErro').style.display = 'none';
+    escolherTipo('balcao');
+    escolherPagamento('Pix');
+  };
+
+  window.finalizarVenda = async function () {
+    const erroEl = $('pdvErro');
+    erroEl.style.display = 'none';
+    const t = totaisDaVenda();
+    if (!t.itens.length) { erroEl.textContent = 'Adicione pelo menos um produto.'; erroEl.style.display = 'block'; return; }
+    if (tipoVenda === 'delivery' && !$('pdvEndereco').value.trim()) {
+      erroEl.textContent = 'Informe o endereço de entrega.'; erroEl.style.display = 'block'; return;
+    }
+    const faltando = t.itens.filter(i => i.qtd > qtdNaLoja(i.p.id));
+    if (faltando.length) {
+      const nomes = faltando.map(i => '• ' + i.p.nome + ' (no estoque: ' + qtdNaLoja(i.p.id) + ')').join('\n');
+      if (!confirm('Estoque insuficiente nesta loja:\n' + nomes + '\n\nRegistrar a venda mesmo assim? O estoque desses produtos ficará zerado.')) return;
+    }
+
+    const lote = writeBatch(db);
+    const itensVenda = t.itens.map(({ p, qtd, total }) => {
+      let restante = qtd;
+      const consumo = [];
+      for (const l of lotesParaSaida(p.id)) {
+        if (restante <= 0) break;
+        const disponivel = Number(l.qtd) || 0;
+        const usar = Math.min(disponivel, restante);
+        restante -= usar;
+        consumo.push({ loteId: l.id, qtd: usar, lote: l.lote || '', validade: l.validade || '' });
+        if (disponivel - usar <= 0) lote.delete(doc(lotesRef, l.id));
+        else lote.update(doc(lotesRef, l.id), { qtd: disponivel - usar });
+      }
+      return { produtoId: p.id, nome: p.nome, qtd, preco: Number(p.preco) || 0, custo: Number(p.custo) || 0, total, consumo };
+    });
+    const agora = new Date();
+    const venda = {
+      lojaId: lojaAtualId,
+      dataISO: hojeISO(),
+      mesISO: mesAtual(),
+      hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      criadoEmTS: Date.now(),
+      tipo: tipoVenda,
+      cliente: $('pdvCliente').value.trim(),
+      endereco: tipoVenda === 'delivery' ? $('pdvEndereco').value.trim() : '',
+      itens: itensVenda,
+      subtotal: t.subtotal,
+      desconto: t.desconto,
+      taxaEntrega: t.taxa,
+      total: t.total,
+      custoTotal: itensVenda.reduce((s, i) => s + i.qtd * i.custo, 0),
+      pagamento: formaPagamento,
+      situacao: 'concluida'
+    };
+    const novaVendaRef = doc(vendasRef);
+    lote.set(novaVendaRef, venda);
+
+    const btn = $('pdvFinalizar');
+    btn.disabled = true; btn.textContent = 'Registrando...';
+    try {
+      await lote.commit();
+      mostrarComprovante({ id: novaVendaRef.id, ...venda });
+      limparVenda();
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível registrar a venda. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Finalizar venda';
+    }
+  };
+
+  function textoComprovante(v) {
+    const loja = lojas.find(l => l.id === v.lojaId);
+    const linhas = [];
+    linhas.push((empresa.nomeEmpresa || '').toUpperCase());
+    if (loja) linhas.push(loja.nome + (loja.cidade ? ' - ' + loja.cidade : ''));
+    linhas.push('--------------------------------');
+    linhas.push(dataBR(v.dataISO) + ' ' + (v.hora || '') + (v.tipo === 'delivery' ? '  DELIVERY' : ''));
+    linhas.push('--------------------------------');
+    v.itens.forEach(i => linhas.push(i.qtd + 'x ' + i.nome + '\n   ' + moeda(i.preco) + ' = ' + moeda(i.total)));
+    linhas.push('--------------------------------');
+    linhas.push('Subtotal: ' + moeda(v.subtotal));
+    if (v.desconto) linhas.push('Desconto: -' + moeda(v.desconto));
+    if (v.taxaEntrega) linhas.push('Taxa de entrega: +' + moeda(v.taxaEntrega));
+    linhas.push('TOTAL: ' + moeda(v.total));
+    linhas.push('Pagamento: ' + v.pagamento);
+    if (v.cliente) linhas.push('Cliente: ' + v.cliente);
+    if (v.endereco) linhas.push('Entrega: ' + v.endereco);
+    if (v.situacao === 'cancelada') linhas.push('*** VENDA CANCELADA ***');
+    linhas.push('--------------------------------');
+    linhas.push('Obrigado pela preferência!');
+    linhas.push('Documento sem valor fiscal.');
+    return linhas.join('\n');
+  }
+  function mostrarComprovante(v) {
+    const texto = textoComprovante(v);
+    $('mcTitulo').textContent = v.situacao === 'cancelada' ? 'Comprovante (cancelada)' : '✅ Venda registrada';
+    $('comprovanteTexto').textContent = texto;
+    $('mcWhats').href = 'https://wa.me/?text=' + encodeURIComponent(texto);
+    fecharModais();
+    $('modalComprovante').classList.remove('oculto');
+  }
+  window.verComprovante = function (id) {
+    const v = vendasMes.find(x => x.id === id);
+    if (v) mostrarComprovante(v);
+  };
+
+  window.cancelarVenda = async function (id) {
+    const v = vendasMes.find(x => x.id === id);
+    if (!v || v.situacao === 'cancelada') return;
+    if (!confirm('Cancelar a venda de ' + moeda(v.total) + ' (' + v.hora + ')?\n\nOs produtos voltam para o estoque.')) return;
+    const lote = writeBatch(db);
+    const devolver = {};
+    (v.itens || []).forEach(i => (i.consumo || []).forEach(c => {
+      const atual = lotes.find(l => l.id === c.loteId);
+      if (atual) {
+        devolver[c.loteId] = (devolver[c.loteId] ?? (Number(atual.qtd) || 0)) + c.qtd;
+      } else {
+        lote.set(doc(lotesRef), { produtoId: i.produtoId, lojaId: v.lojaId, qtd: c.qtd, lote: c.lote || '', validade: c.validade || '', criadoEmTS: Date.now() });
+      }
+    }));
+    Object.entries(devolver).forEach(([loteId, qtd]) => lote.update(doc(lotesRef, loteId), { qtd }));
+    lote.update(doc(vendasRef, id), { situacao: 'cancelada', canceladaEmTS: Date.now() });
+    try {
+      await lote.commit();
+    } catch (erro) {
+      console.error(erro);
+      alert('Não foi possível cancelar. Verifique sua internet e tente de novo.');
+    }
+  };
+
+  function renderizarVendasHoje() {
+    const hoje = hojeISO();
+    const lista = vendasMes
+      .filter(v => v.lojaId === lojaAtualId && v.dataISO === hoje)
+      .sort((a, b) => (b.criadoEmTS || 0) - (a.criadoEmTS || 0));
+    const concluidas = lista.filter(v => v.situacao !== 'cancelada');
+    $('vhResumo').textContent = concluidas.length + ' venda(s) · ' + moeda(concluidas.reduce((s, v) => s + (Number(v.total) || 0), 0));
+    $('vhLista').innerHTML = lista.length
+      ? lista.map(v => {
+          const qtdItens = (v.itens || []).reduce((s, i) => s + i.qtd, 0);
+          const cancelada = v.situacao === 'cancelada';
+          return '<li><div><strong>' + escapar(v.hora || '') + ' · ' + moeda(v.total) + '</strong> ' +
+            (cancelada ? '<span class="etiqueta tag-cancelada">Cancelada</span>' : '') +
+            '<br><small>' + qtdItens + ' item(ns) · ' + escapar(v.pagamento) + ' · ' + (v.tipo === 'delivery' ? 'Delivery' : 'Balcão') +
+            (v.cliente ? ' · ' + escapar(v.cliente) : '') + '</small></div>' +
+            '<div><button class="link-botao" onclick="verComprovante(\'' + v.id + '\')">Comprovante</button>' +
+            (cancelada ? '' : '<button class="link-botao link-perigo" onclick="cancelarVenda(\'' + v.id + '\')">Cancelar</button>') +
+            '</div></li>';
+        }).join('')
+      : '<li><small>Nenhuma venda hoje nesta loja.</small></li>';
+  }
+
+  // ---------- FINANCEIRO ----------
+  function dadosDoMes(mes) {
+    return mes === mesAtual() ? { vendas: vendasMes, lanc: lancMes } : { vendas: vendasOutroMes, lanc: lancOutroMes };
+  }
+  function escutarMesFinanceiro() {
+    ouvintesFin.forEach(parar => parar());
+    ouvintesFin = [];
+    vendasOutroMes = []; lancOutroMes = [];
+    if (!usuarioAtual || mesFin === mesAtual()) return;
+    ouvintesFin.push(onSnapshot(query(vendasRef, where('mesISO', '==', mesFin)), (snap) => {
+      vendasOutroMes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderizarFinanceiro();
+    }, (e) => console.error(e)));
+    ouvintesFin.push(onSnapshot(query(financeiroRef, where('mesISO', '==', mesFin)), (snap) => {
+      lancOutroMes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderizarFinanceiro();
+    }, (e) => console.error(e)));
+  }
+  window.trocarMesFinanceiro = function (mes) {
+    mesFin = mes || mesAtual();
+    escutarMesFinanceiro();
+    renderizarFinanceiro();
+  };
+
+  window.abrirDespesa = function (id) {
+    despesaEditandoId = id || null;
+    const lancs = [...lancMes, ...lancOutroMes];
+    const d = id ? lancs.find(x => x.id === id) : null;
+    $('mdTitulo').textContent = id ? 'Editar despesa' : 'Lançar despesa';
+    const loja = lojaAtual();
+    $('mdLoja').textContent = 'Loja: ' + (loja ? loja.nome : '');
+    $('mdDescricao').value = d ? d.descricao : '';
+    $('mdCategoria').value = d ? d.categoria : 'Aluguel';
+    $('mdValor').value = d ? numeroParaCampo(d.valor) : '';
+    const padrao = (mesFin && mesFin !== mesAtual()) ? mesFin + '-10' : hojeISO();
+    $('mdVencimento').value = d ? d.vencimento : padrao;
+    $('mdRepetir').value = '0';
+    $('mdRepetirCaixa').classList.toggle('oculto', !!id);
+    $('mdPago').checked = d ? !!d.pago : false;
+    $('mdErro').style.display = 'none';
+    fecharModais();
+    $('modalDespesa').classList.remove('oculto');
+    setTimeout(() => $('mdDescricao').focus(), 50);
+  };
+
+  window.salvarDespesa = async function () {
+    const erroEl = $('mdErro');
+    erroEl.style.display = 'none';
+    const descricao = $('mdDescricao').value.trim();
+    const valor = lerValor($('mdValor').value);
+    const vencimento = $('mdVencimento').value;
+    if (!descricao) { erroEl.textContent = 'Informe a descrição.'; erroEl.style.display = 'block'; return; }
+    if (valor <= 0) { erroEl.textContent = 'Informe o valor.'; erroEl.style.display = 'block'; return; }
+    if (!vencimento) { erroEl.textContent = 'Informe o vencimento.'; erroEl.style.display = 'block'; return; }
+    const pago = $('mdPago').checked;
+    const base = { descricao, categoria: $('mdCategoria').value, valor };
+    const btn = $('mdSalvar');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      if (despesaEditandoId) {
+        await updateDoc(doc(financeiroRef, despesaEditandoId), {
+          ...base, vencimento, mesISO: vencimento.slice(0, 7), pago, pagoEmTS: pago ? Date.now() : null
+        });
+      } else {
+        const repetir = parseInt($('mdRepetir').value, 10) || 0;
+        const lote = writeBatch(db);
+        for (let i = 0; i <= repetir; i++) {
+          const venc = somarMeses(vencimento, i);
+          const pagoEsta = i === 0 ? pago : false;
+          lote.set(doc(financeiroRef), {
+            ...base, lojaId: lojaAtualId, vencimento: venc, mesISO: venc.slice(0, 7),
+            pago: pagoEsta, pagoEmTS: pagoEsta ? Date.now() : null, criadoEmTS: Date.now()
+          });
+        }
+        await lote.commit();
+      }
+      fecharModais();
+    } catch (erro) {
+      console.error(erro);
+      erroEl.textContent = 'Não foi possível salvar. Verifique sua internet e tente de novo.';
+      erroEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Salvar';
+    }
+  };
+  window.alternarPago = async function (id) {
+    const d = [...lancMes, ...lancOutroMes].find(x => x.id === id);
+    if (!d) return;
+    await updateDoc(doc(financeiroRef, id), { pago: !d.pago, pagoEmTS: !d.pago ? Date.now() : null });
+  };
+  window.excluirDespesa = async function (id) {
+    const d = [...lancMes, ...lancOutroMes].find(x => x.id === id);
+    if (!d || !confirm('Excluir a despesa "' + d.descricao + '" de ' + moeda(d.valor) + '?')) return;
+    await deleteDoc(doc(financeiroRef, id));
+  };
+
+  function barras(pares, total) {
+    if (!pares.length) return '<small style="color:var(--texto)">Nada lançado neste mês.</small>';
+    const maior = Math.max(...pares.map(p => p[1]));
+    return pares.map(([nome, valor]) =>
+      '<div class="linha-categoria"><div class="topo-linha"><span>' + escapar(nome) + '</span><strong>' + moeda(valor) +
+      (total ? ' <small style="color:var(--texto);font-weight:500">(' + Math.round(valor / total * 100) + '%)</small>' : '') + '</strong></div>' +
+      '<div class="barra-categoria"><div style="width:' + (maior ? Math.max(3, Math.round(valor / maior * 100)) : 0) + '%"></div></div></div>'
+    ).join('');
+  }
+
+  function resumoFinanceiro(mes) {
+    const { vendas: vs, lanc } = dadosDoMes(mes);
+    const vendas = vs.filter(v => v.lojaId === lojaAtualId && v.situacao !== 'cancelada');
+    const despesas = lanc.filter(d => d.lojaId === lojaAtualId);
+    const hoje = hojeISO();
+    const entradas = vendas.reduce((s, v) => s + (Number(v.total) || 0), 0);
+    const custo = vendas.reduce((s, v) => s + (Number(v.custoTotal) || 0), 0);
+    const totalDespesas = despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const pagas = despesas.filter(d => d.pago).reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const abertas = despesas.filter(d => !d.pago);
+    const atrasadas = abertas.filter(d => d.vencimento < hoje);
+    const imposto = entradas * aliquota() / 100;
+    return {
+      vendas, despesas, entradas, custo, totalDespesas, pagas, imposto,
+      aPagar: abertas.reduce((s, d) => s + (Number(d.valor) || 0), 0),
+      atrasadas: atrasadas.length,
+      saldo: entradas - pagas,
+      lucro: entradas - custo - totalDespesas - imposto
+    };
+  }
+
+  function renderizarFinanceiro() {
+    if (!mesFin) mesFin = mesAtual();
+    $('finMes').value = mesFin;
+    const r = resumoFinanceiro(mesFin);
+    $('finEntradas').textContent = moeda(r.entradas);
+    $('finQtdVendas').textContent = r.vendas.length + ' venda(s) em ' + nomeMes(mesFin);
+    $('finPagas').textContent = moeda(r.pagas);
+    $('finAPagar').textContent = moeda(r.aPagar);
+    $('finAtrasadas').textContent = r.atrasadas + ' atrasada(s)';
+    $('finSaldo').textContent = moeda(r.saldo);
+    $('resVendas').textContent = moeda(r.entradas);
+    $('resCusto').textContent = '– ' + moeda(r.custo);
+    $('resDespesas').textContent = '– ' + moeda(r.totalDespesas);
+    $('resAliq').textContent = String(aliquota()).replace('.', ',');
+    $('resImposto').textContent = '– ' + moeda(r.imposto);
+    $('resLucro').textContent = moeda(r.lucro);
+    $('resLucro').style.color = r.lucro < 0 ? 'var(--vermelho)' : 'var(--verde)';
+
+    const porCategoria = {};
+    r.despesas.forEach(d => { porCategoria[d.categoria] = (porCategoria[d.categoria] || 0) + (Number(d.valor) || 0); });
+    $('finCategorias').innerHTML = barras(Object.entries(porCategoria).sort((a, b) => b[1] - a[1]), r.totalDespesas);
+
+    const porPagamento = {};
+    r.vendas.forEach(v => { porPagamento[v.pagamento] = (porPagamento[v.pagamento] || 0) + (Number(v.total) || 0); });
+    $('finPagamentos').innerHTML = barras(Object.entries(porPagamento).sort((a, b) => b[1] - a[1]), r.entradas);
+
+    const hoje = hojeISO();
+    const lista = [...r.despesas].sort((a, b) => a.vencimento.localeCompare(b.vencimento));
+    $('finLista').innerHTML = lista.length
+      ? lista.map(d => {
+          const tag = d.pago ? '<span class="etiqueta tag-paga">Paga</span>'
+            : d.vencimento < hoje ? '<span class="etiqueta tag-atrasada">Atrasada</span>'
+            : '<span class="etiqueta tag-aberta">A vencer</span>';
+          return '<li><div><strong>' + escapar(d.descricao) + '</strong> ' + tag +
+            '<br><small>' + escapar(d.categoria) + ' · Vence ' + dataBR(d.vencimento) + '</small></div>' +
+            '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px"><strong style="margin-right:6px">' + moeda(d.valor) + '</strong>' +
+            '<button class="link-botao" onclick="alternarPago(\'' + d.id + '\')">' + (d.pago ? 'Desmarcar' : 'Marcar como paga') + '</button>' +
+            '<button class="link-botao" onclick="abrirDespesa(\'' + d.id + '\')">Editar</button>' +
+            '<button class="link-botao link-perigo" onclick="excluirDespesa(\'' + d.id + '\')">Excluir</button></div></li>';
+        }).join('')
+      : '<li><small>Nenhuma despesa lançada em ' + nomeMes(mesFin) + '.</small></li>';
+  }
+
+  function renderizarPainelVendas() {
+    const hoje = hojeISO();
+    const r = resumoFinanceiro(mesAtual());
+    const vendasHoje = r.vendas.filter(v => v.dataISO === hoje);
+    $('pnVendasHoje').textContent = moeda(vendasHoje.reduce((s, v) => s + (Number(v.total) || 0), 0));
+    $('pnQtdHoje').textContent = vendasHoje.length + ' venda(s)';
+    $('pnVendasMes').textContent = moeda(r.entradas);
+    $('pnTicket').textContent = 'Ticket médio: ' + moeda(r.vendas.length ? r.entradas / r.vendas.length : 0);
+    $('pnLucroBruto').textContent = moeda(r.entradas - r.custo);
+    $('pnAPagar').textContent = moeda(r.aPagar);
+    $('pnAtrasadas').textContent = r.atrasadas + ' atrasada(s)';
+  }
+
+  window.fecharModais = function () {
+    document.querySelectorAll('.fundo-modal').forEach(m => m.classList.add('oculto'));
+  };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharModais(); });
+  document.querySelectorAll('.fundo-modal').forEach(m =>
+    m.addEventListener('click', (e) => { if (e.target === m) fecharModais(); })
+  );
+
+  // ---------- TELAS ----------
+  function renderizarProdutos() {
+    const termo = $('busca').value.trim().toLowerCase();
+    const cat = $('filtroCategoria').value;
+    const sit = $('filtroSituacao').value;
+    const linhas = [...produtos]
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+      .map(p => ({ p, r: resumoProduto(p) }))
+      .filter(({ p, r }) => {
+        if (termo && !((p.nome || '').toLowerCase().includes(termo) || (p.categoria || '').toLowerCase().includes(termo) || (p.codigoBarras || '').includes(termo))) return false;
+        if (cat && p.categoria !== cat) return false;
+        if (sit === 'baixo' && !r.baixo) return false;
+        if (sit === 'vence' && !r.vence) return false;
+        if (sit === 'ok' && (r.baixo || r.vence)) return false;
+        return true;
+      });
+
+    $('corpoProdutos').innerHTML = linhas.map(({ p, r }) =>
+      '<tr>' +
+      '<td><span class="nome-produto">' + escapar(p.nome) + '</span>' + (p.codigoBarras ? '<span class="sub">' + escapar(p.codigoBarras) + '</span>' : '') + '</td>' +
+      '<td>' + escapar(p.categoria || '—') + '</td>' +
+      '<td class="num"><strong>' + r.qtd + '</strong> / ' + r.minimo + '</td>' +
+      '<td class="num">' + moeda(p.custo) + '</td>' +
+      '<td class="num">' + moeda(p.preco) + '</td>' +
+      '<td>' + (r.proximaValidade ? dataBR(r.proximaValidade) : '—') + '</td>' +
+      '<td>' + r.tags.map(t => '<span class="etiqueta ' + t.classe + '">' + t.texto + '</span>').join(' ') + '</td>' +
+      '<td><div class="acoes">' +
+        '<button class="link-botao" onclick="abrirEntrada(\'' + p.id + '\')">Entrada</button>' +
+        '<button class="link-botao" onclick="abrirLotes(\'' + p.id + '\')">Lotes</button>' +
+        '<button class="link-botao" onclick="abrirProduto(\'' + p.id + '\')">Editar</button>' +
+        '<button class="link-botao link-perigo" onclick="excluirProduto(\'' + p.id + '\')">Excluir</button>' +
+      '</div></td></tr>'
+    ).join('');
+
+    const vazio = $('produtosVazio');
+    if (!produtos.length) {
+      vazio.textContent = 'Nenhum produto cadastrado ainda. Clique em "+ Novo produto" para começar.';
+      vazio.classList.remove('oculto');
+    } else if (!linhas.length) {
+      vazio.textContent = 'Nenhum produto encontrado com esses filtros.';
+      vazio.classList.remove('oculto');
+    } else {
+      vazio.classList.add('oculto');
+    }
+  }
+  window.renderizarProdutos = renderizarProdutos;
+
+  function renderizarIndicadores() {
+    const resumos = produtos.map(p => ({ p, r: resumoProduto(p) }));
+    const valor = resumos.reduce((s, x) => s + x.r.valorCusto, 0);
+    const baixos = resumos.filter(x => x.r.baixo);
+    const vencendo = resumos.filter(x => x.r.vence);
+
+    ['pn', 'pr'].forEach(pre => {
+      $(pre === 'pn' ? 'pnProdutos' : 'prTotal').textContent = produtos.length + (souPro ? '' : ' / ' + LIMITE_PRODUTOS_GRATIS);
+      $(pre + 'Valor').textContent = moeda(valor);
+      $(pre + 'Baixo').textContent = baixos.length;
+      $(pre + 'Vence').textContent = vencendo.length;
+    });
+    $('pnVenceTitulo').textContent = 'Vencendo em até ' + diasAviso() + ' dias ou vencidos';
+
+    const listaVence = vencendo.sort((a, b) => a.r.dias - b.r.dias).slice(0, 6);
+    $('pnListaVence').innerHTML = listaVence.length
+      ? listaVence.map(({ p, r }) => '<li><span>' + escapar(p.nome) + '<br><small>' + r.qtd + ' un. · ' + dataBR(r.proximaValidade) + '</small></span>' +
+          '<span class="etiqueta ' + (r.dias < 0 ? 'tag-vencido">Vencido' : 'tag-vence">' + (r.dias === 0 ? 'Vence hoje' : 'Vence em ' + r.dias + 'd')) + '</span></li>').join('')
+      : '<li><small>Nenhum produto perto do vencimento. 👍</small></li>';
+
+    const listaBaixo = baixos.sort((a, b) => a.r.qtd - b.r.qtd).slice(0, 6);
+    $('pnListaBaixo').innerHTML = listaBaixo.length
+      ? listaBaixo.map(({ p, r }) => '<li><span>' + escapar(p.nome) + '<br><small>Mínimo: ' + r.minimo + '</small></span>' +
+          '<span class="etiqueta ' + (r.qtd === 0 ? 'tag-zerado">Sem estoque' : 'tag-baixo">' + r.qtd + ' un.') + '</span></li>').join('')
+      : '<li><small>Estoque em dia. 👍</small></li>';
+  }
+
+  function renderizar() {
+    const nomeEmpresa = empresa.nomeEmpresa || '';
+    if (!nomeEmpresa || lojas.length === 0) {
+      appConteudo.classList.add('oculto');
+      telaBoasVindas.classList.remove('oculto');
+      return;
+    }
+    telaBoasVindas.classList.add('oculto');
+    appConteudo.classList.remove('oculto');
+
+    if (!lojas.some(l => l.id === lojaAtualId)) {
+      let salva = null;
+      try { salva = localStorage.getItem('lojaAtualLF_' + usuarioAtual.uid); } catch (e) {}
+      lojaAtualId = lojas.some(l => l.id === salva) ? salva
+        : (lojas.some(l => l.id === empresa.lojaPadrao) ? empresa.lojaPadrao : lojas[0].id);
+    }
+
+    $('seletorLoja').innerHTML = lojas.map(l =>
+      '<option value="' + l.id + '"' + (l.id === lojaAtualId ? ' selected' : '') + '>' + escapar(l.nome) + '</option>'
+    ).join('');
+
+    $('saudacao').textContent = 'Olá, ' + nomeEmpresa + '!';
+    $('indLojas').textContent = lojas.length;
+    $('indPlano').textContent = souPro ? 'PRO ⭐' : 'Gratuito';
+    $('rodapeMenu').textContent = usuarioAtual ? usuarioAtual.email : '';
+    if (document.activeElement !== $('cfgEmpresa')) $('cfgEmpresa').value = nomeEmpresa;
+    $('cfgDiasAviso').value = String(diasAviso());
+    if (document.activeElement !== $('cfgAliquota')) $('cfgAliquota').value = empresa.aliquotaImposto ?? '';
+
+    $('listaLojas').innerHTML = lojas.map(l =>
+      '<li><div><strong>' + escapar(l.nome) + '</strong> ' +
+      (l.id === lojaAtualId ? '<span class="etiqueta">selecionada</span>' : '') +
+      '<br><small>' + escapar(l.cidade || 'Cidade não informada') + '</small></div>' +
+      '<div><button class="link-botao" onclick="renomearLoja(\'' + l.id + '\')">Renomear</button>' +
+      '<button class="link-botao link-perigo" onclick="excluirLoja(\'' + l.id + '\')">Excluir</button></div></li>'
+    ).join('');
+
+    preencherCategorias();
+    renderizarIndicadores();
+    renderizarProdutos();
+    renderizarCarrinho();
+    renderizarVendasHoje();
+    renderizarPainelVendas();
+    renderizarFinanceiro();
+    if (!$('pdvResultados').classList.contains('oculto')) buscarNoPdv();
+    if (!$('modalLotes').classList.contains('oculto')) renderizarLotes();
+  }
+
+  function mostrarFalhaConexao() {
+    telaBoasVindas.classList.add('oculto');
+    appConteudo.classList.remove('oculto');
+    statusEl.textContent = '⚠️ Não foi possível carregar seus dados. Verifique sua internet, desative bloqueadores de anúncio para este site e recarregue a página.';
+  }
+
+  // ---------- AUTENTICAÇÃO ----------
+  onAuthStateChanged(auth, async (usuario) => {
+    ouvintes.forEach(parar => parar());
+    ouvintes = [];
+    ouvintesFin.forEach(parar => parar());
+    ouvintesFin = [];
+    fecharModais();
+    carrinho = [];
+    mesFin = mesAtual();
+
+    if (!usuario) {
+      usuarioAtual = null; perfil = {}; empresa = {}; lojas = []; produtos = []; lotes = []; lojaAtualId = null;
+      vendasMes = []; lancMes = []; vendasOutroMes = []; lancOutroMes = [];
+      telaLogin.classList.remove('oculto');
+      telaBoasVindas.classList.add('oculto');
+      appConteudo.classList.add('oculto');
+      return;
+    }
+
+    usuarioAtual = usuario;
+    telaLogin.classList.add('oculto');
+    $('loginEmail').value = '';
+    $('loginSenha').value = '';
+
+    const uid = usuario.uid;
+    perfilRef = doc(db, 'usuarios', uid);
+    empresaRef = doc(db, 'usuarios', uid, 'configLF', 'empresa');
+    lojasRef = collection(db, 'usuarios', uid, 'lojasLF');
+    produtosRef = collection(db, 'usuarios', uid, 'produtosLF');
+    lotesRef = collection(db, 'usuarios', uid, 'estoqueLF');
+    vendasRef = collection(db, 'usuarios', uid, 'vendasLF');
+    financeiroRef = collection(db, 'usuarios', uid, 'financeiroLF');
+
+    // Cria o perfil só se ainda não existir (o perfil não pode ser alterado depois)
+    try {
+      const snap = await getDoc(perfilRef);
+      if (!snap.exists()) {
+        await setDoc(perfilRef, { proLojaFacil: false, email: usuario.email, criadoEm: new Date().toLocaleString('pt-BR') });
+      }
+    } catch (erro) {
+      console.error('Erro ao verificar perfil:', erro);
+    }
+
+    const carregou = { perfil: false, empresa: false, lojas: false, produtos: false, lotes: false, vendas: false, lanc: false };
+    const tentar = (chave) => {
+      carregou[chave] = true;
+      if (Object.values(carregou).every(Boolean)) {
+        statusEl.textContent = '☁️ Conectado — dados salvos na nuvem';
+        renderizar();
+      }
+    };
+    const falhou = (erro) => { console.error(erro); mostrarFalhaConexao(); };
+
+    ouvintes.push(onSnapshot(perfilRef, (snap) => {
+      perfil = snap.exists() ? snap.data() : {};
+      souPro = perfil.proLojaFacil === true;
+      tentar('perfil');
+    }, falhou));
+
+    ouvintes.push(onSnapshot(empresaRef, (snap) => {
+      empresa = snap.exists() ? snap.data() : {};
+      tentar('empresa');
+    }, falhou));
+
+    ouvintes.push(onSnapshot(query(lojasRef, orderBy('criadoEmTS', 'asc')), (snap) => {
+      lojas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tentar('lojas');
+    }, falhou));
+
+    ouvintes.push(onSnapshot(produtosRef, (snap) => {
+      produtos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tentar('produtos');
+    }, falhou));
+
+    ouvintes.push(onSnapshot(lotesRef, (snap) => {
+      lotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tentar('lotes');
+    }, falhou));
+
+    // Só as vendas e despesas do mês atual (economiza leituras)
+    ouvintes.push(onSnapshot(query(vendasRef, where('mesISO', '==', mesAtual())), (snap) => {
+      vendasMes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tentar('vendas');
+    }, falhou));
+
+    ouvintes.push(onSnapshot(query(financeiroRef, where('mesISO', '==', mesAtual())), (snap) => {
+      lancMes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tentar('lanc');
+    }, falhou));
+  });
+</script>
+</body>
+</html>
