@@ -15,6 +15,7 @@ const PRODUTOS = {
   estetica: { campo: 'pro', nome: 'Estética Fácil' },
   cliente: { campo: 'proClienteFacil', nome: 'Cliente Fácil' },
   fisio: { campo: 'proFisioterapia', nome: 'Fisioterapia Fácil' },
+  loja: { campo: 'proLojaFacil', nome: 'Loja Fácil' },
 };
 
 // Deixa o texto sem acentos e em minúsculas, para comparar nomes com segurança
@@ -42,6 +43,7 @@ function descobrirProduto(req, payload) {
 
   if (nome.includes('fisio')) return { chave: 'fisio', origem: 'nome do produto' };
   if (nome.includes('estetica')) return { chave: 'estetica', origem: 'nome do produto' };
+  if (nome.includes('loja')) return { chave: 'loja', origem: 'nome do produto' };
   if (nome.includes('cliente')) return { chave: 'cliente', origem: 'nome do produto' };
 
   return { chave: 'estetica', origem: 'padrão (produto não identificado)' };
