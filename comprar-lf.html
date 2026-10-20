@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja Fácil PRO - Assinar</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --cor: #6d28d9; --cor-escura: #4c1d95; --cor-clara: #ede9fe; --texto: #555; --borda: #e5e7eb; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif; background: #f7f5ff; color: #1f1f1f;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 28px 16px;
+  }
+  .caixa { width: 100%; max-width: 760px; text-align: center; }
+  .marca { font-size: 15px; font-weight: 700; color: var(--cor); margin-bottom: 8px; }
+  h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; }
+  .sub { color: var(--texto); font-size: 15px; margin-bottom: 26px; line-height: 1.5; }
+  .planos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .plano {
+    background: #fff; border: 1.5px solid var(--borda); border-radius: 16px; padding: 26px 22px;
+    display: flex; flex-direction: column; position: relative; text-align: left;
+  }
+  .plano.destaque { border: 2.5px solid var(--cor); box-shadow: 0 12px 34px rgba(109,40,217,.18); }
+  .selo {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--cor); color: #fff; font-size: 12px; font-weight: 700;
+    padding: 5px 14px; border-radius: 999px; white-space: nowrap;
+  }
+  .plano h2 { font-size: 19px; margin-bottom: 10px; }
+  .preco { font-size: 34px; font-weight: 800; }
+  .preco small { font-size: 15px; font-weight: 600; color: var(--texto); }
+  .obs { font-size: 13px; color: var(--texto); margin-top: 4px; min-height: 36px; }
+  .obs strong { color: #166534; }
+  ul { list-style: none; margin: 16px 0 20px; font-size: 14px; line-height: 1.9; flex: 1; }
+  ul li::before { content: '✓ '; color: var(--cor); font-weight: 800; }
+  .btn {
+    display: block; text-align: center; text-decoration: none; padding: 14px; border-radius: 12px;
+    font-weight: 700; font-size: 16px; background: #fff; color: var(--cor); border: 2px solid var(--cor);
+  }
+  .btn:hover { background: var(--cor-clara); }
+  .destaque .btn { background: var(--cor); color: #fff; }
+  .destaque .btn:hover { background: var(--cor-escura); }
+  .aviso {
+    margin-top: 24px; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
+    border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.5;
+  }
+  .rodape { margin-top: 18px; font-size: 13px; color: var(--texto); line-height: 1.6; }
+  .rodape a { color: var(--cor); font-weight: 600; }
+  @media (max-width: 620px) {
+    .planos { grid-template-columns: 1fr; gap: 24px; }
+    .plano.destaque { order: -1; }
+    h1 { font-size: 25px; }
+  }
+</style>
+</head>
+<body>
+<div class="caixa">
+  <div class="marca">🛍️ Loja Fácil</div>
+  <h1>Escolha seu plano PRO</h1>
+  <p class="sub">Estoque, vendas e financeiro da sua loja num só lugar.<br>Até 3 lojas e produtos ilimitados.</p>
+
+  <div class="planos">
+    <div class="plano">
+      <h2>PRO Mensal</h2>
+      <div class="preco">R$ 39,90 <small>/mês</small></div>
+      <p class="obs">Cancele quando quiser.</p>
+      <ul>
+        <li>Até 3 lojas</li>
+        <li>Produtos ilimitados</li>
+        <li>Aviso de validade e estoque baixo</li>
+        <li>Vendas no balcão e delivery</li>
+        <li>Comprovante pelo WhatsApp</li>
+        <li>Financeiro e lucro do mês</li>
+      </ul>
+      <a class="btn" href="https://pay.kiwify.com.br/kTgtQxa">Assinar mensal</a>
+    </div>
+
+    <div class="plano destaque">
+      <span class="selo">⭐ Mais vantajoso</span>
+      <h2>PRO Anual</h2>
+      <div class="preco">R$ 397 <small>/ano</small></div>
+      <p class="obs">Equivale a R$ 33,08 por mês. <strong>Economize R$ 81,80 no ano.</strong><br>Parcele em até 12x no cartão.</p>
+      <ul>
+        <li>Tudo do plano mensal</li>
+        <li>Pague uma vez e esqueça por 12 meses</li>
+        <li>Menor preço por mês</li>
+      </ul>
+      <a class="btn" href="https://pay.kiwify.com.br/4oaCiC0">Assinar anual</a>
+    </div>
+  </div>
+
+  <div class="aviso">⚠️ <strong>Importante:</strong> na compra, use o <strong>mesmo e-mail da sua conta no Loja Fácil</strong>. Assim o PRO é liberado automaticamente.</div>
+
+  <p class="rodape">
+    Ainda não tem conta? <a href="https://clodoaldofernandes.com.br/app/loja-facil.html">Crie grátis aqui</a> antes de assinar.<br>
+    Pagamento seguro pela Kiwify • Cartão, Pix ou boleto • Garantia de 7 dias<br>
+    Dúvidas: clodoaldo.fernandes@gmail.com
+  </p>
+</div>
+</body>
+</html>
